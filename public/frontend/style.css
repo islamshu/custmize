@@ -1,0 +1,13 @@
+.sections h2, .products-slider h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+}
