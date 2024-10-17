@@ -199,15 +199,14 @@
                             <img src="{{ asset('uploads/' . $item->image) }}" alt="Profile 1" title="{{ $key }}">
                         </div>
                         <a href="{{ route('showProduct', $item->slug) }}" class="customize-link">تخصيص</a>
-                        @if(auth('client')->user())
-
-                        <i class="fas fa-heart favorite-icon {{ $item->favorites->isNotEmpty() ? 'favorited' : '' }}" 
-                            data-id="{{ $item->id }}"></i>
-                            @endif
+                        @if (auth('client')->user())
+                            <i class="fas fa-heart favorite-icon {{ $item->favorites->isNotEmpty() ? 'favorited' : '' }}"
+                                data-id="{{ $item->id }}"></i>
+                        @endif
 
                     </div>
                 @endforeach
-              
+
                 <div class="nav-arrow left"><i class="fas fa-chevron-left"></i></div>
                 <div class="nav-arrow right"><i class="fas fa-chevron-right"></i></div>
             </div>
@@ -215,7 +214,7 @@
     </div>
 @endsection
 @section('script')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -269,11 +268,11 @@
                 if (visibleIndex === activeIndex) {
                     item.style.transform = `translate(-50%, -50%) scale(1.2)`;
                     item.classList.add('active');
-                    item.querySelector('.favorite-icon').style.display = 'block'; // عرض أيقونة القلب فقط للعنصر النشط
+                    /* item.querySelector('.favorite-icon').style.display = 'block'; // عرض أيقونة القلب فقط للعنصر النشط */
                 } else {
                     item.style.transform = `translate(-50%, -50%) scale(1)`;
                     item.classList.remove('active');
-                    item.querySelector('.favorite-icon').style.display = 'none'; // إخفاء أيقونة القلب لبقية العناصر
+                    /* item.querySelector('.favorite-icon').style.display = 'none'; // إخفاء أيقونة القلب لبقية العناصر */
                 }
             }
         });
@@ -326,59 +325,60 @@
     updateItems();
 });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const favoriteIcons = document.querySelectorAll('.favorite-icon');
-        /* alert(is_auth); */
 
-        favoriteIcons.forEach(icon => {
-            icon.addEventListener('click', function() {
-                const productId = this.getAttribute('data-id');
-                const isFavorited = this.classList.contains('favorited');
-                // إرسال طلب Ajax لإضافة أو حذف المنتج من المفضلة
-                fetch(`/favorite/${productId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // حماية ضد CSRF
-                    },
-                    body: JSON.stringify({ favorite: !isFavorited })
-                })
-                .then(response => response.json())
-                .then(data => {
-                   
-                    if (data.success) {
-                        // تغيير لون القلب بعد النقر
-                        this.classList.toggle('favorited');
+        document.addEventListener('DOMContentLoaded', function() {
+            const favoriteIcons = document.querySelectorAll('.favorite-icon');
+            /* alert(is_auth); */
 
-                        // عرض رسالة SweetAlert بناءً على الحالة
-                        if (this.classList.contains('favorited')) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'تمت الإضافة بنجاح',
-                                text: 'تمت إضافة المنتج إلى قائمتك المفضلة!',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'info',
-                                title: 'تم الحذف بنجاح',
-                                text: 'تمت إزالة المنتج من قائمتك المفضلة!',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                        }
-                    } else {
-                        console.error('Failed to update favorite status.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+            favoriteIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    const isFavorited = this.classList.contains('favorited');
+                    // إرسال طلب Ajax لإضافة أو حذف المنتج من المفضلة
+                    fetch(`/favorite/${productId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // حماية ضد CSRF
+                            },
+                            body: JSON.stringify({
+                                favorite: !isFavorited
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+
+                            if (data.success) {
+                                // تغيير لون القلب بعد النقر
+                                this.classList.toggle('favorited');
+
+                                // عرض رسالة SweetAlert بناءً على الحالة
+                                if (this.classList.contains('favorited')) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'تمت الإضافة بنجاح',
+                                        text: 'تمت إضافة المنتج إلى قائمتك المفضلة!',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'تم الحذف بنجاح',
+                                        text: 'تمت إزالة المنتج من قائمتك المفضلة!',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                }
+                            } else {
+                                console.error('Failed to update favorite status.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                 });
             });
         });
-    });
-</script>
-
     </script>
 @endsection
