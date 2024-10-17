@@ -1,0 +1,302 @@
+@extends('layouts.frontend')
+
+@section('style')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+    }
+
+    body {
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    .main-content {
+        display: flex;
+        padding: 20px;
+        background-color: #fff;
+        margin-top: 10px;
+    }
+
+    .sidebar {
+        width: 250px;
+        background-color: #343a40;
+        color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 20px;
+        color: #ffcc00;
+    }
+
+    .sidebar p {
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+
+    .sidebar button {
+        background-color: #ffcc00;
+        color: #000;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .sidebar-item {
+        margin-bottom: 20px;
+    }
+
+    .sidebar-item a {
+        text-decoration: none;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+    }
+
+    .sidebar-item a span {
+        margin-right: 10px;
+    }
+
+    .sidebar-item a:hover {
+        color: #ffcc00;
+    }
+
+    .content {
+        flex-grow: 1;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-left: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-box {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        color: #333;
+        background-color: #f8f9fa;
+    }
+
+    .form-group input[readonly] {
+        background-color: #e9ecef;
+    }
+
+    .form-group small {
+        font-size: 0.9rem;
+        color: #777;
+    }
+
+    /* تعديل الجندر */
+    .gender-options {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .gender-option {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px 0;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        font-size: 0.9rem;
+        background-color: #f8f9fa;
+        transition: background-color 0.3s ease;
+    }
+
+    .gender-option:hover {
+        background-color: #f0f0f0;
+    }
+
+    .gender-option input {
+        margin-right: 5px;
+    }
+
+    .save-button {
+        background-color: #ffcc00;
+        color: #333;
+        padding: 12px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        width: 100%;
+        font-weight: bold;
+    }
+
+    .save-button:hover {
+        background-color: #ff9900;
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            margin-left: 0;
+        }
+    }
+</style>
+@endsection
+
+@section('content')
+<div class="main-content">
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <h2>مرحباً {{ auth('client')->user()->first_name ?? 'زائر' }}!</h2>
+        <p>{{ auth('client')->user()->email ?? 'guest@example.com' }}</p>
+        <button>{{ '' }}   </button>
+
+        <div class="sidebar-item">
+            <a href="#">
+                <span>🔳</span>
+                QR كود
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="#">
+                <span>❤️</span>
+                قائمة المفضلة
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="#">
+                <span>📦</span>
+                الطلبات
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="#">
+                <span>↩️</span>
+                المرتجعات
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="#">
+                <span>🏠</span>
+                العناوين
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="#">
+                <span>💳</span>
+                المدفوعات
+            </a>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="content">
+        <div class="welcome-box">
+            <h3>معلومات الحساب</h3>
+        </div>
+
+        <form class="profile-form">
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" value="{{ auth('client')->user()->email ?? 'guest@example.com' }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="first_name">الاسم الأول</label>
+                <input type="text" id="first_name" value="{{ auth('client')->user()->first_name ?? 'اسلام' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="last_name">اسم العائلة</label>
+                <input type="text" id="last_name" value="{{ auth('client')->user()->last_name ?? 'شبلق' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">رقم الهاتف</label>
+                <input type="tel" id="phone" placeholder="أضف الرقم">
+                <small>يمكنك استخدام هذا الرقم لتسجيل الدخول إلى جميع تطبيقات نون.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="birthdate">تاريخ الميلاد</label>
+                <input type="date" id="birthdate" placeholder="dd/mm/yyyy">
+                <small>احصل على عروض في يومك المميز!</small>
+            </div>
+
+            <div class="form-group">
+                <label>الجنس</label>
+                <div class="gender-options">
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="male"> ذكر
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="female"> أنثى
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="nationality">الجنسية</label>
+                <select id="nationality">
+                    <option>اختر الجنسية</option>
+                    <option value="SA">المملكة العربية السعودية</option>
+                    <option value="AE">الإمارات العربية المتحدة</option>
+                    <option value="EG">مصر</option>
+                    <option value="JO">الأردن</option>
+                    <option value="KW">الكويت</option>
+                    <option value="OM">عمان</option>
+                    <option value="QA">قطر</option>
+                </select>
+            </div>
+
+            <button type="submit" class="save-button">حفظ التعديلات</button>
+        </form>
+    </div>
+</div>
+@endsection

@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 use Illuminate\Support\Str;
+use File;
 
 class ProductController extends Controller
 {
@@ -95,6 +96,12 @@ class ProductController extends Controller
             if ($request->type_product != null) {
                 $product->type_id = $request->type_product;
             }
+            $guidness = [];
+            foreach ($request->guidness as $gud) {
+                $image = $gud->store('guidness');
+                array_push($guidness, $image);
+            }
+            $product->guidness_pic = json_encode($guidness);
             $product->save();
 
             if ($request->colors != null) {
@@ -264,25 +271,53 @@ class ProductController extends Controller
             if ($request->type_product != null) {
                 $product->type_id = $request->type_product;
             }
-            $product->save();
 
+            if ($request->guidness || $request->deleted_images) {
+                $deletedImages = json_decode($request->deleted_images);
+                if ($deletedImages) {
+                    foreach ($deletedImages as $imageName) {
+                        // حذف الصورة من السيرفر
+                        $imagePath = public_path('uploads/' . $imageName);
+                        if (File::exists($imagePath)) {
+                            File::delete($imagePath);
+                        }
+                    }
+                } else {
+                    $deletedImages = [];
+                }
+                // تحديث قائمة الصور في قاعدة البيانات
+                $currentImages = json_decode($product->guidness_pic);
+                $updatedImages = array_diff($currentImages, $deletedImages); // إزالة الصور المحذوفة
+                if ($request->hasFile('guidness')) {
+                    $images = $request->file('guidness');
+                    foreach ($images as $image) {
+                        $imageName = time() . '-' . $image->getClientOriginalName(); // Create a unique name for the image
+                        $image->move(public_path('uploads'), $imageName); // Move the image to the upload folder
+
+                        $updatedImages[] = $imageName; // Add the new image to the updated list
+                    }
+                }
+
+                // Store the updated list of images back in the database
+                $product->guidness_pic = json_encode(array_values($updatedImages));
+            }
+            $product->save();
             if ($request->colors != null) {
                 foreach ($request->colors as $coo => $colorDataa) {
-                    if (isset($colorDataa['id'], $colorDataa['price'], $colorDataa['front_image'])) {
+                    if (isset($colorDataa['id'], $colorDataa['price'], $colorDataa['front_image']) ) {
+                        $coo = ProductColor::where('product_id', $product->id)->delete();
+                    }
+                    if (isset($colorDataa['id'], $colorDataa['price'], $colorDataa['old_front_image']) ) {
                         $coo = ProductColor::where('product_id', $product->id)->delete();
                     }
                 }
 
                 foreach ($request->colors as $colorId => $colorData) {
-
+                    // dd($request->all());
                     if (!is_array($colorData)) {
                         continue;
                     }
                     if (isset($colorData['id'], $colorData['price'], $colorData['front_image'])) {
-
-
-
-
                         $color = new ProductColor();
                         $color->product_id = $product->id;
                         $color->color_id = $colorId;
@@ -305,23 +340,30 @@ class ProductController extends Controller
                         $color->save();
                     }
                     if (isset($colorData['id'], $colorData['price'], $colorData['old_front_image'])) {
-
+                      }
 
 
                         $color = new ProductColor();
                         $color->product_id = $product->id;
                         $color->color_id = $colorId;
                         $color->price = $colorData['price'];
-                        
-                        if (isset($colorData['old_front_image']) ) {
+
+                        if (isset($colorData['old_front_image'])) {
                             // $frontImageName = time() . '_front_' . $request->file("colors.$colorId.front_image")->getClientOriginalName();
                             // $frontImagePath = $request->file("colors.$colorId.front_image")->storeAs('products', $frontImageName, 'public');
+                        
                             $color->front_image = $colorData['old_front_image'];
                         }
 
-                        if (isset($colorData['old_back_image']) ) {
+                        if (isset($colorData['old_back_image'])) {
+                            
                             // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
                             // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
+                            if (isset($colorData['old_back_image']) && $request->hasFile("colors.$colorId.back_image")) {
+                            // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
+                            // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
+                            $color->back_image = $request->file("colors.$colorId.back_image")->store('products');
+                        
                             $color->back_image = $colorData['old_back_image'];
                         }
 

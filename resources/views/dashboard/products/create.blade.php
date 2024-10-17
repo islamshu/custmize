@@ -73,12 +73,32 @@
                                                 <img src="" width="100" height="100" class="image-preview"
                                                     alt="">
                                             </div>
+                                            
+
+                                            <div class="form-group col-8">
+                                                <div class="form-group">
+                                                    <label for="images">{{ __('Guidness Image') }}</label>
+                                                    <input required type="file" name="guidness[]" id="images"
+                                                        class="form-control" multiple onchange="previewImages()">
+                                                </div>
+
+                                                <!-- Container to display image previews -->
+                                                <div id="image-preview"
+                                                    style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                                </div>
+
+                                            </div>
+
                                             <!-- Description -->
                                             <div class="form-group col-8">
                                                 <label for="description">{{ __('Description') }}</label>
                                                 <textarea id="description" name="description" class="form-control" rows="4"
                                                     placeholder="{{ __('Enter product description') }}">{{ old('description') }}</textarea>
                                             </div>
+                                            <div class="form-group col-8">
+                                                <label for="description">{{ __('Delivery date') }}</label>
+                                            <input type="number" name="delivery_date" class="form-control" >
+                                                </div>
                                             <input type="hidden" id="color_type" value="0">
 
                                             <!-- Fixed Price -->
@@ -487,6 +507,79 @@
                 reader.readAsDataURL(file);
             };
         });
+
+        let selectedFiles = []; // To track the selected files
+
+        function previewImages() {
+            var previewContainer = document.getElementById('image-preview');
+            var files = document.getElementById('images').files;
+
+            // Clear previous previews
+            previewContainer.innerHTML = "";
+            selectedFiles = Array.from(files); // Save selected files
+
+            selectedFiles.forEach((file, index) => {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // Create a container for each image and delete button
+                    var imageContainer = document.createElement('div');
+                    imageContainer.style.position = "relative";
+                    imageContainer.style.width = "100px";
+                    imageContainer.style.height = "100px";
+                    imageContainer.style.marginRight = "10px";
+
+                    // Create the image element
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = "100%";
+                    img.style.height = "100%";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "8px";
+
+                    // Create the delete button (X)
+                    var deleteBtn = document.createElement('span');
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.style.position = "absolute";
+                    deleteBtn.style.top = "5px";
+                    deleteBtn.style.right = "15px";
+                    deleteBtn.style.color = "white";
+                    deleteBtn.style.backgroundColor = "red";
+                    deleteBtn.style.borderRadius = "50%";
+                    deleteBtn.style.cursor = "pointer";
+                    deleteBtn.style.padding = "5px";
+                    deleteBtn.onclick = function() {
+                        removeImage(index); // Call function to remove the image
+                    };
+
+                    // Append image and delete button to the container
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(deleteBtn);
+
+                    // Append the container to the preview area
+                    previewContainer.appendChild(imageContainer);
+                }
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeImage(index) {
+            selectedFiles.splice(index, 1); // Remove the file from the selected files array
+            updateFileInput(); // Update the file input with the new list of files
+            previewImages(); // Re-render the image previews
+        }
+
+        function updateFileInput() {
+            // Create a new DataTransfer object (browser API to handle files in input)
+            var dataTransfer = new DataTransfer();
+
+            selectedFiles.forEach(file => {
+                dataTransfer.items.add(file); // Add the remaining files back to the input
+            });
+
+            document.getElementById('images').files = dataTransfer.files; // Update the input with the new list of files
+        }
     </script>
 @endsection
 

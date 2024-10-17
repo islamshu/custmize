@@ -151,7 +151,10 @@
     "Promo Codes":"Promo Codes",
     "Discount Type":"Discount Type",
     "Rate":"Rate",
-    "Fixed":"Fixed"
+    "Fixed":"Fixed",
+    "Shopping setting":"Shopping setting",
+    "Shipping":"Shipping",
+    "Tax":"Tax"
 
 
 }

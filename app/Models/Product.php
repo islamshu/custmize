@@ -16,6 +16,10 @@ class Product extends Model
         return $this->belongsTo(ProductType::class);
     }
 
+    public function favorites()
+{
+    return $this->belongsToMany(Client::class, 'favorites', 'product_id', 'client_id');
+}
     public function colors()
     {
         return $this->hasMany(ProductColor::class);

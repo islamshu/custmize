@@ -79,6 +79,37 @@
                                                 <img src="{{ asset('uploads/' . $product->image) }}" width="100"
                                                     height="100" class="image-preview" alt="">
                                             </div>
+                                            <div class="form-group col-8">
+                                                <div class="form-group">
+                                                    <label for="images">{{ __('Guidness Image') }}</label>
+                                                    <input  type="file" name="guidness[]" id="images"
+                                                        class="form-control" multiple onchange="previewImages()">
+                                                </div>
+                                                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+
+                                                    <!-- عرض الصور القديمة -->
+                                                    <div id="existing-images" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                                        @foreach (json_decode($product->guidness_pic) as $item)
+                                                        <div class="image-container" style="position: relative; width: 100px; height: 100px;">
+                                                            <img src="{{ asset('uploads/'.$item) }}" alt="Uploaded Image"
+                                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                                            <span class="delete-existing" 
+                                                                  onclick="removeExistingImage('{{ $item }}', this)"
+                                                                  style="position: absolute; top: 5px; right: 5px; color: white; background-color: red; border-radius: 50%; cursor: pointer; padding: 5px;">&times;</span>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                            
+                                                    <!-- عرض معاينة الصور الجديدة -->
+                                                    <div id="image-preview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                                                </div>
+                                                <input type="hidden" name="deleted_images" id="deleted_images" value="">
+
+                                            
+                                                <!-- عرض معاينة الصور الجديدة -->
+                                                <div id="image-preview" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                                            
+                                            </div>
 
                                             <!-- Description -->
                                             <div class="form-group col-8">
@@ -86,6 +117,10 @@
                                                 <textarea id="description" name="description" class="form-control" rows="4"
                                                     placeholder="{{ __('Enter product description') }}">{{ old('description', @$product->description) }}</textarea>
                                             </div>
+                                            <div class="form-group col-8">
+                                                <label for="description">{{ __('Delivery date') }}</label>
+                                            <input type="number" value="{{ $product->delivery_date }}" name="delivery_date" class="form-control" >
+                                                </div>
 
                                             <!-- Fixed Price -->
 
@@ -669,7 +704,87 @@
                 reader.readAsDataURL(file);
             };
         });
+        let selectedFiles = []; // لتتبع الملفات الجديدة
+let deletedImages = []; // لتتبع الصور المحذوفة
+
+function previewImages() {
+    var previewContainer = document.getElementById('image-preview');
+    var files = document.getElementById('images').files;
+
+    // مسح المعاينات السابقة
+    previewContainer.innerHTML = "";
+    selectedFiles = Array.from(files); // حفظ الملفات المحددة
+
+    selectedFiles.forEach((file, index) => {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var imageContainer = document.createElement('div');
+            imageContainer.style.position = "relative";
+            imageContainer.style.width = "100px";
+            imageContainer.style.height = "100px";
+            imageContainer.style.marginRight = "10px";
+
+            // إنشاء عنصر الصورة
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "8px";
+
+            // إنشاء زر الحذف (X)
+            var deleteBtn = document.createElement('span');
+            deleteBtn.innerHTML = "&times;";
+            deleteBtn.style.position = "absolute";
+            deleteBtn.style.top = "5px";
+            deleteBtn.style.right = "5px";
+            deleteBtn.style.color = "white";
+            deleteBtn.style.backgroundColor = "red";
+            deleteBtn.style.borderRadius = "50%";
+            deleteBtn.style.cursor = "pointer";
+            deleteBtn.style.padding = "5px";
+            deleteBtn.onclick = function() {
+                removeImage(index); // إزالة الصورة من الملفات المحددة
+            };
+
+            imageContainer.appendChild(img);
+            imageContainer.appendChild(deleteBtn);
+            previewContainer.appendChild(imageContainer);
+        };
+
+        reader.readAsDataURL(file); // تحويل الملف إلى رابط بيانات للمعاينة
+    });
+}
+
+function removeImage(index) {
+    selectedFiles.splice(index, 1); // إزالة الملف من مصفوفة الملفات المحددة
+    updateFileInput(); // تحديث حقل الإدخال
+    previewImages(); // إعادة عرض المعاينات
+}
+
+function removeExistingImage(imageName, element) {
+    if (confirm('Are you sure you want to remove this image?')) {
+        // إزالة الصورة من العرض
+        element.parentElement.remove(); // إزالة العنصر الحاوي للصورة
+
+        // إضافة اسم الصورة إلى قائمة الصور المحذوفة
+        deletedImages.push(imageName);
+        document.getElementById('deleted_images').value = JSON.stringify(deletedImages);
+    }
+}
+
+function updateFileInput() {
+    var dataTransfer = new DataTransfer();
+    
+    selectedFiles.forEach(file => {
+        dataTransfer.items.add(file); // إضافة الملفات المتبقية إلى الإدخال
+    });
+
+    document.getElementById('images').files = dataTransfer.files; // تحديث حقل الإدخال
+}
+
     </script>
 @endsection
 
-@endsectionئ
+@endsection

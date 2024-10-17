@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Color;
 use App\Models\GeneralInfo;
 use App\Models\Product;
 use Illuminate\Support\Facades\File;
@@ -31,6 +32,14 @@ function get_product_imge($id){
 $pro = Product::find($id);
 return @$pro->colors()->first()->front_image; 
 
+}
+function get_color($id){
+    $color = Color::find($id);
+    return $color->name;
+}
+function get_color_code($id){
+    $color = Color::find($id);
+    return $color->code;
 }
 
  function addToJsonFile($name)

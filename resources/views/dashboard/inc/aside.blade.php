@@ -21,6 +21,11 @@
                          
                         </li>
                         <li class="dropdown " data-menu=""><a
+                                class="dropdown-item " href="{{ route('shopping') }}"
+                                >{{ __('shopping setting') }}</a>
+                         
+                        </li>
+                        <li class="dropdown " data-menu=""><a
                                 class="dropdown-item " href="{{ route('show_translate','ar') }}"
                                 >{{ __('Arabic Translate') }}</a>
                          
