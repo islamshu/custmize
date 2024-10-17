@@ -326,6 +326,7 @@
 });
 
 
+
         document.addEventListener('DOMContentLoaded', function() {
             const favoriteIcons = document.querySelectorAll('.favorite-icon');
             /* alert(is_auth); */
