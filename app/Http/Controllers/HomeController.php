@@ -29,18 +29,43 @@ class HomeController extends Controller
         }])->get();  
               return view('front.index')->with('products',$products);
     }
-    public function cart(Request $request){
-        $guestId = session('guest_id');
+    // public function cart(Request $request){
+    //     $guestId = session('guest_id');
 
+    //     // Get cart content for the guest
+    //     // $cartItems = Cart::session($guestId)->getContent();
+    //     // $guestId = session('guest_id');
+    //     // Cart::session($guestId)->clear();
+    //     // Cart::session($guestId)->remove(30);
+        
+    //     $cartItems = Cart::session($guestId)->getContent();
+    //     // dd($cartItems);
+    //     return view('front.cart')->with('carts',$cartItems);
+    // }
+    public function cart(Request $request){
+        // Retrieve guest_id from session or generate a new one if not present
+        if (!session()->has('guest_id')) {
+            // Generate a unique guest ID and store it in the session
+            $guestId = uniqid('guest_', true);  // or you could use something like Str::uuid()
+            session(['guest_id' => $guestId]);
+        } else {
+            $guestId = session('guest_id');
+        }
+    
+        // Bind the cart session with the guest ID
+        Cart::session($guestId);
+    
         // Get cart content for the guest
-        // $cartItems = Cart::session($guestId)->getContent();
-        // $guestId = session('guest_id');
-        // Cart::session($guestId)->clear();
-        // Cart::session($guestId)->remove(30);
-        $cartItems = Cart::session($guestId)->getContent();
-        // dd($cartItems);
-        return view('front.cart')->with('carts',$cartItems);
+        $carts = Cart::getContent();
+        $subtotal = Cart::getSubTotal(); // Get the subtotal of the cart
+        $shipping = 15.00; // Static shipping fee or dynamic if required
+$tax = $subtotal * 0.1; // 10% tax rate, you can adjust this as needed
+$total = $subtotal + $shipping + $tax;
+
+return view('front.cart', compact('carts', 'subtotal', 'shipping', 'tax', 'total'));
+        // Return the view with cart items
     }
+    
     public function home(){
      
         return view('dashboard.index');
@@ -176,9 +201,10 @@ public function removeFromCart($product_id)
 }
 public function viewCart()
 {
-    $cartContents = Cart::getContent();
+    $carts = Cart::getContent(); // Get all cart items
+    $subtotal = Cart::getSubTotal(); // Get the subtotal of the cart
 
-    return response()->json($cartContents);
+    return view('cart.view', compact('carts', 'subtotal')); // Pass both the cart items and subtotal to the view
 }
 public function toggleFavorite(Request $request, $id) {
     $product = Product::find($id);
@@ -476,6 +502,19 @@ public function get_image_session()
 
         return response()->json(['message' => 'Item removed from cart!']);
     }
+    public function checkCart(Request $request)
+    {
+        // dd($request->all());
+        $guestId = session('guest_id');
+    
+        // Check if the cart has items
+        if (Cart::session($guestId)->isEmpty()) {
+            return response()->json(['cartEmpty' => true]);
+        } else {
+            return response()->json(['cartEmpty' => false]);
+        }
+    }
+    
     public function check_temp(){
         $userid =  session()->get('user_id');
         if($userid != null){

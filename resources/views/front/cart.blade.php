@@ -68,8 +68,7 @@
             width: 35px;
             height: 35px;
             border-radius: 5px;
-            /* background-color: #68dfbe; */
-            border: 1px solid #e2e2e2
+            border: 1px solid #e2e2e2;
         }
 
         .color-box input[type="checkbox"] {
@@ -79,43 +78,17 @@
             opacity: 0;
         }
 
-        .color-box lable {
-            display: block;
-            width: 100%;
-            height: 100%;
-            border-radius: 5px;
-            /* background-color: #68dfbe; */
-        }
-
         .size-box,
         .material-box {
             padding: 5px 10px;
             border-radius: 5px;
             border: 1px solid #e2e2e2;
             color: #68dfbe;
-            font-weight: bold
+            font-weight: bold;
         }
 
         .size-box {
             background-color: #f8f8f8;
-        }
-
-        .material-box {
-            background-color: #f8f8f8;
-        }
-
-        .color-option.selected,
-        .size-option.selected {
-            border-color: #4CAF50;
-        }
-
-        .size-option {
-            background-color: #fff;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
         }
 
         .quantity {
@@ -125,7 +98,7 @@
             border-radius: 5px;
             width: 100px;
             justify-content: space-between;
-            padding: 5px
+            padding: 5px;
         }
 
         .quantity button:focus {
@@ -136,7 +109,7 @@
             border: none;
             background-color: #fff;
             font-size: 20px;
-            cursour: pointer;
+            cursor: pointer;
             color: #888;
             padding: 5px;
         }
@@ -151,253 +124,253 @@
         .quantity input:focus {
             outline: none;
         }
+
+        /* Promo Code Section */
+        .promo-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .promo-section input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 60%;
+            max-width: 300px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .promo-section button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .promo-section button:hover {
+            background-color: #45a049;
+        }
+
+        /* Order Summary */
+        .card-body {
+            font-family: Arial, sans-serif;
+        }
+
+        .card-title {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .list-group-item {
+            font-size: 16px;
+            border: none;
+        }
+
+        .list-group-item span {
+            font-weight: bold;
+        }
+
+        .text-success {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        h5.card-title {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Apply a smooth hover effect for the checkout button */
+        .btn-success:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        /* Add a little animation to the entire cart card */
+        .card {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
     </style>
-
-    
 @endsection
+
 @section('content')
-    <h2 class="mb-4 " style="text-align: center">سلة التسوق (<span id="itemCount">{{ $carts->count() }}</span> منتجات)</h2>
+    <h2 class="mb-4" style="text-align: center">Shopping Cart (<span id="itemCount">{{ $carts->count() }}</span> Items)</h2>
+
     @if ($carts->count() == 0)
-
-    <div style="border: 1px solid #ddd;text-align: center;padding: 50px;">
-        <h2>لا يوجد عناصر بالسلة 😒</h2>
-
-    </div>
-    @endif
-    <!-- Shopping Cart Items -->
-    <div class="row">
-        <div class="col-lg-1">
+        <div style="border: 1px solid #ddd;text-align: center;padding: 50px;">
+            <h2>Your cart is empty 😒</h2>
         </div>
+    @endif
 
+    <div class="row">
         <div class="col-lg-7">
-            <!-- Item 1 -->
             @if ($carts->count() != 0)
                 @foreach ($carts as $item)
-                    {{-- {{ dd($item) }} --}}
                     @php
                         $product = App\Models\Product::find($item->id);
                     @endphp
-
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-md-2">
                                     <img src="{{ asset('uploads/' . $product->image) }}" class="img-fluid rounded"
-                                        alt="CICC premium Hoodi">
+                                        alt="Product Image">
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="div">
-                                        <div class="row">
-                                            <div class="col-md-10">
-                                                <h5 class="card-title">{{ $product->name }}</h5>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    {{-- <p class="card-text mb-1">
-                                    <div>
-                                    <span class="badge  me-2" style="background: {{ get_color_code($item->attributes->color) }}">اللون: {{ get_color($item->attributes->color) }}</span>
-                                    <span id="check"   style=" background: {{ get_color_code($item->attributes->color) }}">/</span>
-                                    </div>
-                                    <span class="badge bg-secondary">الحجم: {{ $item->attributes->size }}</span>
-                                </p>
-                                <p class="card-text"><small class="text-muted">المادة: قطن</small></p> --}}
+                                    <h5 class="card-title">{{ $product->name }}</h5>
                                     <div class="product-option">
                                         <div class="option">
-                                            <span> Color</span>
-                                            <div class="color-box"
-                                                style="background-color: {{ get_color_code($item->attributes->color) }}">
-                                                <input type="checkbox" name="" id="color" checked>
-                                                <label for="color"
-                                                    style="background-color: {{ get_color_code($item->attributes->color) }}"></label>
+                                            <span>Color</span>
+                                            <div class="color-box" style="background-color: {{ get_color_code($item->attributes->color) }}">
+                                                <input type="checkbox" checked>
                                             </div>
                                         </div>
                                         <div class="option">
-                                            <span> Size</span>
-                                            <div class="size-box">{{ $item->attributes->size }}
-                                            </div>
+                                            <span>Size</span>
+                                            <div class="size-box">{{ $item->attributes->size }}</div>
                                         </div>
                                         <div class="option">
-                                            <span> Material</span>
-                                            <div class="size-box">Cotton
-                                            </div>
+                                            <span>Material</span>
+                                            <div class="size-box">Cotton</div>
                                         </div>
                                     </div>
+
                                     <div class="btn-group" style="display: block" role="group">
-                                        <span> Quantity</span>
-                                        {{-- <div class="qtyoption">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity({{ $item->id }}, -1)">-</button>
-                                        <button type="button" class="btn btn-outline-secondary" id="{{ $item->id }}Quantity">2</button>
-                                        <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity({{ $item->id }}, 1)">+</button>
-                                    </div> --}}
+                                        <span>Quantity</span>
                                         <div class="quantity">
                                             <button type="button" class="btn btn-outline-secondary"
                                                 onclick="changeQuantity({{ $item->id }}, -1)">-</button>
-                                            <input type="text" value="2" readonly class="quantity"
+                                            <input type="text" value="{{ $item->quantity }}" readonly
                                                 id="{{ $item->id }}Quantity">
-                                            {{-- <button type="button" class="btn btn-outline-secondary" id="{{ $item->id }}Quantity">2</button> --}}
                                             <button type="button" class="btn btn-outline-secondary"
                                                 onclick="changeQuantity({{ $item->id }}, 1)">+</button>
-
                                         </div>
                                     </div>
-
                                 </div>
+
                                 <div class="col-md-4">
-                                    <button type="button" style="    margin-left: 50%;margin-bottom: 10px"
-                                        class="btn btn-danger" onclick="removecart({{ $item->id }})"><i
-                                            class="fa fa-trash"></i></button>
+                                    <button type="button" style="margin-left: 50%;margin-bottom: 10px" class="btn btn-danger"
+                                        onclick="removecart({{ $item->id }})"><i class="fa fa-trash"></i></button>
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        {{-- <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity({{ $item->id }}, -1)">-</button>
-                                        <button type="button" class="btn btn-outline-secondary" id="{{ $item->id }}Quantity">2</button>
-                                        <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity({{ $item->id }}, 1)">+</button>
-                                    </div> --}}
-
-                                        <div class="delevery" style="margin-left: 50%; ">
-                                            <span> Delevery</span>
-                                            <div class="delevery-box"
-                                                style="margin-top: 10px ; font-family: Arial, Helvetica, sans-serif;color:#68dfbe">
-                                                {{ now()->day }} - {{ now()->addDays($product->delivery_date)->day }}
-                                                {{ Carbon\Carbon::now()->addDays($product->delivery_date)->format('F') }}
-                                            </div>
-
-                                            <p class="h5 mb-0 text-success" style="margin-top: 15px">$<span
-                                                    id="{{ $item->id }}Price">62.98</span></p>
-
-
+                                    <div class="delevery" style="margin-left: 50%;">
+                                        <span>Delivery</span>
+                                        <div class="delevery-box"
+                                            style="margin-top: 10px; font-family: Arial, Helvetica, sans-serif;color:#68dfbe">
+                                            {{ now()->day }} - {{ now()->addDays($product->delivery_date)->day }}
+                                            {{ Carbon\Carbon::now()->addDays($product->delivery_date)->format('F') }}
                                         </div>
-                                        {{-- <p class="h5 mb-0 text-success">$<span id="{{ $item->id }}Price">62.98</span></p>
-                                    <button type="button" class="btn btn-danger" onclick="removecart({{ $item->id }})"><i class="fa fa-trash"></i></button> --}}
 
+                                        <p class="h5 mb-0 text-success" style="margin-top: 15px">$<span
+                                                id="{{ $item->id }}Price">{{ $item->price * $item->quantity }}</span></p>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 @endforeach
+            @endif
         </div>
-        @endif
 
-
-
-
-        <!-- Item 2 -->
-
-        {{-- </div> --}}
-
-        <!-- Order Summary -->
         @if ($carts->count() != 0)
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">ملخص الطلب</h5>
+                        <h5 class="card-title">Order Summary</h5>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between">
-                                <span>المجموع الفرعي</span>
-                                <strong>$<span id="subtotal">67.96</span></strong>
+                                <span>Subtotal</span>
+                                <strong>$<span id="subtotal">{{ $subtotal }}</span></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
-                                <span>الشحن</span>
+                                <span>Shipping</span>
                                 <strong>$<span id="shipping">15.00</span></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
-                                <span>الضريبة</span>
-                                <strong>$<span id="tax">8.74</span></strong>
+                                <span>Tax</span>
+                                <strong>$<span id="tax">{{ $tax }}</span></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
-                                <span>الإجمالي</span>
-                                <strong class="text-success">$<span id="total">91.70</span></strong>
+                                <span>Total</span>
+                                <strong class="text-success">$<span id="total">{{ $total }}</span></strong>
                             </li>
                         </ul>
-                        <div class="mt-3">
-                            <label for="coupon" class="form-label">كود الخصم</label>
+                        
+
+                        <!-- Promo Code Section -->
+                        <div class="promo-section">
+                            <label for="coupon" class="form-label">Promo Code</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="coupon" placeholder="أدخل كود الخصم">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    onclick="applyCoupon()">تطبيق</button>
+                                <input type="text" class="form-control" id="coupon" placeholder="Enter promo code">
+                                <button class="btn btn-outline-secondary" type="button" onclick="applyCoupon()">Apply</button>
                             </div>
                         </div>
 
-                        <div class="mt-3">
-                            <h6>اختر طريقة الدفع:</h6>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
-                                <label class="form-check-label" for="creditCard">
-                                    <i class="bi bi-credit-card me-2"></i>بطاقة الائتمان
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery">
-                                <label class="form-check-label" for="cashOnDelivery">
-                                    <i class="bi bi-cash me-2"></i>الدفع عند الاستلام
-                                </label>
-                            </div>
-                        </div>
-                        <button class="btn btn-success w-100 mt-3" onclick="checkout()">ادفع الآن ($<span
-                                id="checkoutTotal">91.70</span>)</button>
+                        <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout Now ($<span id="checkoutTotal">{{ $total }}</span>)</button>
                     </div>
                 </div>
             </div>
         @endif
     </div>
 @endsection
+
 @section('script')
     <script type="text/javascript" src="{{ asset('custom/js/jquery.min.js') }}"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // const products = {
-        //     hoodi: { price: 31.49, quantity: 2 },
-        //     mug: { price: 4.98, quantity: 1 }
-        // };
-        const products = @json($carts->select('price', 'quantity'));
-
-
+        const products = @json($carts->pluck('quantity', 'id'));
 
         function changeQuantity(product, change) {
-
-            products[product].quantity = Math.max(0, products[product].quantity + change);
+            products[product] = Math.max(0, products[product] + change);
             $.ajax({
-                url: '/updateCart', // Your route to fetch the image
+                url: '/updateCart',
                 method: 'GET',
                 data: {
                     product_id: product,
-                    quantity: products[product].quantity
-                }, // Send product and color ID
+                    quantity: products[product]
+                },
                 success: function(response) {
                     console.log(response.message);
-
                 },
                 error: function(error) {
-                    console.error("Error fetching the color image:", error);
+                    console.error("Error updating quantity:", error);
                 }
             });
             updateCart();
-
         }
 
         function removecart(product) {
             $.ajax({
-                url: '/removeCart', // Your route to fetch the image
+                url: '/removeCart',
                 method: 'GET',
-                data: {
-                    productid: product
-                }, // Send product and color ID
+                data: { productid: product },
                 success: function(response) {
                     setTimeout(function() {
-                        window.location.href =
-                            '/carts'; // إعادة توجيه إلى لوحة التحكم أو الصفحة الرئيسية
+                        window.location.href = '/carts';
                     }, 10);
-                    console.log(response.message);
-
                 },
                 error: function(error) {
-                    console.error("Error fetching the color image:", error);
+                    console.error("Error removing item:", error);
                 }
             });
         }
@@ -406,13 +379,14 @@
             let subtotal = 0;
             let itemCount = 0;
 
-            for (let [product, details] of Object.entries(products)) {
-                const total = details.price * details.quantity;
-                var qqy = $('#' + product + 'Quantity');
-                qqy.val(details.quantity);
+            for (let [product, quantity] of Object.entries(products)) {
+                const price = parseFloat(document.getElementById(`${product}Price`).textContent) / quantity;
+                const total = price * quantity;
+
                 document.getElementById(`${product}Price`).textContent = total.toFixed(2);
+                document.getElementById(`${product}Quantity`).value = quantity;
                 subtotal += total;
-                itemCount += details.quantity;
+                itemCount += quantity;
             }
 
             const shipping = 15;
@@ -428,28 +402,42 @@
         }
 
         function applyCoupon() {
-            const coupon = document.getElementById('coupon').value;
-            if (coupon.toLowerCase() === 'discount10') {
-                alert('تم تطبيق الخصم: 10%');
-                // يمكنك إضافة منطق الخصم هنا
+            const coupon = document.getElementById('coupon').value.toUpperCase();
+            const promoCodes = {
+                'DISCOUNT10': 0.1,  // 10% discount
+                'FREESHIP': 0  // Free shipping
+            };
+
+            if (promoCodes.hasOwnProperty(coupon)) {
+                let subtotal = parseFloat(document.getElementById('subtotal').textContent);
+                let discount = 0;
+
+                if (promoCodes[coupon] > 0) {
+                    discount = subtotal * promoCodes[coupon];
+                    alert(`Promo applied: ${promoCodes[coupon] * 100}% off`);
+                } else if (coupon === 'FREESHIP') {
+                    document.getElementById('shipping').textContent = '0.00';
+                    alert('Free shipping applied!');
+                }
+
+                subtotal -= discount;
+                const tax = subtotal * 0.1;
+                const shipping = parseFloat(document.getElementById('shipping').textContent);
+                const total = subtotal + shipping + tax;
+
+                document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+                document.getElementById('tax').textContent = tax.toFixed(2);
+                document.getElementById('total').textContent = total.toFixed(2);
+                document.getElementById('checkoutTotal').textContent = total.toFixed(2);
             } else {
-                alert('كود الخصم غير صالح');
+                alert('Invalid promo code!');
             }
         }
 
         function checkout() {
-            alert('تم إتمام عملية الشراء بنجاح!');
+            alert('Checkout Successful!');
         }
 
-        // تحديث السلة عند تحميل الصفحة
         updateCart();
-
-        // التبديل بين طرق الشحن
-        document.querySelectorAll('input[name="shippingMethod"]').forEach((elem) => {
-            elem.addEventListener("change", function(event) {
-                const deliveryAddress = document.getElementById('deliveryAddress');
-                deliveryAddress.style.display = event.target.id === 'delivery' ? 'block' : 'none';
-            });
-        });
     </script>
 @endsection

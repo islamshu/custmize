@@ -48,6 +48,7 @@ Route::get('check_temp', [HomeController::class, 'check_temp']);
 Route::get('/peconfirm-order', [HomeController::class, 'confirm_order']);
 Route::get('/updateCart', [HomeController::class, 'updateCart']);
 Route::get('/removeCart', [HomeController::class, 'removeCart']);
+Route::get('/check-cart', [HomeController::class, 'checkCart']);
 
 
 Route::post('/favorite/{id}', [HomeController::class, 'toggleFavorite'])->name('toggleFavorite');

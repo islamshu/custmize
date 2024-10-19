@@ -690,7 +690,7 @@
                                 <div class="btn typeButton  m-1">
 
                                     <img src="{{ asset('uploads/' . $item) }}" data-toggle="modal"
-                                    data-target="#reviewShirtModal" onclick="openModal(this)" width="100"
+                                        data-target="#reviewShirtModal" onclick="openModal(this)" width="100"
                                         height="100" /><br />
 
                                     <!-- <div class="typename">Men</div> -->
@@ -719,8 +719,8 @@
                 </div>
 
                 <div class="btns">
-                    <a href="">Add to cart</a>
-                    <a href="">Buy now</a>
+                    <a onclick="checkout_buy()" >Add to cart</a>
+                    <a onclick="checkout()">Buy now</a>
                 </div>
 
                 <div class="price d-flex">
@@ -728,7 +728,7 @@
                         <span class="fs-16">Piece Price</span>
                         <h3 class="fs28" id="main_price">$
                             00</h3>
-                            <input type="hidden"  id="main_price_input" value="0">
+                        <input type="hidden" id="main_price_input" value="0">
                     </div>
 
                     <div class="">
@@ -824,7 +824,7 @@
 
                     </div>
                     {{-- {{ dd($product->sizes ==  '[]') }} --}}
-                    <input type="hidden"  id="have_size" value="{{ $product->sizes != '[]' ? 1 : 0 }}">
+                    <input type="hidden" id="have_size" value="{{ $product->sizes != '[]' ? 1 : 0 }}">
                     @if ($product->sizes != '[]')
                         <h4 class="text-center mt-2">Size</h4>
                         <div class="size">
@@ -1024,7 +1024,6 @@
                         <div><span></span></div>
                     </div>
 
-                    <div class="save" style="margin-top: 32px;">Save</div>
                 </div>
             </div>
         </div>
@@ -1087,18 +1086,18 @@
     </div>
     <div id="reviewShirtModal" class="modal" role="dialog">
         <div class="modal-dialog">
-         <!-- Modal content-->
-         <div class="modal-content">
-          <div class="modal-header">
-           <button type="button" class="close" data-dismiss="modal">&times;</button>
-           <h4 class="modal-title">&nbsp;</h4>
-          </div>
-          <div class="modal-body">
-           <div class="shirt"><img  id="modalImage" width="100%" height="100%" src="" /></div>
-          </div>
-         </div>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="shirt"><img id="modalImage" width="100%" height="100%" src="" /></div>
+                </div>
+            </div>
         </div>
-       </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -1157,14 +1156,14 @@
             var havesize = $('#have_size').val();
             let sizePrice = 0;
 
-    if(havesize == 0){
-            let sizePrice = 0;
-    }else{
-        var size = document.querySelector('.size .active');
-            let sizePrice = size.getAttribute('data-price');
-            let sizeName = size.getAttribute('data-name');
-    }
-    
+            if (havesize == 0) {
+                let sizePrice = 0;
+            } else {
+                var size = document.querySelector('.size .active');
+                let sizePrice = size.getAttribute('data-price');
+                let sizeName = size.getAttribute('data-name');
+            }
+
             let material = document.querySelector('.material .active');
             let materialname = material.getAttribute('data-material');
 
@@ -1185,26 +1184,82 @@
             var pp = $('#main_price_input').val(parseFloat(peaceprice) + '.00');
 
             $('#product-price').text(parseFloat(peaceprice) + '.00');
-            if(havesize != 0){
-
-            $('#product-size').text(sizeName);
+            if (havesize != 0) {
+                let sizeName = size.getAttribute('data-name');
+                $('#product-size').text(sizeName);
             }
             $('#product-material').text(materialname);
+            // $('#confirm_side').click();
 
 
+
+
+        }
+    </script>
+    <script>
+        function openModal(imageElement) {
+            const modal = document.getElementById("imageModal");
+            const modalImage = document.getElementById("modalImage");
+            //   modal.style.display = "block";
+            modalImage.src = imageElement.src;
+        }
+
+        function checkout() {
+            $.ajax({
+                url: '/check-cart', // The route you will create to check the cart
+                method: 'GET',
+                success: function(response) {
+                    if (response.cartEmpty) {
+                        Swal.fire({
+                            title: 'لا يوجد واجهة معتمدة',
+                            icon: 'error',
+                            confirmButtonText: 'حسناً'
+                        });
+                    } else {
+                        // Redirect to cart page if items exist
+                        window.location.href = '/carts';
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'حدث خطأ!',
+                        icon: 'error',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            });
+        }
+        function checkout_buy() {
+            $.ajax({
+                url: '/check-cart', // The route you will create to check the cart
+                method: 'GET',
+                success: function(response) {
+                    if (response.cartEmpty) {
+                        Swal.fire({
+                            title: 'لا يوجد واجهة معتمدة',
+                            icon: 'error',
+                            confirmButtonText: 'حسناً'
+                        });
+                    } else {
+                        // Redirect to cart page if items exist
+                        Swal.fire({
+                            title: 'تم اضافة المنتج الى السلة',
+                            icon: 'success',
+                            confirmButtonText: 'حسناً'
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'حدث خطأ!',
+                        icon: 'error',
+                        confirmButtonText: 'حسناً'
+                    });
+                }
+            });
         }
         
     </script>
-    <script>
-
-        function openModal(imageElement) {
-         const modal = document.getElementById("imageModal");
-         const modalImage = document.getElementById("modalImage");
-         //   modal.style.display = "block";
-         modalImage.src = imageElement.src;
-        }
-      
-       </script>
 
 
 </body>
