@@ -719,8 +719,8 @@
                 </div>
 
                 <div class="btns">
-                    <a onclick="checkout_buy()" >Add to cart</a>
-                    <a onclick="checkout()">Buy now</a>
+                    <a id="checkout_buy"  >Add to cart</a>
+                    <a id="checkout" >Buy now</a>
                 </div>
 
                 <div class="price d-flex">
@@ -761,7 +761,7 @@
                         </div>
 
 
-                        <button id="confirm_side" class="btn btn-warning Preview">اعتماد هذه الواجهة</button>
+                        {{-- <button id="confirm_side" class="btn btn-warning Preview">اعتماد هذه الواجهة</button> --}}
                         <div class="div_reviewbtn d-flex">
                             <button type="button" class="btn btn-default Preview" {{-- data-toggle="modal"
                                 data-target="#reviewModal" --}}

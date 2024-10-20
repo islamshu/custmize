@@ -1,6 +1,11 @@
 @extends('layouts.frontend')
 @section('style')
     <style>
+        #couponMessage {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
         * {
             direction: ltr !important;
         }
@@ -243,7 +248,8 @@
                                     <div class="product-option">
                                         <div class="option">
                                             <span>Color</span>
-                                            <div class="color-box" style="background-color: {{ get_color_code($item->attributes->color) }}">
+                                            <div class="color-box"
+                                                style="background-color: {{ get_color_code($item->attributes->color) }}">
                                                 <input type="checkbox" checked>
                                             </div>
                                         </div>
@@ -271,8 +277,9 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <button type="button" style="margin-left: 50%;margin-bottom: 10px" class="btn btn-danger"
-                                        onclick="removecart({{ $item->id }})"><i class="fa fa-trash"></i></button>
+                                    <button type="button" style="margin-left: 50%;margin-bottom: 10px"
+                                        class="btn btn-danger" onclick="removecart({{ $item->id }})"><i
+                                            class="fa fa-trash"></i></button>
 
                                     <div class="delevery" style="margin-left: 50%;">
                                         <span>Delivery</span>
@@ -283,7 +290,8 @@
                                         </div>
 
                                         <p class="h5 mb-0 text-success" style="margin-top: 15px">$<span
-                                                id="{{ $item->id }}Price">{{ $item->price * $item->quantity }}</span></p>
+                                                id="{{ $item->id }}Price">{{ $item->price * $item->quantity }}</span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -305,29 +313,38 @@
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Shipping</span>
-                                <strong>$<span id="shipping">15.00</span></strong>
+
+                                <strong>$<span id="shipping">{{ $shipping }}</span></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Tax</span>
                                 <strong>$<span id="tax">{{ $tax }}</span></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
+                                <span>Discount</span>
+                                <strong class="text-danger"><span id="discount" style="display:none;">$0.00</span></strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
                                 <span>Total</span>
                                 <strong class="text-success">$<span id="total">{{ $total }}</span></strong>
                             </li>
                         </ul>
-                        
+
 
                         <!-- Promo Code Section -->
                         <div class="promo-section">
                             <label for="coupon" class="form-label">Promo Code</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="coupon" placeholder="Enter promo code">
-                                <button class="btn btn-outline-secondary" type="button" onclick="applyCoupon()">Apply</button>
+                                <button class="btn btn-outline-secondary" type="button"
+                                    onclick="applyCoupon()">Apply</button>
                             </div>
+                            <div id="couponMessage" class="mt-2" style="display: none;"></div> <!-- عنصر لعرض الرسالة -->
                         </div>
 
-                        <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout Now ($<span id="checkoutTotal">{{ $total }}</span>)</button>
+
+                        <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout Now ($<span
+                                id="checkoutTotal">{{ $total }}</span>)</button>
                     </div>
                 </div>
             </div>
@@ -340,30 +357,166 @@
     <script>
         const products = @json($carts->pluck('quantity', 'id'));
 
-        function changeQuantity(product, change) {
-            products[product] = Math.max(0, products[product] + change);
+        function changeQuantity(product_id, change) {
+            $('#coupon').val('');
+            const messageElement = document.getElementById('couponMessage');
+            messageElement.style.display = 'none';
+            const discountElement = document.getElementById('discount'); // Make sure this element exists in your HTML
+            discountElement.textContent = ' ';
+            let quantityElement = document.getElementById(`${product_id}Quantity`);
+            let currentQuantity = parseInt(quantityElement.value);
+            let newQuantity = currentQuantity + change;
+
+            if (newQuantity < 1) {
+                newQuantity = 1; // Ensure quantity is at least 1
+            }
+
+            // Update the quantity input field
+            quantityElement.value = newQuantity;
+
+            // Send AJAX request to update the cart
             $.ajax({
-                url: '/updateCart',
-                method: 'GET',
+                url: '/updateCart', // Your Laravel route
+                method: 'POST',
                 data: {
-                    product_id: product,
-                    quantity: products[product]
+                    _token: '{{ csrf_token() }}', // CSRF token for security
+                    product_id: product_id,
+                    quantity: newQuantity
                 },
                 success: function(response) {
-                    console.log(response.message);
+                    // Update the item total in the UI
+                    document.getElementById(`${product_id}Price`).textContent = response.item_total.toFixed(2);
+
+                    // Update overall totals in the UI
+                    document.getElementById('subtotal').textContent = response.subtotal.toFixed(2);
+                    document.getElementById('shipping').textContent = response.shipping.toFixed(2);
+                    document.getElementById('tax').textContent = response.tax.toFixed(2);
+                    document.getElementById('total').textContent = response.total.toFixed(2);
+                    document.getElementById('checkoutTotal').textContent = response.total.toFixed(2);
                 },
                 error: function(error) {
-                    console.error("Error updating quantity:", error);
+                    console.error("Error updating the cart:", error);
                 }
             });
-            updateCart();
+
         }
+        let originalSubtotal = 0;
+        let originalShipping = 0;
+        let originalTax = 0;
+        let originalTotal = 0;
+
+        // Initialize the original values when the document is ready
+        $(document).ready(function() {
+            originalSubtotal = parseFloat(document.getElementById('subtotal').textContent);
+            originalShipping = parseFloat(document.getElementById('shipping').textContent);
+            originalTax = parseFloat(document.getElementById('tax').textContent);
+            originalTotal = parseFloat(document.getElementById('total').textContent);
+        });
+
+        function applyCoupon() {
+            const coupon = document.getElementById('coupon').value;
+
+            $.ajax({
+                url: '/apply-coupon', // Your route to apply the coupon
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // CSRF token for security
+                    coupon: coupon
+                },
+                success: function(response) {
+                    const messageElement = document.getElementById('couponMessage');
+                    messageElement.style.display = 'block'; // Show message element
+                    const discountElement = document.getElementById('discount');
+
+                    if (response.success) {
+                        messageElement.textContent = response.message; // Show success message
+                        messageElement.className = 'text-success'; // Style success message
+
+                        // Update UI with new values
+                        document.getElementById('subtotal').textContent = response.subtotal.toFixed(2);
+                        document.getElementById('shipping').textContent = response.shipping.toFixed(2);
+                        document.getElementById('tax').textContent = response.tax.toFixed(2);
+                        document.getElementById('total').textContent = response.total.toFixed(2);
+                        document.getElementById('checkoutTotal').textContent = response.total.toFixed(2);
+
+                        // Display the discount amount
+                        discountElement.textContent = "$" + response.discount.toFixed(
+                        2); // Update discount amount
+                        discountElement.style.display = 'block'; // Show the discount element
+                    } else {
+                        // Restore original values
+                        document.getElementById('subtotal').textContent = originalSubtotal.toFixed(2);
+                        document.getElementById('shipping').textContent = originalShipping.toFixed(2);
+                        document.getElementById('tax').textContent = originalTax.toFixed(2);
+                        document.getElementById('total').textContent = originalTotal.toFixed(2);
+                        document.getElementById('checkoutTotal').textContent = originalTotal.toFixed(2);
+
+                        messageElement.textContent = response.message; // Show error message
+                        messageElement.className = 'text-danger'; // Style error message
+                        discountElement.textContent = ''; // Clear discount
+                        discountElement.style.display = 'none'; // Hide the discount element
+                    }
+                },
+                error: function(error) {
+                    console.error("Error applying coupon:", error);
+                    document.getElementById('couponMessage').textContent =
+                        'There was an error applying the coupon.';
+                    document.getElementById('couponMessage').className = 'text-danger'; // Style error message
+                    document.getElementById('couponMessage').style.display = 'block'; // Show the error message
+
+                    // Restore original values in case of an error
+                    document.getElementById('subtotal').textContent = originalSubtotal.toFixed(2);
+                    document.getElementById('shipping').textContent = originalShipping.toFixed(2);
+                    document.getElementById('tax').textContent = originalTax.toFixed(2);
+                    document.getElementById('total').textContent = originalTotal.toFixed(2);
+                    document.getElementById('checkoutTotal').textContent = originalTotal.toFixed(2);
+                }
+            });
+        }
+
+
+
+
+
+
+        function updateCart() {
+            let subtotal = 0;
+            let itemCount = 0;
+            let promocode = $('#coupon').val();
+
+            // Loop through each product in the cart
+            for (let [product, quantity] of Object.entries(products)) {
+                const price = parseFloat(document.getElementById(`${product}Price`).textContent) / quantity;
+                const total = price * quantity;
+
+                // Update UI elements
+                document.getElementById(`${product}Price`).textContent = total.toFixed(2);
+                document.getElementById(`${product}Quantity`).value = quantity;
+                subtotal += total;
+                itemCount += quantity;
+            }
+
+            const shipping = 15; // Assuming a fixed shipping cost
+            const tax = subtotal * 0.1; // Assuming a tax rate of 10%
+            const total = subtotal + shipping + tax;
+
+            // Update total values in the UI
+            document.getElementById('itemCount').textContent = itemCount;
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('shipping').textContent = shipping.toFixed(2);
+            document.getElementById('tax').textContent = tax.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+            document.getElementById('checkoutTotal').textContent = total.toFixed(2);
+        }
+
 
         function removecart(product) {
             $.ajax({
                 url: '/removeCart',
                 method: 'GET',
-                data: { productid: product },
+                data: {
+                    productid: product,
+                },
                 success: function(response) {
                     setTimeout(function() {
                         window.location.href = '/carts';
@@ -376,6 +529,7 @@
         }
 
         function updateCart() {
+            // Show message element
             let subtotal = 0;
             let itemCount = 0;
 
@@ -389,8 +543,8 @@
                 itemCount += quantity;
             }
 
-            const shipping = 15;
-            const tax = subtotal * 0.1;
+            const shipping = {{ $shipping }};
+            const tax = {{ $tax }};
             const total = subtotal + shipping + tax;
 
             document.getElementById('itemCount').textContent = itemCount;
@@ -401,38 +555,7 @@
             document.getElementById('checkoutTotal').textContent = total.toFixed(2);
         }
 
-        function applyCoupon() {
-            const coupon = document.getElementById('coupon').value.toUpperCase();
-            const promoCodes = {
-                'DISCOUNT10': 0.1,  // 10% discount
-                'FREESHIP': 0  // Free shipping
-            };
 
-            if (promoCodes.hasOwnProperty(coupon)) {
-                let subtotal = parseFloat(document.getElementById('subtotal').textContent);
-                let discount = 0;
-
-                if (promoCodes[coupon] > 0) {
-                    discount = subtotal * promoCodes[coupon];
-                    alert(`Promo applied: ${promoCodes[coupon] * 100}% off`);
-                } else if (coupon === 'FREESHIP') {
-                    document.getElementById('shipping').textContent = '0.00';
-                    alert('Free shipping applied!');
-                }
-
-                subtotal -= discount;
-                const tax = subtotal * 0.1;
-                const shipping = parseFloat(document.getElementById('shipping').textContent);
-                const total = subtotal + shipping + tax;
-
-                document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-                document.getElementById('tax').textContent = tax.toFixed(2);
-                document.getElementById('total').textContent = total.toFixed(2);
-                document.getElementById('checkoutTotal').textContent = total.toFixed(2);
-            } else {
-                alert('Invalid promo code!');
-            }
-        }
 
         function checkout() {
             alert('Checkout Successful!');

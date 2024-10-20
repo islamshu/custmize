@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DiscountCode;
 use App\Models\GeneralInfo;
 use App\Models\Product;
 use App\Models\ProductColor;
@@ -60,10 +61,10 @@ class HomeController extends Controller
         // Get cart content for the guest
         $carts = Cart::getContent();
         $subtotal = Cart::getSubTotal(); // Get the subtotal of the cart
-        $shipping = get_general_value('shipping')  == null ? 0 : get_general_value('shipping');  // Static shipping fee or dynamic if required
-        $tax = $subtotal * get_general_value('tax')  == null ? 0 : get_general_value('tax'); // 10% tax rate, you can adjust this as needed
-        $total = $subtotal + $shipping + $tax;
-
+        $shipping = (float)get_general_value('shipping')  == null ? 0 : (float)get_general_value('shipping');  // Static shipping fee or dynamic if required
+        $tax = $subtotal * (float)get_general_value('tax')  == null ? 0 : (float)get_general_value('tax'); // 10% tax rate, you can adjust this as needed
+        $total = (float)$subtotal + (float)$shipping + (float)$tax;
+        // dd($shipping);
         return view('front.cart', compact('carts', 'subtotal', 'shipping', 'tax', 'total'));
         // Return the view with cart items
     }
@@ -480,25 +481,105 @@ class HomeController extends Controller
         // return response()->json(['success' => true, 'message' => 'Image saved successfully']);
     }
     public function updateCart(Request $request)
-    {
-        $request->validate([
-            'product_id' => 'required|integer',
-            'quantity' => 'required|integer|min:1',
+{
+    // Validate the incoming request
+    $request->validate([
+        'product_id' => 'required|integer',
+        'quantity' => 'required|integer|min:1',
+    ]);
+
+    // Get guest ID
+    $guestId = session('guest_id');
+
+    // Update the quantity of the product in the cart
+    Cart::session($guestId)->update($request->product_id, [
+        'quantity' => [
+            'relative' => false,
+            'value' => $request->quantity,
+        ],
+    ]);
+
+    // Retrieve the updated cart item
+    $cartItem = Cart::session($guestId)->get($request->product_id);
+
+    if ($cartItem) {
+        // Calculate new totals
+        $subtotal = Cart::session($guestId)->getSubTotal();
+        $shipping = (float)(get_general_value('shipping') == null ? 0 : get_general_value('shipping')); // Fixed shipping cost
+        $tax = (float)$subtotal * (float)(get_general_value('tax') == null ? 0 : get_general_value('tax')); // Assuming a 10% tax rate
+        $total = $subtotal + $shipping + $tax;
+
+        // Prepare the response data
+        return response()->json([
+            'message' => 'Cart updated successfully!',
+            'item_total' => $cartItem->getPriceSum(), // Updated item total
+            'subtotal' => $subtotal,
+            'shipping' => $shipping,
+            'tax' => $tax,
+            'total' => $total,
         ]);
-
-        // Get guest ID
-        $guestId = session('guest_id');
-
-        // Update the quantity of the product in the cart
-        Cart::session($guestId)->update($request->product_id, [
-            'quantity' => [
-                'relative' => false,
-                'value' => $request->quantity,
-            ],
-        ]);
-
-        return response()->json(['message' => 'Cart updated successfully!']);
+    } else {
+        return response()->json([
+            'error' => 'Product not found in cart.',
+        ], 404); // Not found status code
     }
+}
+public function applyCoupon(Request $request)
+{
+    $request->validate([
+        'coupon' => 'required|string',
+    ]);
+
+    $coupon = $request->input('coupon');
+    $discountCode = DiscountCode::where('code', $coupon)
+        ->where('start_at', '<=', now())
+        ->where('end_at', '>=', now())
+        ->first();
+
+    if (!$discountCode) {
+        return response()->json(['success' => false, 'message' => 'Invalid or expired promo code.']);
+    }
+    $guestId = session('guest_id');
+
+    Cart::session($guestId);
+
+        // Get cart content for the guest
+        $carts = Cart::getContent();
+        $subtotal = Cart::getSubTotal(); // Get the subtotal of the cart
+        $shipping = (float)get_general_value('shipping')  == null ? 0 : (float)get_general_value('shipping');  // Static shipping fee or dynamic if required
+        $tax = $subtotal * (float)get_general_value('tax')  == null ? 0 : (float)get_general_value('tax'); // 10% tax rate, you can adjust this as needed
+        $total = (float)$subtotal + (float)$shipping + (float)$tax;
+        $discountValue = $discountCode->discount_value;
+        $discountType = $discountCode->discount_type;
+
+        // dd(vars: $total);
+    // Initialize total with the current subtotal
+    if ($discountType === 'fixed') {
+        // Apply fixed discount
+        $discountAmount = min($discountValue, $total); // Ensure we don't discount more than the total
+        $total = max(0, $total - $discountAmount);
+    } elseif ($discountType === 'rate') {
+        // Apply percentage discount
+        $discountAmount = $subtotal * ($discountValue / 100); // Calculate the discount amount based on the percentage
+        $total = max(0, $total - $discountAmount);
+    }
+
+    // Calculate additional costs (shipping, tax, etc.)
+   
+    // Final total calculation
+    $finalTotal = $total + $shipping + $tax;
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Promo code applied successfully!',
+        'subtotal' => $total,
+        'shipping' => $shipping,
+        'tax' => $tax,
+        'discount' =>  (float)$discountAmount, // Include the discount amount
+        'total' => $finalTotal,
+    ]);
+}
+
     public function removeCart(Request $request)
     {
         // dd($request->all());
@@ -509,14 +590,19 @@ class HomeController extends Controller
     }
     public function checkCart(Request $request)
     {
-        // dd($request->all());
+        // Retrieve guest_id from session
+        if (!session()->has('guest_id')) {
+            return response()->json(['cartEmpty' => true, 'message' => 'Session key is required.','error'=>'yes'], 200);
+        }
+        
         $guestId = session('guest_id');
-
+    
+        // Now check the cart based on the session id
+        $cart = Cart::session($guestId);
+    
         // Check if the cart has items
-        if (Cart::session($guestId)->isEmpty()) {
-            return response()->json(['cartEmpty' => true]);
-        } else {
-            return response()->json(['cartEmpty' => false]);
+        if ($cart->isEmpty()) {
+            return response()->json(['cartEmpty' => true, 'message' => 'Your cart is empty.'], 200);
         }
     }
 
