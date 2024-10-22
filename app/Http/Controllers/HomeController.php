@@ -28,7 +28,7 @@ class HomeController extends Controller
     {
         $products = Product::with(['favorites' => function ($query) {
             $query->where('client_id', auth()->guard('client')->id());
-        }])->get()->random(8);
+        }])->get();
         return view('front.index')->with('products', $products);
     }
     // public function cart(Request $request){
