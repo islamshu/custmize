@@ -302,52 +302,58 @@
         </div>
 
         @if ($carts->count() != 0)
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Order Summary</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Subtotal</span>
-                                <strong>$<span id="subtotal">{{ $subtotal }}</span></strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Shipping</span>
-
-                                <strong>$<span id="shipping">{{ $shipping }}</span></strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Tax</span>
-                                <strong>$<span id="tax">{{ $tax }}</span></strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Discount</span>
-                                <strong class="text-danger"><span id="discount" style="display:none;">$0.00</span></strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Total</span>
-                                <strong class="text-success">$<span id="total">{{ $total }}</span></strong>
-                            </li>
-                        </ul>
-
-
-                        <!-- Promo Code Section -->
-                        <div class="promo-section">
-                            <label for="coupon" class="form-label">Promo Code</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="coupon" placeholder="Enter promo code">
-                                <button class="btn btn-outline-secondary" type="button"
-                                    onclick="applyCoupon()">Apply</button>
-                            </div>
-                            <div id="couponMessage" class="mt-2" style="display: none;"></div> <!-- عنصر لعرض الرسالة -->
-                        </div>
-
-
-                        <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout Now ($<span
-                                id="checkoutTotal">{{ $total }}</span>)</button>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Order Summary</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Subtotal</span>
+                            <strong>$<span id="subtotal">{{ $subtotal }}</span></strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Shipping</span>
+                            <strong>$<span id="shipping">{{ $shipping }}</span></strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Tax</span>
+                            <strong>$<span id="tax">{{ $tax }}</span></strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Discount</span>
+                            <strong class="text-danger"><span id="discount" style="display:none;">$0.00</span></strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Total</span>
+                            <strong class="text-success">$<span id="total">{{ $total }}</span></strong>
+                        </li>
+                    </ul>
+        
+                    <!-- Add input fields for name and email -->
+                    <div class="form-group mt-3">
+                        <label for="customerName">Name</label>
+                        <input type="text" class="form-control" id="customerName" placeholder="Enter your name">
                     </div>
+                    <div class="form-group mt-3">
+                        <label for="customerEmail">Email</label>
+                        <input type="email" class="form-control" id="customerEmail" placeholder="Enter your email">
+                    </div>
+        
+                    <!-- Promo Code Section -->
+                    <div class="promo-section mt-3">
+                        <label for="coupon" class="form-label">Promo Code</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="coupon" placeholder="Enter promo code">
+                            <button class="btn btn-outline-secondary" type="button" onclick="applyCoupon()">Apply</button>
+                        </div>
+                        <div id="couponMessage" class="mt-2" style="display: none;"></div> <!-- عنصر لعرض الرسالة -->
+                    </div>
+        
+                    <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout Now ($<span id="checkoutTotal">{{ $total }}</span>)</button>
                 </div>
             </div>
+        </div>
+        
         @endif
     </div>
 @endsection
@@ -558,8 +564,64 @@
 
 
         function checkout() {
-            alert('Checkout Successful!');
+    // Collect customer data
+    let customerName = document.getElementById('customerName').value;
+    let customerEmail = document.getElementById('customerEmail').value;
+    let promoCode = document.getElementById('coupon').value; // Get the promo code
+    let subtotal = parseFloat(document.getElementById('subtotal').textContent); // Subtotal
+    let shipping = parseFloat(document.getElementById('shipping').textContent); // Shipping cost
+    let tax = parseFloat(document.getElementById('tax').textContent); // Tax
+    let total = parseFloat(document.getElementById('total').textContent); // Total price without discount
+    let discountAmount = 0; // Default discount value
+    let discountValue = 0;
+
+    // Check if customer name and email are provided
+    if (!customerName || !customerEmail) {
+        alert('Please provide both your name and email.');
+        return;
+    }
+
+    // Check if a promo code is applied and calculate the discount
+   
+        // No coupon applied, proceed with checkout
+        processCheckout(customerName, customerEmail, subtotal, shipping, tax, total, null, 0);
+    
+}
+
+function processCheckout(customerName, customerEmail, subtotal, shipping, tax, total, promoCode, discountAmount) {
+    // Prepare the data to be sent to the server
+    const data = {
+        _token: '{{ csrf_token() }}',
+        name: customerName,
+        email: customerEmail,
+        subtotal: subtotal,
+        shipping: shipping,
+        tax: tax,
+        total: total,
+        promo_code: promoCode, // Include the promo code if applied
+        discount: discountAmount, // Include the discount value
+    };
+
+    // Send the AJAX request to the server for payment processing
+    $.ajax({
+        url: '/process-payment', // Define your route for processing payment
+        method: 'POST',
+        data: data,
+        success: function(response) {
+            if (response.success) {
+                // Redirect the user to the payment gateway or success page
+                window.location.href = response.payment_url;
+            } else {
+                alert(response.message); // Show any errors from the server
+            }
+        },
+        error: function(error) {
+            console.error("Error processing payment:", error);
+            alert('An error occurred during the payment process. Please try again.');
         }
+    });
+}
+
 
         updateCart();
     </script>

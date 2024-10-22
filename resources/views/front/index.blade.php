@@ -218,112 +218,116 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    const container = document.querySelector('.circle-container');
-    const centerX = container.offsetWidth / 2;
-    const centerY = container.offsetHeight / 2;
-    const items = container.querySelectorAll('.profile-item');
-    const numItems = items.length; // عد العناصر الفعلية
-    const visibleItems = 8; // عرض 8 منتجات فقط
-    let activeIndex = Math.min(Math.floor(visibleItems / 2), numItems - 1); // العنصر النشط يبدأ في المنتصف أو العنصر الأخير إذا كان العدد أقل من 8
-    let currentStartIndex = 0; // المتتبع لأول عنصر يظهر في المجموعة
-    let autoRotateInterval;
+            const container = document.querySelector('.circle-container');
+            const centerX = container.offsetWidth / 2;
+            const centerY = container.offsetHeight / 2;
+            const items = container.querySelectorAll('.profile-item');
+            const numItems = items.length; // عد العناصر الفعلية
+            const visibleItems = Math.min(8, numItems); // عرض ما يصل إلى 8 منتجات فقط أو العدد الفعلي إذا كان أقل
+            let activeIndex = Math.min(Math.floor(visibleItems / 2), numItems -
+            1); // العنصر النشط يبدأ في المنتصف أو العنصر الأخير إذا كان العدد أقل من 8
+            let currentStartIndex = 0; // المتتبع لأول عنصر يظهر في المجموعة
+            let autoRotateInterval;
 
-    // دالة لتحديث العناصر
-    function updateItems() {
-        const radiusX = centerX * 1.1;
-        const radiusY = centerY * 0.7;
+            // دالة لتحديث العناصر
+            function updateItems() {
+                const radiusX = centerX * 1.1;
+                const radiusY = centerY * 0.7;
 
-        items.forEach((item, index) => {
-            // إخفاء جميع العناصر أولاً
-            item.style.display = 'none';
+                items.forEach((item, index) => {
+                    // إخفاء جميع العناصر أولاً
+                    item.style.display = 'none';
 
-            // فقط العناصر التي تقع ضمن حدود 8 منتجات مرئية
-            if (index >= currentStartIndex && index < currentStartIndex + visibleItems) {
-                const visibleIndex = index - currentStartIndex;
-                const angle = (visibleIndex - activeIndex + visibleItems) % visibleItems * (2 * Math.PI / visibleItems) + Math.PI / 2;
-                const x = centerX + radiusX * Math.cos(angle);
-                const y = centerY + radiusY * Math.sin(angle);
+                    // فقط العناصر التي تقع ضمن حدود المنتجات المرئية
+                    if (index >= currentStartIndex && index < currentStartIndex + visibleItems) {
+                        const visibleIndex = index - currentStartIndex;
+                        const angle = (visibleIndex - activeIndex + visibleItems) % visibleItems * (2 * Math
+                            .PI / visibleItems) + Math.PI / 2;
+                        const x = centerX + radiusX * Math.cos(angle);
+                        const y = centerY + radiusY * Math.sin(angle);
 
-                item.style.left = `${x}px`;
-                item.style.top = `${y}px`;
+                        item.style.left = `${x}px`;
+                        item.style.top = `${y}px`;
 
-                // إظهار العنصر
-                item.style.display = 'block';
+                        // إظهار العنصر
+                        item.style.display = 'block';
 
-                const distanceFromActive = Math.min(Math.abs(visibleIndex - activeIndex), visibleItems - Math.abs(visibleIndex - activeIndex));
+                        const distanceFromActive = Math.min(Math.abs(visibleIndex - activeIndex),
+                            visibleItems - Math.abs(visibleIndex - activeIndex));
 
-                let size;
-                if (distanceFromActive === 0) {
-                    size = 290;
-                } else if (distanceFromActive === 1) {
-                    size = 200;
-                } else {
-                    size = Math.max(260 - (distanceFromActive * 60), 50);
-                }
+                        let size;
+                        if (distanceFromActive === 0) {
+                            size = 290;
+                        } else if (distanceFromActive === 1) {
+                            size = 200;
+                        } else {
+                            size = Math.max(260 - (distanceFromActive * 60), 50);
+                        }
 
-                const profileCircle = item.querySelector('.profile-circle');
-                profileCircle.style.width = `${size}px`;
-                profileCircle.style.height = `${size}px`;
+                        const profileCircle = item.querySelector('.profile-circle');
+                        profileCircle.style.width = `${size}px`;
+                        profileCircle.style.height = `${size}px`;
 
-                if (visibleIndex === activeIndex) {
-                    item.style.transform = `translate(-50%, -50%) scale(1.2)`;
-                    item.classList.add('active');
-                    /* item.querySelector('.favorite-icon').style.display = 'block'; // عرض أيقونة القلب فقط للعنصر النشط */
-                } else {
-                    item.style.transform = `translate(-50%, -50%) scale(1)`;
-                    item.classList.remove('active');
-                    /* item.querySelector('.favorite-icon').style.display = 'none'; // إخفاء أيقونة القلب لبقية العناصر */
-                }
+                        if (visibleIndex === activeIndex) {
+                            item.style.transform = `translate(-50%, -50%) scale(1.2)`;
+                            item.classList.add('active');
+                        } else {
+                            item.style.transform = `translate(-50%, -50%) scale(1)`;
+                            item.classList.remove('active');
+                        }
+                    }
+                });
+
+                const activeItem = container.querySelector('.profile-item.active');
+                activeItem.addEventListener('mouseover', stopAutoRotate);
+                activeItem.addEventListener('mouseout', startAutoRotate);
             }
-        });
 
-        const activeItem = container.querySelector('.profile-item.active');
-        activeItem.addEventListener('mouseover', stopAutoRotate);
-        activeItem.addEventListener('mouseout', startAutoRotate);
-    }
+            // دالة لتدوير العناصر
+            function rotateItems(direction) {
+                activeIndex = (activeIndex - direction + visibleItems) % visibleItems;
 
-    // دالة لتدوير العناصر
-    function rotateItems(direction) {
-        activeIndex = (activeIndex - direction + visibleItems) % visibleItems;
+                if (direction === -1 && currentStartIndex + visibleItems < numItems) {
+                    currentStartIndex++;
+                } else if (direction === 1 && currentStartIndex > 0) {
+                    currentStartIndex--;
+                }
 
-        if (direction === -1 && currentStartIndex + visibleItems < numItems) {
-            currentStartIndex++;
-        } else if (direction === 1 && currentStartIndex > 0) {
-            currentStartIndex--;
-        }
+                updateItems();
+            }
 
-        updateItems();
-    }
+            // جعل العنصر الذي تم النقر عليه نشطًا
+            items.forEach((item, index) => {
+                item.addEventListener('click', function() {
+                    activeIndex = (index - currentStartIndex) % visibleItems;
+                    updateItems();
+                });
+            });
 
-    // جعل العنصر الذي تم النقر عليه نشطًا
-    items.forEach((item, index) => {
-        item.addEventListener('click', function() {
-            activeIndex = (index - currentStartIndex) % visibleItems;
+            // بدء التدوير التلقائي
+            function startAutoRotate() {
+                autoRotateInterval = setInterval(() => {
+                    rotateItems(-1);
+                }, 5000);
+            }
+
+            // إيقاف التدوير التلقائي
+            function stopAutoRotate() {
+                clearInterval(autoRotateInterval);
+            }
+
+            startAutoRotate();
+
+            // التحكم بالأسهم للتدوير اليدوي
+            document.querySelector('.nav-arrow.left').addEventListener('click', () => rotateItems(
+            1)); // لتدوير للأمام
+            document.querySelector('.nav-arrow.right').addEventListener('click', () => rotateItems(-
+            1)); // لتدوير للخلف
+
+            // التحديث الأول للعناصر
             updateItems();
         });
-    });
 
-    // بدء التدوير التلقائي
-    function startAutoRotate() {
-        autoRotateInterval = setInterval(() => {
-            rotateItems(-1);
-        }, 5000);
-    }
-
-    // إيقاف التدوير التلقائي
-    function stopAutoRotate() {
-        clearInterval(autoRotateInterval);
-    }
-
-    startAutoRotate();
-
-    // التحكم بالأسهم للتدوير اليدوي
-    document.querySelector('.nav-arrow.left').addEventListener('click', () => rotateItems(1)); // لتدوير للأمام
-    document.querySelector('.nav-arrow.right').addEventListener('click', () => rotateItems(-1)); // لتدوير للخلف
-
-    // التحديث الأول للعناصر
-    updateItems();
-});
 
 
 

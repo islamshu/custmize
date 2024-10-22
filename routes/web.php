@@ -15,6 +15,9 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TshirtController;
 use App\Http\Controllers\TypeCategoryController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +38,8 @@ Route::post('/client_login', [HomeController::class,'client_login'])->name('clie
 
 
 Route::get('/', [HomeController::class,'welcom'])->name('home');
+Route::get('/load-product', [HomeController::class, 'loadProduct'])->name('loadProduct');
+
 Route::get('showProduct/{id}',[HomeController::class, 'showProduct'])->name('showProduct');
 Route::get('/shirts', [HomeController::class, 'getShirts']);
 Route::get('/get-color-image', [HomeController::class, 'getColorImage'])->name('color_image');
@@ -51,9 +56,22 @@ Route::get('/removeCart', [HomeController::class, 'removeCart']);
 Route::get('/check-cart', [HomeController::class, 'checkCart']);
 Route::post('/apply-coupon', [HomeController::class, 'applyCoupon']);
 
+Route::post('/process-payment', [PaymentController::class, 'initiatePayment'])->name('process.payment');
+Route::get('/payment/callback/{id}', [PaymentController::class, 'paymentCallback'])->name('payment.callback');
+Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');
+
+Route::post('/apply-coupon-payment', [PaymentController::class, 'applyCoupon'])->name('apply.coupon');
+
 
 Route::post('/favorite/{id}', [HomeController::class, 'toggleFavorite'])->name('toggleFavorite');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+Route::get('/order/success', function () {
+    return view('payment.success');
+})->name('orders.success');
 
+Route::get('/order/failure', function () {
+    return view('payment.failure');
+})->name('orders.failure');
 
 
 

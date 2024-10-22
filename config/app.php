@@ -168,6 +168,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        // MyFatoorah\Laravel\MyFatoorahServiceProvider::class, // أضف هذه السطر إذا لم يكن موجوداً
+
         // Srmklive\PayPal\Providers\PayPalServiceProvider::class
 
     ])->toArray(),
