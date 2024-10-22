@@ -303,74 +303,126 @@ class ProductController extends Controller
             }
             $product->save();
             if ($request->colors != null) {
-                foreach ($request->colors as $coo => $colorDataa) {
-                    if (isset($colorDataa['id'], $colorDataa['price'], $colorDataa['front_image']) ) {
-                        $coo = ProductColor::where('product_id', $product->id)->delete();
-                    }
-                    if (isset($colorDataa['id'], $colorDataa['price'], $colorDataa['old_front_image']) ) {
-                        $coo = ProductColor::where('product_id', $product->id)->delete();
-                    }
-                }
-
                 foreach ($request->colors as $colorId => $colorData) {
-                    // dd($request->all());
+                    // تأكد من أن البيانات عبارة عن مصفوفة
                     if (!is_array($colorData)) {
-                        continue;
+                        continue; // تجاهل هذا العنصر إذا لم يكن مصفوفة
                     }
-                    if (isset($colorData['id'], $colorData['price'], $colorData['front_image'])) {
-                        $color = new ProductColor();
-                        $color->product_id = $product->id;
-                        $color->color_id = $colorId;
-                        $color->price = $colorData['price'];
-                        if ($request->hasFile("colors.$colorId.front_image") == false) {
-                            continue;
+                    
+                    // تحقق مما إذا كان اللون موجود مسبقًا
+                    $existingColor = ProductColor::where('product_id', $product->id)->where('color_id', $colorId)->first();
+                    
+                    if ($existingColor) {
+                        // تعديل البيانات للألوان الموجودة
+                        if (isset($colorData['price'])) {
+                            $existingColor->price = $colorData['price'];
                         }
+                        
                         if (isset($colorData['front_image']) && $request->hasFile("colors.$colorId.front_image")) {
-                            // $frontImageName = time() . '_front_' . $request->file("colors.$colorId.front_image")->getClientOriginalName();
-                            // $frontImagePath = $request->file("colors.$colorId.front_image")->storeAs('products', $frontImageName, 'public');
-                            $color->front_image = $request->file("colors.$colorId.front_image")->store('products');
+                            // معالجة الصورة الأمامية
+                            $existingColor->front_image = $request->file("colors.$colorId.front_image")->store('products');
                         }
-
+            
                         if (isset($colorData['back_image']) && $request->hasFile("colors.$colorId.back_image")) {
-                            // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
-                            // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
-                            $color->back_image = $request->file("colors.$colorId.back_image")->store('products');
+                            // معالجة الصورة الخلفية
+                            $existingColor->back_image = $request->file("colors.$colorId.back_image")->store('products');
                         }
-
-                        $color->save();
-                    }
-                    if (isset($colorData['id'], $colorData['price'], $colorData['old_front_image'])) {
-                      }
-
-
-                        $color = new ProductColor();
-                        $color->product_id = $product->id;
-                        $color->color_id = $colorId;
-                        $color->price = $colorData['price'];
-
-                        if (isset($colorData['old_front_image'])) {
-                            // $frontImageName = time() . '_front_' . $request->file("colors.$colorId.front_image")->getClientOriginalName();
-                            // $frontImagePath = $request->file("colors.$colorId.front_image")->storeAs('products', $frontImageName, 'public');
-                        
-                            $color->front_image = $colorData['old_front_image'];
+            
+                        $existingColor->save();
+                    } else {
+                        // إضافة لون جديد
+                        $newColor = new ProductColor();
+                        $newColor->product_id = $product->id;
+                        $newColor->color_id = $colorId;
+            
+                        if (isset($colorData['price'])) {
+                            $newColor->price = $colorData['price'];
                         }
-
-                        if (isset($colorData['old_back_image'])) {
-                            
-                            // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
-                            // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
-                            if (isset($colorData['old_back_image']) && $request->hasFile("colors.$colorId.back_image")) {
-                            // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
-                            // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
-                            $color->back_image = $request->file("colors.$colorId.back_image")->store('products');
-                        
-                            $color->back_image = $colorData['old_back_image'];
+            
+                        if (isset($colorData['front_image']) && $request->hasFile("colors.$colorId.front_image")) {
+                            // معالجة الصورة الأمامية
+                            $newColor->front_image = $request->file("colors.$colorId.front_image")->store('products');
                         }
-
-                        $color->save();
+            
+                        if (isset($colorData['back_image']) && $request->hasFile("colors.$colorId.back_image")) {
+                            // معالجة الصورة الخلفية
+                            $newColor->back_image = $request->file("colors.$colorId.back_image")->store('products');
+                        }
+            
+                        $newColor->save();
                     }
                 }
             }
+            
+            // if ($request->colors != null) {
+            //     foreach ($request->colors as $coo => $colorDataa) {
+            //         if (isset($colorDataa['id'], $colorDataa['price'], $colorDataa['front_image'])) {
+            //             $coo = ProductColor::where('product_id', $product->id)->delete();
+            //         }
+            //         if (isset($colorDataa['id'], $colorDataa['price'], $colorDataa['old_front_image'])) {
+            //             $coo = ProductColor::where('product_id', $product->id)->delete();
+            //         }
+            //     }
+
+            //     foreach ($request->colors as $colorId => $colorData) {
+            //         // dd($request->all());
+            //         if (!is_array($colorData)) {
+            //             continue;
+            //         }
+            //         if (isset($colorData['id'], $colorData['price'], $colorData['front_image'])) {
+            //             $color = new ProductColor();
+            //             $color->product_id = $product->id;
+            //             $color->color_id = $colorId;
+            //             $color->price = $colorData['price'];
+            //             if ($request->hasFile("colors.$colorId.front_image") == false) {
+            //                 continue;
+            //             }
+            //             if (isset($colorData['front_image']) && $request->hasFile("colors.$colorId.front_image")) {
+            //                 // $frontImageName = time() . '_front_' . $request->file("colors.$colorId.front_image")->getClientOriginalName();
+            //                 // $frontImagePath = $request->file("colors.$colorId.front_image")->storeAs('products', $frontImageName, 'public');
+            //                 $color->front_image = $request->file("colors.$colorId.front_image")->store('products');
+            //             }
+
+            //             if (isset($colorData['back_image']) && $request->hasFile("colors.$colorId.back_image")) {
+            //                 // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
+            //                 // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
+            //                 $color->back_image = $request->file("colors.$colorId.back_image")->store('products');
+            //             }
+
+            //             $color->save();
+            //         }
+            //         if (isset($colorData['id'], $colorData['price'], $colorData['old_front_image'])) {
+            //         }
+
+
+            //         $color = new ProductColor();
+            //         $color->product_id = $product->id;
+            //         $color->color_id = $colorId;
+            //         $color->price = $colorData['price'];
+
+            //         if (isset($colorData['old_front_image'])) {
+            //             // $frontImageName = time() . '_front_' . $request->file("colors.$colorId.front_image")->getClientOriginalName();
+            //             // $frontImagePath = $request->file("colors.$colorId.front_image")->storeAs('products', $frontImageName, 'public');
+
+            //             $color->front_image = $colorData['old_front_image'];
+            //         }
+
+            //         if (isset($colorData['old_back_image'])) {
+
+            //             // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
+            //             // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
+            //             if (isset($colorData['old_back_image']) && $request->hasFile("colors.$colorId.back_image")) {
+            //                 // $backImageName = time() . '_back_' . $request->file("colors.$colorId.back_image")->getClientOriginalName();
+            //                 // $backImagePath = $request->file("colors.$colorId.back_image")->storeAs('products', $backImageName, 'public');
+            //                 $color->back_image = $request->file("colors.$colorId.back_image")->store('products');
+
+            //                 $color->back_image = $colorData['old_back_image'];
+            //             }
+
+            //             $color->save();
+            //         }
+            //     }
+            // }
             if ($request->has('sizes')) {
                 $coo = ProductSize::where('product_id', $product->id)->delete();
 
