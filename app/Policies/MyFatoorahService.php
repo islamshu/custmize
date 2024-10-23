@@ -33,3 +33,4 @@ class MyFatoorahService
 
     // You can add more functions here for other MyFatoorah API actions
 }
+

@@ -154,7 +154,11 @@
     "Fixed":"Fixed",
     "Shopping setting":"Shopping setting",
     "Shipping":"Shipping",
-    "Tax":"Tax"
+    "Tax":"Tax",
+    "myfattorah setting":"myfattorah setting",
+    "MYFATOORAH setting":"MYFATOORAH setting",
+    "API KEY":"API KEY",
+    "API URL":"API URL"
 
 
 }

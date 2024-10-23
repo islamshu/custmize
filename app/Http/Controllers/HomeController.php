@@ -16,6 +16,7 @@ use DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
+use Illuminate\Support\Facades\Artisan;
 
 class HomeController extends Controller
 {
@@ -30,6 +31,37 @@ class HomeController extends Controller
             $query->where('client_id', auth()->guard('client')->id());
         }])->get();
         return view('front.index')->with('products', $products);
+    }
+    public function setting_my_fatoorah(){
+        return view('dashboard.setting_myfatoorah');
+    }
+    public function update_my_fatoorah(Request $request)
+    {
+        // تحديد المتغيرات التي ترغب في تحديثها
+        $data = [
+            'MYFATOORAH_API_KEY' => $request->input('my_key'),
+            'MYFATOORAH_API_URL' => $request->input('my_url'),
+        ];
+
+        // تحديث ملف .env
+        foreach ($data as $key => $value) {
+            $this->updateEnv($key, $value);
+        }
+
+
+        return redirect()->route('setting_my_fatoorah')->with('success', 'تم تحديث الإعدادات بنجاح.');
+    }
+
+    private function updateEnv($key, $value)
+    {
+        $path = base_path('.env');
+        if (file_exists($path)) {
+            file_put_contents($path, str_replace(
+                $key . '=' . env($key),
+                $key . '=' . $value,
+                file_get_contents($path)
+            ));
+        }
     }
     // public function cart(Request $request){
     //     $guestId = session('guest_id');

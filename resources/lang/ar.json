@@ -1,4 +1,6 @@
 {
+    "API KEY": "اي با كي",
+    "API URL": "رابط البوابة",
     "Action": "العمليات",
     "Add": "اضافة",
     "Add Client": "اضافة عميل",
@@ -81,6 +83,7 @@
     "Login": "الدخول",
     "Login to": "الدخول ل",
     "Logout": "تسجيل خروج",
+    "MYFATOORAH setting": "اعدادات الماي فاتورة",
     "Main Categories": "التصنيفات الرئيسية",
     "Main Info": "البيانات الاساسية",
     "Main setting info": "المعلومات الاساسية للنظام",
@@ -143,6 +146,7 @@
     "cotoen t-shirt": "تي شيرت كوتون",
     "delete employee": "حذف الموظف",
     "en": "اللغة الانجليزية",
+    "myfattorah setting": "اعدادات الماي فاتورة",
     "name": "الاسم",
     "name mather": "اسم الام",
     "name_mather": "اسم الام",
