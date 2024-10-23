@@ -18,7 +18,10 @@ class MyFatoorahService
             'headers' => [
                 'Authorization' => "Bearer {$this->api_key}",
                 'Content-Type' => 'application/json',
-            ]
+            ],
+            'verify' => false, // Disable SSL verification (for testing only),
+            'timeout' => 30, // Set a higher timeout (in seconds)
+
         ]);
     }
 

@@ -58,7 +58,7 @@ Route::post('/apply-coupon', [HomeController::class, 'applyCoupon']);
 
 Route::post('/process-payment', [PaymentController::class, 'initiatePayment'])->name('process.payment');
 Route::get('/payment/callback/{id}', [PaymentController::class, 'paymentCallback'])->name('payment.callback');
-Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');
+Route::get('/payment/error/{id}', [PaymentController::class, 'error'])->name(name: 'payment.error');
 
 Route::post('/apply-coupon-payment', [PaymentController::class, 'applyCoupon'])->name('apply.coupon');
 
