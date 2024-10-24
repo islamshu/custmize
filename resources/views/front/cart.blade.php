@@ -636,10 +636,12 @@
                         window.location.href = response.payment_url;
 
                     } else {
+                        $('#loader').hide();
                         alert(response.message); // Show any errors from the server
                     }
                 },
                 error: function(error) {
+                    $('#loader').hide();
                     console.error("Error processing payment:", error);
                     alert('An error occurred during the payment process. Please try again.');
                 }

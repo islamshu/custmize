@@ -55,6 +55,8 @@ class PaymentController extends Controller
 
         }
 
+    }else{
+        $discountAmount = 0;
     }
     $order = Order::create([
         'total_amount' => $total + $discountAmount,
@@ -73,7 +75,8 @@ class PaymentController extends Controller
 
     // Get cart content for the guest
     $cartItems = Cart::getContent();    
-    foreach ($cartItems as $item) {
+    foreach ($cartItems as $key=>$item) {
+        // dd($cartItems);
         $order->items()->create([
             'product_id' => $item->id,
             'name' => $item->name,
@@ -82,6 +85,8 @@ class PaymentController extends Controller
             'attributes' => $item->attributes->toArray(), // Convert attributes to array
             'front_image' => $item->front_image,
             'front_design' => $item->front_design,
+            'back_image' => $item->front_image,
+            'back_desgin' => $item->front_design,
         ]);
     }
     $data = [
@@ -119,11 +124,11 @@ class PaymentController extends Controller
     public function paymentCallback($order_id)
     {
         $order = Order::find($order_id);
-        $order->satus = 'success';
+        $order->status = 'success';
         $order->save();
-        $cartItems = Cart::getContent();
-        
-        return view('payment.success'); // Create a success view for successful payments
+        $guestId = session('guest_id');
+        Cart::session($guestId)->clear();
+        return view('order.success')->with('order',$order); // Create a success view for successful payments
     }
 
     public function error($order_id)
