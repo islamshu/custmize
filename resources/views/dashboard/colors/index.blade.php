@@ -76,7 +76,7 @@
                                             @foreach ($colors as $key => $item)
                                                 <tr>
                                                     <th>{{ $key + 1 }}</th>
-                                                    <th>{{ $item->name }}</th>
+                                                    <th>{{ $item->display_name  }}</th>
                                                     <td>
                                                         <!-- عرض المربع مع اللون -->
                                                         <div style="width: 20px; height: 20px; background-color: {{ $item->code }}; display: inline-block; border: 1px solid #000;"></div>
@@ -84,7 +84,7 @@
                                                     </td>                                          
                                                     <th>
                                                         
-                                                        <button class="btn btn-primary edit-btn" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-code="{{ $item->code }}"  data-toggle="modal"
+                                                        <button class="btn btn-primary edit-btn" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-name_ar="{{ $item->name_ar }}"  data-code="{{ $item->code }}"  data-toggle="modal"
                                                             data-target="#edit_model">{{ __('Edit Color') }}</button>
 
                                                         <form style="display: inline-block"
@@ -135,6 +135,8 @@
      $('.edit-btn').on('click', function() {
             $('#edit-id').val($(this).data('id'));
             $('#edit-name').val($(this).data('name'));
+            $('#edit-name-ar').val($(this).data('name_ar'));
+
             $('#edit-code').val($(this).data('code'));
         });
     $("#edit_fast_color").submit(function(event) {
@@ -148,6 +150,8 @@
            url: url,
            data: {
                 name: $('#edit-name').val(),
+                name_ar: $('#edit-name-ar').val(),
+
                 code: $('#edit-code').val(),
                 _token: '{{ csrf_token() }}' // Alternatively, you can use the setup
             },          

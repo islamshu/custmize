@@ -75,11 +75,11 @@
                                             @foreach ($sizes as $key => $item)
                                                 <tr>
                                                     <th>{{ $key + 1 }}</th>
-                                                    <th>{{ $item->name }}</th>
+                                                    <th>{{ $item->dispaly_name }}</th>
                                                                                               
                                                     <th>
                                                         
-                                                        <button class="btn btn-primary edit-btn" data-id="{{ $item->id }}" data-name="{{ $item->name }}"   data-toggle="modal"
+                                                        <button class="btn btn-primary edit-btn" data-id="{{ $item->id }}" data-name="{{ $item->name }}"data-name_ar="{{ $item->name_ar }}"   data-toggle="modal"
                                                             data-target="#edit_model">{{ __('Edit Size') }}</button>
 
                                                         <form style="display: inline-block"
@@ -129,6 +129,8 @@
      $('.edit-btn').on('click', function() {
             $('#edit-id').val($(this).data('id'));
             $('#edit-name').val($(this).data('name'));
+            $('#edit-name-ar').val($(this).data('name_ar'));
+
         });
     $("#edit_fast_size").submit(function(event) {
        event.preventDefault();
@@ -141,6 +143,8 @@
            url: url,
            data: {
                 name: $('#edit-name').val(),
+                name_ar: $('#edit-name-ar').val(),
+
                 _token: '{{ csrf_token() }}' // Alternatively, you can use the setup
             },          
         

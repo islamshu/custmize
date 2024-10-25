@@ -91,7 +91,9 @@ class ProductController extends Controller
             $product->subcategory_id = $request->subcategory_id;
             $product->image = $request->image->store('products');
             $product->name = $request->name;
+            $product->name_ar = $request->name_ar;
             $product->description = $request->description;
+            $product->description_ar = $request->description_ar;
             $product->price = $request->price;
             if ($request->type_product != null) {
                 $product->type_id = $request->type_product;
@@ -266,7 +268,9 @@ class ProductController extends Controller
                 $product->image = $request->image->store('products');
             }
             $product->name = $request->name;
+            $product->name_ar = $request->name_ar;
             $product->description = $request->description;
+            $product->description_ar = $request->description_ar;
             $product->price = $request->price;
             if ($request->type_product != null) {
                 $product->type_id = $request->type_product;

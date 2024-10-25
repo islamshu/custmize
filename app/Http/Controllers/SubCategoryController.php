@@ -45,12 +45,16 @@ class SubCategoryController extends Controller
     {
         $request->validate([
            'name'=>'required',
+           'name_ar'=>'required',
+
            'image'=>'required',
            'category_id'=>'required',
            'attriputs.*'=>'required',
         ]);
         $subCat = new SubCategory();
         $subCat->name = $request->name;
+        $subCat->name_ar = $request->name_ar;
+
         $subCat->image = $request->image->store('sub_categories');
         $subCat->category_id = $request->category_id;
         $subCat->attributs = json_encode($request->attriputs);
@@ -95,12 +99,14 @@ class SubCategoryController extends Controller
     {
         $request->validate([
             'name'=>'required',
+            'name_ar'=>'required',
             'category_id'=>'required',
             'attriputs.*'=>'required',
             'types'=>$request->have_types == 1 ? 'required':""
          ]);
          $subCat = SubCategory::find($id);
          $subCat->name = $request->name;
+         $subCat->name_ar = $request->name_ar;
          if($request->image != null){
             $subCat->image = $request->image->store('sub_categories');
          }
@@ -130,6 +136,8 @@ class SubCategoryController extends Controller
      */
     public function destroy(SubCategory $subCategory)
     {
-        //
+        $subCategory->delete();
+        return redirect()->route(route: 'subcategories.index')->with('success', value: __('Deleted successfully'));
+
     }
 }

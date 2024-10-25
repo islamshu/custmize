@@ -17,12 +17,18 @@
                 <div class="modal-body">
                     <fieldset class="form-group floating-label-form-group">
                         <label for="name">{{ __('Color name') }}</label>
-                        <input type="text" class="form-control" required  name="name" id="edit-name">
+                        <input type="text" class="form-control" required   name="name" id="edit-name">
                         <div class="invalid-feedback">
                         </div>
                     </fieldset>
                    
                     <br>
+                    <fieldset class="form-group floating-label-form-group">
+                        <label for="name_ar">{{ __('Color name in arabic') }}</label>
+                        <input type="text" class="form-control" required  name="name_ar" id="edit-name-ar">
+                        <div class="invalid-feedback">
+                        </div>
+                    </fieldset>
                     
                     <fieldset class="form-group floating-label-form-group">
                         <label for="Phone">{{ __('Color Code') }}</label>

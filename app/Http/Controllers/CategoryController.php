@@ -51,6 +51,7 @@ class CategoryController extends Controller
     // Validate the form inputs including the image
     $request->validate([
         'name' => 'required|string|max:255',
+        'name_ar' => 'required|string|max:255',
         'parent_id' => 'nullable|exists:categories,id',
         'image' => 'required', // Image validation
     ]);
@@ -64,6 +65,7 @@ class CategoryController extends Controller
     // Create the category
     Category::create([
         'name' => $request->input('name'),
+        'name_ar' => $request->input('name_ar'),
         'parent_id' => $request->input('parent_id'),
         'image' => $imagePath, // Store the image path
     ]);
@@ -102,6 +104,8 @@ class CategoryController extends Controller
     
         $request->validate([
             'name' => 'required|string|max:255',
+            'name_ar' => 'required|string|max:255',
+
             'parent_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -114,9 +118,9 @@ class CategoryController extends Controller
             $imagePath = $request->file('image')->store('categories');
             $category->image = $imagePath;
         }
-    
         $category->update([
             'name' => $request->input('name'),
+            'name_ar' => $request->input('name_ar'),
             'parent_id' => $request->input('parent_id'),
             'image' => $category->image, // Save the image path
         ]);
@@ -132,6 +136,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return redirect()->route('main_categories')->with('success', __('Deleted successfully'));
+
     }
 }

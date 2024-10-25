@@ -4,13 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_type_id', 'name', 'description', 'price'];
+    protected $fillable = ['product_type_id', 'name', 'description', 'price','name_ar','description_ar'];
 
+    public function getNameAttribute()
+    {
+        return App::getLocale() === 'ar' ? $this->attributes['name_ar'] : $this->attributes['name'];
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return App::getLocale() === 'ar' ? $this->attributes['description_ar'] : $this->attributes['description'];
+    }
     public function productType()
     {
         return $this->belongsTo(ProductType::class);

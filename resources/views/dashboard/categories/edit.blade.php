@@ -35,6 +35,10 @@
                                             <label for="categoryName">{{ __('Name') }}</label>
                                             <input type="text" name="name" class="form-control" value="{{ $category->name }}" id="categoryName" required>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="categoryName_ar">{{ __('Name in arabic') }}</label>
+                                            <input type="text" name="name_ar" class="form-control" value="{{ $category->name_ar }}" id="categoryName_ar" required>
+                                        </div>
                                 
                                         <div class="form-group @if($category->parent_id == null) d-none  @endif" >
                                             <label for="parentCategory">{{ __('Parent Category (Optional)') }}</label>

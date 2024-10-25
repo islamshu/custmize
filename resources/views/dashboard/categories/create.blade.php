@@ -34,6 +34,11 @@
                                             <label for="categoryName">{{ __('Name') }}</label>
                                             <input type="text" name="name" class="form-control" id="categoryName" required>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="categoryName_ar">{{ __('Name in arabic') }}</label>
+                                            <input type="text" name="name_ar" class="form-control" id="categoryName_ar" required>
+                                        </div>
+                                
                                 
                                         <div class="form-group d-none" >
                                             <label for="parentCategory">{{ __('Parent Category (Optional)') }}</label>

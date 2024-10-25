@@ -47,7 +47,7 @@
                                  
                                 </li>
                                 <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('categories.index') }}"
+                                        class="dropdown-item " href="{{ route('index_cat') }}"
                                         >{{ __('Categories') }}</a>
                                  
                                 </li>

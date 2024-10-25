@@ -20,6 +20,14 @@
                     </fieldset>
                    
                     <br>
+                    <fieldset class="form-group floating-label-form-group">
+                        <label for="name_ar">{{ __('Color name in arabic') }}</label>
+                        <input type="text" class="form-control" required  name="name_ar" id="name_ar">
+                        <div class="invalid-feedback">
+                        </div>
+                    </fieldset>
+                   
+                    <br>
                     
                     <fieldset class="form-group floating-label-form-group">
                         <label for="Phone">{{ __('Color Code') }}</label>

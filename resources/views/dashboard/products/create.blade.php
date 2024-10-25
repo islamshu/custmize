@@ -57,6 +57,7 @@
 
                                                 </select>
                                             </div>
+                                            
 
                                             <!-- Product Name -->
                                             <div class="form-group col-8">
@@ -64,6 +65,12 @@
                                                 <input type="text" id="name" name="name" class="form-control"
                                                     value="{{ old('name') }}"
                                                     placeholder="{{ __('Enter product name') }}" required>
+                                            </div>
+                                            <div class="form-group col-8">
+                                                <label for="name">{{ __('Product Name in arabic') }}</label>
+                                                <input type="text" id="name_ar" name="name_ar" class="form-control"
+                                                    value="{{ old('name_ar') }}"
+                                                    placeholder="{{ __('Enter product name in arabic') }}" required>
                                             </div>
 
                                             <div class="form-group col-8">
@@ -94,6 +101,11 @@
                                                 <label for="description">{{ __('Description') }}</label>
                                                 <textarea id="description" name="description" class="form-control" rows="4"
                                                     placeholder="{{ __('Enter product description') }}">{{ old('description') }}</textarea>
+                                            </div>
+                                            <div class="form-group col-8">
+                                                <label for="description_ar">{{ __('Description in arabic') }}</label>
+                                                <textarea id="description_ar" name="description_ar" class="form-control" rows="4"
+                                                    placeholder="{{ __('Enter product Description in arabic') }}">{{ old('description_ar') }}</textarea>
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="description">{{ __('Delivery date') }}</label>

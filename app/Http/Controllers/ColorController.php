@@ -16,11 +16,15 @@ public function store(Request $request)
 {
     $request->validate([
         'name' => 'required|string|max:255',
+        'name_ar' => 'required|string|max:255',
+
         'code' => 'required|string|max:7',
     ]);
 
     Color::create([
         'name' => $request->name,
+        'name_ar' => $request->name_ar,
+
         'code' => $request->code,
     ]);
     return response()->json(['success' => 'true',200]);
@@ -28,7 +32,7 @@ public function store(Request $request)
 
     // return response()->json(['success' => __('Color added successfully')]);
 }
-public function edit(Color $color)
+public function edit(Color $id)
     {
         return view('dashboard.colors._edit')->with('colors',Color::get())->with('color',$color);
 
@@ -37,12 +41,14 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'name' => 'required|string|max:255',
+        'name_ar' => 'required|string|max:255',
         'code' => 'required|string|max:7',
     ]);
 
-    $color = Color::find($id);
+    $color = Color::find($id)->useOriginalFields();
     $color->update([
         'name' => $request->name,
+        'name_ar' => $request->name_ar,
         'code' => $request->code,
     ]);
 
