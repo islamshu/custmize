@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientAuthController;
@@ -73,6 +74,7 @@ Route::get('/order/failure', function () {
     return view('payment.failure');
 })->name('orders.failure');
 
+Route::get('verify_email/{id}',[HomeController::class,'verfty_email'])->name('send_email.verfy');
 
 
 Route::get('3d',function(){

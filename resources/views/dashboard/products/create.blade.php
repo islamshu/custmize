@@ -122,7 +122,13 @@
                                                     value="{{ old('price') }}" step="0.01"
                                                     placeholder="{{ __('Enter product price') }}" required>
                                             </div>
-
+                                            <div class="form-group col-8">
+                                                <label for="min_sale">{{ __('Min product can be sale') }}</label>
+                                                <input type="number" id="min_sale" name="min_sale" class="form-control"
+                                                    value="{{ old('min_sale') }}"
+                                                    placeholder="{{ __('Min product can be sale') }}" required>
+                                            </div>
+                                            
                                             <!-- Colors Section (for T-shirt) -->
                                             <div id="colors-section" class="form-group col-8 d-none"
                                                 style="border: 1px solid #ddd; padding: 15px;">

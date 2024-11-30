@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Is_login;
 use App\Http\Middleware\Localiztion;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -22,6 +23,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\SetLanguage::class,
+
     ];
 
     /**
@@ -38,13 +41,16 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             Localiztion::class,
-            
+            Is_login::class,
+
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\SetLanguage::class,
+
         ],
     ];
 
@@ -68,5 +74,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.client' => \App\Http\Middleware\ClientAuthMiddleware::class,
+        'setlang' => \App\Http\Middleware\SetLanguage::class,
+
     ];
 }

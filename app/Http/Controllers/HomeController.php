@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Confirm_email;
+use App\Models\Client;
 use App\Models\DiscountCode;
 use App\Models\GeneralInfo;
 use App\Models\Product;
@@ -17,6 +19,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -25,6 +29,13 @@ class HomeController extends Controller
      *
      * @return void
      */
+    public function verfty_email($id){
+        $encid = Crypt::decrypt($id);
+        $user = Client::find($encid);
+        $user->email_verified_at = now();
+        $user->save();
+        Mail::to($user->email)->send(new Confirm_email());
+     }
     public function welcom(Request $request)
     {
         $products = Product::with(['favorites' => function ($query) {

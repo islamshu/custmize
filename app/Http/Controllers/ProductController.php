@@ -79,6 +79,8 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'colors.*.front_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'colors.*.back_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'min_sale' => 'required|numeric',
+
         ]);
 
 
@@ -88,6 +90,7 @@ class ProductController extends Controller
             $product = new Product();
             $product->slug = Str::upper(Str::random(5)) . rand(10000, 99999);
             $product->category_id = $request->category_id;
+            $product->min_sale = $request->min_sale;
             $product->subcategory_id = $request->subcategory_id;
             $product->image = $request->image->store('products');
             $product->name = $request->name;
@@ -253,6 +256,7 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'colors.*.front_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'colors.*.back_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'min_sale'=>'required|numeric'
         ]);
 
         // Fetch the existing product
@@ -264,6 +268,7 @@ class ProductController extends Controller
 
             $product->category_id = $request->category_id;
             $product->subcategory_id = $request->subcategory_id;
+            $product->min_sale = $request->min_sale;
             if ($request->image != null) {
                 $product->image = $request->image->store('products');
             }
