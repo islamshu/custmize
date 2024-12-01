@@ -86,9 +86,9 @@ class UserController extends BaseController
         $client->otp = $otp;
         $client->save();
         // Send a password reset link to the user's email
-        Mail::to($client->email)->send(new PasswordResetMail($client, $otp));
+        // Mail::to($client->email)->send(new PasswordResetMail($client, $otp));
 
-        return $this->sendResponse('send success', __('Password reset link sent successfully'));
+        return $this->sendResponse('send success the otp'. $otp, __('Password reset link sent successfully'));
     }
     public function resetPassword(Request $request)
     {
@@ -140,10 +140,10 @@ class UserController extends BaseController
 
         $user->otp = $otp;
         $user->save();
-        Mail::to($user->email)->send(new WelcomRgister($user->name, $user->email));
+        // Mail::to($user->email)->send(new WelcomRgister($user->name, $user->email));
         $enc = encrypt($user->id);
         $url = route('send_email.verfy', $enc);
-        Mail::to($request->email)->send(new VerifyEmail($otp));
+        // Mail::to($request->email)->send(new VerifyEmail($otp));
         $res = new UserResource($user);
         return $this->sendResponse($res, __('Register Successfuly Please confrim your email'));
     }

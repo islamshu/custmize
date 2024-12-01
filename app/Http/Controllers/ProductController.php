@@ -270,17 +270,12 @@ class ProductController extends Controller
             $product->subcategory_id = $request->subcategory_id;
             $product->min_sale = $request->min_sale;
             if ($request->image != null) {
-                $file = $request->file('image');
-
-                // Retain the original name and extension
-                $originalName = $file->getClientOriginalName();
-        
-                // Store the file in the 'models' directory
-                $filePath = $file->storeAs('models', $originalName, 'public');
-        
-                // Generate public URL
-                $url = Storage::url($filePath);
-                $product->image = $url;
+                $filePath = 'assets/' . $request->image->getClientOriginalName();
+                Storage::disk('local')->put($filePath, $request->image->get());
+            
+                // Save the file path to the database
+                $product->image = $filePath;
+                $product->save();
             }
             $product->name = $request->name;
             $product->name_ar = $request->name_ar;
