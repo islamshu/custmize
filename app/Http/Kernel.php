@@ -41,7 +41,6 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             Localiztion::class,
-            Is_login::class,
 
         ],
 
@@ -50,6 +49,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SetLanguage::class,
+
 
         ],
     ];
@@ -75,6 +75,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.client' => \App\Http\Middleware\ClientAuthMiddleware::class,
         'setlang' => \App\Http\Middleware\SetLanguage::class,
+        'is_login'=>            Is_login::class,
+
 
     ];
 }

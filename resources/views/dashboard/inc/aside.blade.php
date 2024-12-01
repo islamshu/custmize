@@ -117,6 +117,23 @@
                                
                             </ul>
                 </li>
+                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
+                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Banners') }}</span></a>
+                        <ul class="dropdown-menu">
+                                <li class="dropdown " data-menu=""><a
+                                        class="dropdown-item " href="{{ route('banners.index') }}"
+                                        >{{ __('Banners') }}</a>
+                                 
+                                </li>
+                                <li class="dropdown " data-menu=""><a
+                                        class="dropdown-item " href="{{ route('banners.create') }}"
+                                        >{{ __('Add New Banner') }}</a>
+                                 
+                                </li>
+                                
+                               
+                            </ul>
+                </li>
                 {{-- <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
                         href="#" data-toggle="dropdown"><i
                             class="la la-folder-open"></i><span>General</span></a>

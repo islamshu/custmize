@@ -74,8 +74,8 @@
                                             </div>
 
                                             <div class="form-group col-8">
-                                                <label for="name">{{ __('Image') }}</label>
-                                                <input type="file" id="image" name="image"
+                                                <label for="name">{{ __('3d Model') }}</label>
+                                                <input type="file" id="image" name="image"  accept=".obj,.fbx,.glb,.gltf"
                                                     class="form-control image" required>
                                                 <img src="" width="100" height="100" class="image-preview"
                                                     alt="">

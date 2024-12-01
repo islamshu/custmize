@@ -73,7 +73,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'category_id' => 'required',
             'subcategory_id' => 'required',
-            'image' => 'required',
+            'image' =>'required',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
@@ -92,7 +92,7 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->min_sale = $request->min_sale;
             $product->subcategory_id = $request->subcategory_id;
-            $product->image = $request->image->store('products');
+            $product->image = $request->file('image')->store('models');
             $product->name = $request->name;
             $product->name_ar = $request->name_ar;
             $product->description = $request->description;
@@ -270,7 +270,17 @@ class ProductController extends Controller
             $product->subcategory_id = $request->subcategory_id;
             $product->min_sale = $request->min_sale;
             if ($request->image != null) {
-                $product->image = $request->image->store('products');
+                $file = $request->file('image');
+
+                // Retain the original name and extension
+                $originalName = $file->getClientOriginalName();
+        
+                // Store the file in the 'models' directory
+                $filePath = $file->storeAs('models', $originalName, 'public');
+        
+                // Generate public URL
+                $url = Storage::url($filePath);
+                $product->image = $url;
             }
             $product->name = $request->name;
             $product->name_ar = $request->name_ar;

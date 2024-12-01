@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientAuthController;
@@ -18,7 +19,7 @@ use App\Http\Controllers\TypeCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
-
+use App\Models\Banner;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,6 +125,7 @@ Route::post('customer/{id}/edit',[CustomerController::class,'update'])->name('cu
 Route::post('update_my_fatoorah',[HomeController::class,'update_my_fatoorah'])->name('update_my_fatoorah');
 Route::get('setting_my_fatoorah',[HomeController::class,'setting_my_fatoorah'])->name('setting_my_fatoorah');
 
+Route::resource('banners',BannerController::class);
 
 Route::resource('colors',ColorController::class);
 Route::resource('sizes',SizeController::class);
