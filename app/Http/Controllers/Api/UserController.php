@@ -140,10 +140,10 @@ class UserController extends BaseController
 
         $user->otp = $otp;
         $user->save();
-        // Mail::to($user->email)->send(new WelcomRgister($user->name, $user->email));
+        Mail::to($user->email)->send(new WelcomRgister($user->name, $user->email));
         $enc = encrypt($user->id);
         $url = route('send_email.verfy', $enc);
-        // Mail::to($request->email)->send(new VerifyEmail($otp));
+        Mail::to($request->email)->send(new VerifyEmail($otp));
         $res = new UserResource($user);
         return $this->sendResponse($res, __('Register Successfuly Please confrim your email'));
     }
