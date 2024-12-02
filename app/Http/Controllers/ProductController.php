@@ -92,7 +92,13 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->min_sale = $request->min_sale;
             $product->subcategory_id = $request->subcategory_id;
-            $product->image = $request->file('image')->store('models');
+            if ($request->image != null) {
+                $filePath = 'assets/' . $request->image->getClientOriginalName();
+                Storage::disk('local')->put($filePath, $request->image->get());
+            
+                // Save the file path to the database
+                $product->image = $filePath;
+            }
             $product->name = $request->name;
             $product->name_ar = $request->name_ar;
             $product->description = $request->description;
