@@ -86,7 +86,7 @@ class UserController extends BaseController
         $client->otp = $otp;
         $client->save();
         // Send a password reset link to the user's email
-        // Mail::to($client->email)->send(new PasswordResetMail($client, $otp));
+        Mail::to($client->email)->send(new PasswordResetMail($client, $otp));
 
         return $this->sendResponse('send success the otp'. $otp, __('Password reset link sent successfully'));
     }
