@@ -124,6 +124,8 @@ Route::resource('customers',CustomerController::class);
 Route::post('customer/{id}/edit',[CustomerController::class,'update'])->name('customer.updated');
 Route::post('update_my_fatoorah',[HomeController::class,'update_my_fatoorah'])->name('update_my_fatoorah');
 Route::get('setting_my_fatoorah',[HomeController::class,'setting_my_fatoorah'])->name('setting_my_fatoorah');
+Route::get('factor',[HomeController::class,'factor'])->name('factor');
+
 
 Route::resource('banners',BannerController::class);
 

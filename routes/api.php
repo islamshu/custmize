@@ -25,7 +25,9 @@ Route::post('register',[UserController::class,'register']);
 Route::post('verify_otp',[UserController::class,'verify_otp']);
 Route::post('forgotPassword',[UserController::class,'forgotPassword']);
 Route::post('password_reset',[UserController::class,'resetPassword'])->name('password_reset');
-Route::group(['middleware' => ['auth:api'],['middleware' => 'is_login']], function () {
+Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);
     Route::post('update_profile',[UserController::class,'update_profile'])->name('update_profile');
+    Route::post('checkout',[UserController::class,'checkout'])->name('checkout');
+
 });
