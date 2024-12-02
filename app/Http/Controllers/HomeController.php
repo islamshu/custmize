@@ -21,7 +21,7 @@ use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\File;
 class HomeController extends Controller
 {
     /**
@@ -745,6 +745,23 @@ class HomeController extends Controller
                     continue;
                 }
                 GeneralInfo::setValue($name, $value);
+                if($name  == 'website_name'){
+                    $envPath = base_path('.env');
+
+                    // Check if the .env file exists
+                    if (File::exists($envPath)) {
+                        // Get the current content of the .env file
+                        $cleanedAppName = preg_replace('/[^A-Za-z0-9\-]/', '', $value);
+                        $env = File::get($envPath);
+            
+                        // Replace the value of APP_NAME in the .env file
+                        $env = preg_replace('/^APP_NAME=[^\r\n]*/m', 'APP_NAME=' . $cleanedAppName, $env);
+            
+                        // Write the new content back to the .env file
+                        File::put($envPath, $env);
+            
+                }
+            }
             }
         }
 
