@@ -30,7 +30,8 @@ class ProductResourse extends JsonResource
             'category'=>new CategoryResourse($this->category),
             'sub_category'=>new CategoryResourse($this->subcategory),
             'min_sale'=>$this->min_sale,
-            'guidness_image'=>$this->guidness_image($this)
+            'guidness_image'=>$this->guidness_image($this),
+            'matiral'=>'cotton'
 
 
         ];
