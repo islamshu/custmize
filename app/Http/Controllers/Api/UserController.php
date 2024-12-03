@@ -66,6 +66,7 @@ class UserController extends BaseController
             return $this->sendError($res);
         }
     }
+   
     public function forgotPassword(Request $request)
     {
         $validation = Validator::make($request->all(), [

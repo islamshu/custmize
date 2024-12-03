@@ -27,32 +27,78 @@
                                 </div>
                                 <div class="card-content collpase show">
                                     <div class="card-body">
-                                        <form class="form" action="{{ route('add_general') }}" method="post" enctype="multipart/form-data">
+                                        <form class="form" action="{{ route('add_general') }}" method="POST">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
-                                                    <!-- Factor 1 -->
-                                                    <div class="form-group col-md-4 mb-2">
-                                                        <label for="input_factor_1">{{ __('Input Factor 1') }}</label>
-                                                        <input type="number" id="input_factor_1" class="form-control border-primary" placeholder="{{ __('Factor 1') }}" name="general[input_factor_1]" required oninput="updateEquation()">
+                                                    <!-- Length -->
+                                                    <div class="form-group col-md-3 mb-2">
+                                                        <label for="input_length">{{ __('الطول') }}</label>
+                                                        <input type="number" step="0.01" disabled id="input_length" value="10" name="general[length]" class="form-control border-primary" placeholder="{{ __('Length') }}" oninput="calculateEquation()">
                                                     </div>
 
-                                                    <!-- Factor 2 (Optional, not used in the equation) -->
-                                                    <div class="form-group col-md-4 mb-2">
-                                                        <label for="input_factor_2">{{ __('Input Factor 2') }}</label>
-                                                        <input type="number" id="input_factor_2" class="form-control border-primary" placeholder="{{ __('Factor 2') }}" name="general[input_factor_2]">
+                                                    <!-- Width -->
+                                                    <div class="form-group col-md-3 mb-2">
+                                                        <label for="input_width">{{ __('العرض') }}</label>
+                                                        <input type="number" step="0.01" disabled id="input_width" value="5" name="general[width]" class="form-control border-primary" placeholder="{{ __('Width') }}" oninput="calculateEquation()">
                                                     </div>
 
-                                                    <!-- Factor 3 (Optional, not used in the equation) -->
-                                                    <div class="form-group col-md-4 mb-2">
-                                                        <label for="input_factor_3">{{ __('Input Factor 3') }}</label>
-                                                        <input type="number" id="input_factor_3" class="form-control border-primary" placeholder="{{ __('Factor 3') }}" name="general[input_factor_3]">
+                                                    <!-- Percentage -->
+                                                    <div class="form-group col-md-3 mb-2">
+                                                        <label for="input_percentage">{{ __('النسبة') }}</label>
+                                                        <div class="input-group">
+                                                            <input type="number" step="0.01" id="input_percentage" value="{{get_general_value('percentage')}}" name="general[percentage]" class="form-control border-primary" placeholder="{{ __('Percentage') }}" oninput="calculateEquation()">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">%</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Threshold -->
+                                                    <div class="form-group col-md-3 mb-2">
+                                                        <label for="input_threshold">{{ __('القيمة المرتبطة بالناتج') }}</label>
+                                                        <input type="number" step="0.01" id="input_threshold" value="{{get_general_value('threshold')}}" name="general[threshold]" class="form-control border-primary" placeholder="{{ __('Threshold') }}" oninput="calculateEquation()">
                                                     </div>
                                                 </div>
 
                                                 <div class="row">
+                                                    <!-- Equation Display -->
                                                     <div class="form-group col-md-12 mb-2">
                                                         <h4 id="equation_display"></h4>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <!-- Price for Less -->
+                                                    <div class="form-group col-md-4 mb-2">
+                                                        <label for="input_price_less">{{ __('السعر عند الناتج أقل') }}</label>
+                                                        <input type="number" step="0.01" id="input_price_less" value="{{get_general_value('price_less')}}" name="general[price_less]" class="form-control border-primary" placeholder="{{ __('Price for Less') }}" oninput="calculateEquation()">
+                                                    </div>
+
+                                                    <!-- Price for Equal -->
+                                                    <div class="form-group col-md-4 mb-2">
+                                                        <label for="input_price_equal">{{ __('السعر عند الناتج مساوي') }}</label>
+                                                        <input type="number" step="0.01" id="input_price_equal" value="{{get_general_value('price_equal')}}" name="general[price_equal]" class="form-control border-primary" placeholder="{{ __('Price for Equal') }}" oninput="calculateEquation()">
+                                                    </div>
+
+                                                    <!-- Price for Greater -->
+                                                    <div class="form-group col-md-4 mb-2">
+                                                        <label for="input_price_greater">{{ __('السعر عند الناتج أكبر') }}</label>
+                                                        <input type="number" step="0.01" id="input_price_greater" value="{{get_general_value('price_greater')}}" name="general[price_greater]" class="form-control border-primary" placeholder="{{ __('Price for Greater') }}" oninput="calculateEquation()">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <!-- Result -->
+                                                    <div class="form-group col-md-12 mb-2">
+                                                        <h4 id="comparison_result"></h4>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <!-- Save Button -->
+                                                    <div class="form-group col-md-12 mb-2">
+                                                        <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -70,21 +116,43 @@
 
 @section('script')
     <script>
-        // Define the labels for logo length and width
-        var logoLengthLabel = "طول اللوجو";  // Label for logo length
-        var logoWidthLabel = "عرض اللوجو";  // Label for logo width
+        function calculateEquation() {
+            // Get values from inputs
+            var length = parseFloat(document.getElementById('input_length').value) || 0;
+            var width = parseFloat(document.getElementById('input_width').value) || 0;
+            var percentage = parseFloat(document.getElementById('input_percentage').value) || 0;
+            var threshold = parseFloat(document.getElementById('input_threshold').value) || 0;
+            var priceLess = parseFloat(document.getElementById('input_price_less').value) || 0;
+            var priceEqual = parseFloat(document.getElementById('input_price_equal').value) || 0;
+            var priceGreater = parseFloat(document.getElementById('input_price_greater').value) || 0;
 
-        // Function to update the equation when the factor 1 changes
-        function updateEquation() {
-            // Get the value of Factor 1
-            var inputFactor1 = document.getElementById('input_factor_1').value;
+            // Convert percentage to decimal
+            var percentageDecimal = percentage ;
 
-            // Display the updated equation using the labels
+            // Calculate the result
+            var result = length * width * percentageDecimal;
+
+            // Display the equation
             document.getElementById('equation_display').innerHTML = 
-                "المعادلة: " + logoLengthLabel + " × " + logoWidthLabel + " × " + inputFactor1 + " = ؟";
+                "المعادلة: " + length + " × " + width + " × (" + percentage + ") = " + result.toFixed(2);
+
+            // Prepare the results for all cases
+            var lessMessage = "الناتج: " + result.toFixed(2) + " أصغر من العامل (" + threshold + "). السعر: " + priceLess;
+            var equalMessage = "الناتج: " + result.toFixed(2) + " مساوي للعامل (" + threshold + "). السعر: " + priceEqual;
+            var greaterMessage = "الناتج: " + result.toFixed(2) + " أكبر من العامل (" + threshold + "). السعر: " + priceGreater;
+
+            // Display all results
+            document.getElementById('comparison_result').innerHTML = `
+                <ul>
+                    <li>${lessMessage}</li>
+                    <li>${equalMessage}</li>
+                    <li>${greaterMessage}</li>
+                </ul>
+            `;
         }
 
-        // Call the function to initialize the equation when the page loads
-        updateEquation();
+        // Initialize the equation display on page load
+        calculateEquation();
     </script>
 @endsection
+

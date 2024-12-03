@@ -30,7 +30,7 @@
 
             const loader = new THREE.GLTFLoader();
             loader.load(
-                'http://127.0.0.1:8000/storage/uploads/model.gltf',
+                'https://custmize.digitalgo.net/storage/uploads/model.gltf', // Use your URL
                 (gltf) => {
                     scene.add(gltf.scene);
                 },

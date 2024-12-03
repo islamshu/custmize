@@ -25,6 +25,9 @@ Route::post('register',[UserController::class,'register']);
 Route::post('verify_otp',[UserController::class,'verify_otp']);
 Route::post('forgotPassword',[UserController::class,'forgotPassword']);
 Route::post('password_reset',[UserController::class,'resetPassword'])->name('password_reset');
+Route::get('size_calculate',[HomeController::class,'size_calculate'])->name('size_calculate');
+Route::get('example_size_calculate',[HomeController::class,'example_size_calculate'])->name('size_calculate');
+
 Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);
     Route::post('update_profile',[UserController::class,'update_profile'])->name('update_profile');
