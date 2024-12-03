@@ -115,6 +115,9 @@ class HomeController extends Controller
         return view('front.cart', compact('carts', 'subtotal', 'shipping', 'tax', 'total'));
         // Return the view with cart items
     }
+    public function viwer(){
+        return view('viwer');
+    }
 
     public function home()
     {

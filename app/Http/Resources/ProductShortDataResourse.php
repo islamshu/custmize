@@ -17,7 +17,7 @@ class ProductShortDataResourse extends JsonResource
         return [
             'id'=>$this->id,
             'title'=>$this->name,
-            'image'=>asset('uploads/'. $this->image),  
+            'image'=> $this->image,  
             'slug'=>$this->slug,
             'url'=>route('get_single_product',$this->slug),   
         ];

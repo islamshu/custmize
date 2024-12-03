@@ -80,10 +80,9 @@
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="name">{{ __('3D model') }}</label>
-                                                <input type="file" id="image" name="image" accept=".obj,.fbx,.glb,.gltf"
-                                                    class="form-control image">
-                                                <img src="{{ asset('uploads/' . $product->image) }}" width="100"
-                                                    height="100" class="image-preview" alt="">
+                                                            <input type="file" id="file" name="file" accept=".glb,.gltf" required>
+
+                                                
                                             </div>
                                             <div class="form-group col-8">
                                                 <div class="form-group">

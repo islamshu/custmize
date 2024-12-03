@@ -35,6 +35,7 @@ use App\Models\Banner;
 Route::get('/login', [HomeController::class,'login'])->name('login');
 Route::post('/login', [HomeController::class,'post_login'])->name('post_login');
 Route::get('/carts', [HomeController::class,'cart'])->name('cart');
+Route::get('/viwer', [HomeController::class,'viwer'])->name('viwer');
 
 Route::post('/client_login', [HomeController::class,'client_login'])->name('client_login');
 

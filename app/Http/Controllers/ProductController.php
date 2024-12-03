@@ -73,7 +73,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'category_id' => 'required',
             'subcategory_id' => 'required',
-            'image' =>'required',
+            'file' => 'required', // Accept .glb or .gltf formats
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
@@ -92,12 +92,15 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->min_sale = $request->min_sale;
             $product->subcategory_id = $request->subcategory_id;
-            if ($request->image != null) {
-                $filePath = 'assets/' . $request->image->getClientOriginalName();
-                Storage::disk('local')->put($filePath, $request->image->get());
-            
-                // Save the file path to the database
-                $product->image = $filePath;
+            if ($request->file != null) {
+               
+                $file = $request->file('file');
+                $fileName = $file->getClientOriginalName();
+        
+                // Save file to 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public');
+                $product->image = url('/storage/' . $filePath);
+
             }
             $product->name = $request->name;
             $product->name_ar = $request->name_ar;
@@ -256,7 +259,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'category_id' => 'required',
             'subcategory_id' => 'required',
-            // 'image'=>'required',
+            'file' => 'required', // Accept .glb or .gltf formats
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
@@ -275,13 +278,15 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->subcategory_id = $request->subcategory_id;
             $product->min_sale = $request->min_sale;
-            if ($request->image != null) {
-                $filePath = 'assets/' . $request->image->getClientOriginalName();
-                Storage::disk('local')->put($filePath, $request->image->get());
-            
-                // Save the file path to the database
-                $product->image = $filePath;
-                $product->save();
+            if ($request->file != null) {
+               
+                $file = $request->file('file');
+                $fileName = $file->getClientOriginalName();
+        
+                // Save file to 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public');
+                $product->image = url('/storage/' . $filePath);
+
             }
             $product->name = $request->name;
             $product->name_ar = $request->name_ar;
