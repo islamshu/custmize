@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerRessours;
+use App\Http\Resources\DiscountCodeResourse;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProductShortDataResourse;
 use App\Http\Resources\ProductResourse;
 use App\Models\Banner;
+use App\Models\DiscountCode;
 use App\Models\Product;
 
 class HomeController extends BaseController
@@ -30,6 +32,13 @@ class HomeController extends BaseController
         $products = ProductShortDataResourse::collection($products);
         return $this->sendResponse($products, "SUCCESS");
     }
+    public function all_promocods()
+    {
+        $products = DiscountCode::get();
+        $products = DiscountCodeResourse::collection($products);
+        return $this->sendResponse($products, "SUCCESS");
+    }
+    
     public function single_product($slug)
     {
         $product = Product::where("slug", $slug)->first();

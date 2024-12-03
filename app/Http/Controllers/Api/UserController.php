@@ -9,6 +9,7 @@ use App\Mail\PasswordResetMail;
 use App\Mail\VerifyEmail;
 use App\Mail\WelcomRgister;
 use App\Models\Client;
+use App\Models\DiscountCode;
 use Illuminate\Http\Request;
 use Validator;
 use Hash;
@@ -66,7 +67,7 @@ class UserController extends BaseController
             return $this->sendError($res);
         }
     }
-   
+
     public function forgotPassword(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -89,7 +90,7 @@ class UserController extends BaseController
         // Send a password reset link to the user's email
         Mail::to($client->email)->send(new PasswordResetMail($client, $otp));
 
-        return $this->sendResponse('send success the otp'. $otp, __('Password reset link sent successfully'));
+        return $this->sendResponse('send success the otp' . $otp, __('Password reset link sent successfully'));
     }
     public function resetPassword(Request $request)
     {
@@ -152,6 +153,63 @@ class UserController extends BaseController
     {
         $user = auth('api')->user();
         return $this->sendResponse(new UserResource($user), __('User Profile'));
+    }
+    public function checkout(Request $request)
+    {
+        $user = auth('api')->user();
+        // $cart = json_decode($request->cart);
+        dd($request->cart['orders']);
+    }
+    public function check_promocode(Request $request)
+    {
+        // ... other checkout logic
+        $validator = Validator::make($request->all(), [
+            'full_price' => 'required',
+            'promo_code' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->messages()->all());
+        }
+        $cartTotal = $request->full_price;
+
+        $promoCode = $request->input('promo_code');
+
+        if ($promoCode) {
+            $discountCode = DiscountCode::where('code', $promoCode)->first();
+
+            if ($discountCode) {
+                if ($discountCode->end_at < now()) {
+                    return $this->sendError(__('Promo code has expired'));
+                }
+
+                $fullPrice = $this->calculatePriceWithDiscount($discountCode, $cartTotal);
+
+                return $this->sendResponse([
+                    'full_price' => (float)$cartTotal,
+                    'price_after_discount' => (float)$fullPrice,
+                    'discount_value' => (float)($cartTotal - $fullPrice)
+                ], 'success');
+            } else {
+                return $this->sendError(__('Invalid promo code'));
+            }
+        } else {
+            $fullPrice = $cartTotal;
+        }
+    }
+
+    private function calculatePriceWithDiscount(DiscountCode $discountCode, $cartTotal)
+    {
+        switch ($discountCode->discount_type) {
+            case 'fixed':
+                return $cartTotal - $discountCode->discount_value;
+            case 'rate':
+                $discountAmount = $cartTotal * ($discountCode->discount_value / 100);
+                return $cartTotal - $discountAmount;
+            default:
+                return $cartTotal; // Handle invalid discount type
+        }
     }
     public function update_profile(Request $request)
     {
