@@ -14,6 +14,48 @@ use App\Models\Product;
 
 class HomeController extends BaseController
 {
+    // {
+    //     "cart": {
+    //         "orders": [
+    //             {
+    //                 "product_id": "12345",
+    //                 "color": "Red",
+    //                 "size": "L",
+    //                 "quantity": 2,
+    //                 "front_image":"image_url",
+    //                 "back_image":"image_url",
+    //                 "logos": [
+    //                     "logo1.png",
+    //                     "logo2.png"
+    //                 ],
+    //                 "price_without_size_color_price":20,
+    //                 "price_for_size_color_price":29.99,
+    //                 "full_price": 49.99
+    //             },
+    //             {
+    //                  "product_id": "12345",
+    //                 "color": "Red",
+    //                 "size": "L",
+    //                 "quantity": 2,
+    //                 "front_image":"image_url",
+    //                 "back_image":"image_url",
+    //                 "logos": [
+    //                     "logo1.png",
+    //                     "logo2.png"
+    //                 ],
+    //                 "price_without_size_color_price":10, 
+    //                 "price_for_size_color_price":7, 
+    //                 "full_price": 17 
+    //             }
+    //         ],
+    //       "full_price_befor_discount":"66.99",
+    //       "promocode":"2155656",
+    //       "discount":"5",
+    //       "full_code_after_discout":61.99,
+    //       "
+    //     }
+    // }
+    
     public function home()
     {
         $banners = BannerRessours::collection(Banner::get());
@@ -48,7 +90,7 @@ class HomeController extends BaseController
     public function size_calculate()
     {
         $res = [
-            'persantige' => '0.' . get_general_value('percentage'),
+            'persantige' =>  get_general_value('percentage'),
             'factor' => get_general_value('threshold'),
             'if_output_is_less_factor' => get_general_value('price_less'),
             'if_output_is_equal_factor' => get_general_value('price_equal'),
@@ -66,6 +108,7 @@ class HomeController extends BaseController
     if (!$hight || !$width) {
         return $this->sendError('Invalid input. Please provide hight and width.');
     }
+
 
     // الحصول على القيم العامة (النسبة والعوامل والأسعار)
     $percentage =  get_general_value('percentage');
