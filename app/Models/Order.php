@@ -19,6 +19,7 @@ class Order extends Model
         'name',
         'email',
         'code',
+        'client_id'
     ];
 
     // Relationship with OrderDetail
