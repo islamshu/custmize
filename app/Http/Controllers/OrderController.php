@@ -16,7 +16,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         // Load order details for a specific order
-        $order->load('orderDetails');
+        $order->load('details');
 
         return view('dashboard.orders.show', compact('order'));
     }
