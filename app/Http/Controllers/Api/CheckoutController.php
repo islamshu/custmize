@@ -74,8 +74,8 @@ class CheckoutController extends BaseController
             $backImage = $orderData['back_image'] ?? null;
             $logos = $orderData['logos'] ?? [];
     
-            if (!$frontImage || !$backImage) {
-                return response()->json(['error' => 'Front or back image is missing'], 400);
+            if (!$frontImage ) {
+                $this->sendError(__('Front image is missing'));
             }
     
             $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage]);
