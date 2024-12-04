@@ -133,6 +133,7 @@ class CheckoutController extends BaseController
         $error = new ErrorPayment();
         $error->code =  date('Ymd-His') . rand(10, 99);
         $error->descripton = $e->getMessage();
+        $error->full_request = $request->cart;
         $error->save();
         // \Log::error('Order placement failed: ' . $e->getMessage());
         return $this->sendError(__('Payment initiation failed . error code: '.$error->code));
