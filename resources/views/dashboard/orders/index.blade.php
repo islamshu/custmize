@@ -74,9 +74,7 @@
                                                             <a class="btn btn-info"
                                                                 href="{{ route('orders.show', $order->id) }}"><i
                                                                     class="ft-eye"></i></a>
-                                                            <a class="btn btn-success"
-                                                                href="{{ route('orders.edit', $order->id) }}"><i
-                                                                    class="ft-edit-3"></i></a>
+                                                            
                                                             <form style="display: inline-block"
                                                                 action="{{ route('orders.destroy', $order->id) }}"
                                                                 method="post">
