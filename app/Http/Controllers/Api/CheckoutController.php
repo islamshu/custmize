@@ -30,7 +30,7 @@ class CheckoutController extends BaseController
         $validation = Validator::make($request->all(), [
             'cart.orders' => 'required|array|min:1',
             'cart.orders.*.front_image' => 'required|url',
-            'cart.orders.*.back_image' => 'required|url',
+            // 'cart.orders.*.back_image' => 'required|url',
             'cart.orders.*.quantity' => 'required|integer|min:1',
             'cart.orders.*.price_without_size_color_price' => 'required|numeric|min:0',
             'cart.orders.*.price_for_size_color_price' => 'required|numeric|min:0',
