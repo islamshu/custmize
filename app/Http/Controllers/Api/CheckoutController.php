@@ -55,6 +55,7 @@ class CheckoutController extends BaseController
         $total = $request->input('total_amount');
         $discount = $request->input('discount');
         $promoCode = $request->input('promocode');
+        dd($user->phone);
         if( $user->phone == null){
             $this->sendError(__('You need to add phone number in your profile first'));
         }
