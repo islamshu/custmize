@@ -22,6 +22,7 @@ class CreateOrderDetailsTable extends Migration
             $table->text('front_image')->nullable();
             $table->text('back_image')->nullable();
             $table->json('logos')->nullable();
+            
             $table->timestamps();
         });
     }
