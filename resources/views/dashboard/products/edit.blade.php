@@ -80,10 +80,10 @@
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="name">{{ __('3D model') }}</label>
-                                                            <input type="file" id="file" name="file" accept=".glb,.gltf" required>
-
-                                                
+                                        <input type="file" id="file" name="file" accept=".glb,.gltf" >
+                                            <a href="{{$product->image}}">preview model</a>
                                             </div>
+                                        
                                             <div class="form-group col-8">
                                                 <div class="form-group">
                                                     <label for="images">{{ __('Guidness Image') }}</label>

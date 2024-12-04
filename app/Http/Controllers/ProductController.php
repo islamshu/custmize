@@ -259,7 +259,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'category_id' => 'required',
             'subcategory_id' => 'required',
-            'file' => 'required', // Accept .glb or .gltf formats
+            // 'file' => 'required', // Accept .glb or .gltf formats
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
