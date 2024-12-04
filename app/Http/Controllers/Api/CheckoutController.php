@@ -135,7 +135,7 @@ class CheckoutController extends BaseController
         $error->descripton = $e->getMessage();
         $error->save();
         // \Log::error('Order placement failed: ' . $e->getMessage());
-        return $this->sendError(__('Payment initiation failed'));
+        return $this->sendError(__('Payment initiation failed . error code: '.$error->code));
 
     }
     
