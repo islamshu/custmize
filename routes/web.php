@@ -112,7 +112,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard'], function () {
 Route::get('/', action: [HomeController::class,'home'])->name('dashboard');
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.delete');
+Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
 Route::post('add_general', [HomeController::class, 'add_general'])->name('add_general');
 Route::get('setting', [HomeController::class, 'setting'])->name('setting');
