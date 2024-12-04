@@ -16,6 +16,7 @@ class SizeProductResourse extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'size_id'=>$this->id,
             'size_name'=>$this->size_name,
             'price'=>$this->price,
         ];

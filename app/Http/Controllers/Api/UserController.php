@@ -20,6 +20,8 @@ use Illuminate\Support\Str;
 
 class UserController extends BaseController
 {
+  
+    
 
     public function login(Request $request)
     {

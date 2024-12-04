@@ -6,6 +6,7 @@ use App\Mail\Confirm_email;
 use App\Models\Client;
 use App\Models\DiscountCode;
 use App\Models\GeneralInfo;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\TempOrder;
@@ -29,7 +30,23 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function verfty_email($id){
+    public function paymentSuccess($orderId)
+    {
+        // Retrieve the order details
+        $order = Order::with('details')->findOrFail($orderId);
+        $order->status = 'completed';
+        $order->save();
+        return view('payment.success', ['order' => $order]);
+    }
+    public function paymentError()
+    {
+        // Retrieve the order details
+        $order = Order::with('details')->findOrFail($orderId);
+        $order->status = 'failed';
+        $order->save();
+        return view('payment.error');
+    }  
+      public function verfty_email($id){
         $encid = Crypt::decrypt($id);
         $user = Client::find($encid);
         $user->email_verified_at = now();

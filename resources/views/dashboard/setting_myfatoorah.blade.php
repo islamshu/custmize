@@ -43,7 +43,7 @@
                                 <div class="card-content collpase show">
                                     <div class="card-body">
                                            
-                                        <form class="form" action="{{ route('update_my_fatoorah') }}" method="post" enctype="multipart/form-data">
+                                        <form class="form" action="{{ route('add_general') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
                                               
@@ -54,15 +54,15 @@
                                                     
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label for="userinput2">{{ __('API KEY') }}</label>
-                                                            <textarea name="my_key" class="form-control" required id="" cols="30" rows="10">{{ env('MYFATOORAH_API_KEY') }}</textarea>
+                                                            <textarea name="general[my_fattora_key]" class="form-control" required id="" cols="30" rows="10">{{get_general_value('my_fattora_key')}}</textarea>
                                                         <div class="invalid-feedback">
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label for="userinput2">{{ __('API URL') }}</label>
-                                                        <input type="text" value="{{ env('MYFATOORAH_API_URL') }}" 
+                                                        <input type="text" value="{{get_general_value('my_fattora_url')}}" 
                                                             required class="form-control border-primary"
-                                                             name="my_url">
+                                                             name="general[my_fattora_url]">
                                                         <div class="invalid-feedback">
                                                         </div>
                                                     </div>

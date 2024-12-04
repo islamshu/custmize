@@ -8,14 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $guarded=[];
-    /**
-     * Get all of the itens for the Order
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function items()
+
+    // Fillable fields for mass assignment
+    protected $fillable = [
+        'total_amount',
+        'subtotal',
+        'discount_amount',
+        'promo_code',
+        'status',
+        'name',
+        'email',
+        'code',
+    ];
+
+    // Relationship with OrderDetail
+    public function details()
     {
-        return $this->hasMany(OrderItem::class, 'order_id');
+        return $this->hasMany(OrderDetail::class);
     }
 }

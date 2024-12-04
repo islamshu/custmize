@@ -11,7 +11,7 @@ class MyFatoorahService
 
     public function __construct()
     {
-        $this->api_key = env('MYFATOORAH_API_KEY');
+        $this->api_key =get_general_value('my_fattora_key');
         $this->base_url = 'https://apitest.myfatoorah.com/v2/'; // Use live URL for production
         $this->client = new Client([
             'base_uri' => $this->base_url,
