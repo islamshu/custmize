@@ -47,7 +47,7 @@ class CheckoutController extends BaseController
     
         $user = auth('api')->user();
         if (!$user) {
-            $this->sendError(__('User not authenticated'));
+           return $this->sendError(__('User not authenticated'));
         }
     
         $cart = $request->input('cart');
@@ -55,9 +55,8 @@ class CheckoutController extends BaseController
         $total = $request->input('total_amount');
         $discount = $request->input('discount');
         $promoCode = $request->input('promocode');
-        dd($user->phone);
         if( $user->phone == null){
-            $this->sendError(__('You need to add phone number in your profile first'));
+            return $this->sendError(__('You need to add phone number in your profile first'));
         }
         try {
             DB::beginTransaction();
