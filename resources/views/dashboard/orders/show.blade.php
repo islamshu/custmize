@@ -41,9 +41,9 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <p><strong>{{ __('Order Number:') }}</strong> {{ $order->order_number }}</p>
-                                                <p><strong>{{ __('Customer Name:') }}</strong> {{ $order->customer_name }}</p>
-                                                <p><strong>{{ __('Email:') }}</strong> {{ $order->customer_email }}</p>
+                                                <p><strong>{{ __('Order Number:') }}</strong> {{ $order->code }}</p>
+                                                <p><strong>{{ __('Customer Name:') }}</strong> {{ $order->client->name }}</p>
+                                                <p><strong>{{ __('Email:') }}</strong> {{ $order->email }}</p>
                                             </div>
                                             <div class="col-md-6">
                                                 <p><strong>{{ __('Order Date:') }}</strong> {{ $order->created_at->format('d-m-Y') }}</p>
