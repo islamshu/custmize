@@ -59,7 +59,8 @@
                                                     <th>#</th>
                                                     <th>{{ __('Product Name') }}</th>
                                                     <th>{{ __('Quantity') }}</th>
-                                                    <th>{{ __('Price') }}</th>
+                                                    <th>{{ __('Price without size or color') }}</th>
+                                                    <th>{{ __('Price for size or color') }}</th>
                                                     <th>{{ __('Total') }}</th>
                                                 </tr>
                                             </thead>
@@ -69,8 +70,10 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $item->product_name }}</td>
                                                         <td>{{ $item->quantity }}</td>
-                                                        <td>{{ number_format($item->price, 2) }} {{ __('SAR') }}</td>
-                                                        <td>{{ number_format($item->quantity * $item->price, 2) }} {{ __('SAR') }}</td>
+                                                        <td>{{ number_format($item->price_without_size_color, 2) }} {{ __('SAR') }}</td>
+                                                        <td>{{ number_format($item->price_for_size_color, 2) }} {{ __('SAR') }}</td>
+=
+                                                        <td>{{ number_format($item->full_price, 2) }} {{ __('SAR') }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
