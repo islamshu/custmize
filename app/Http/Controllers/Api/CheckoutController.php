@@ -70,6 +70,7 @@ class CheckoutController extends BaseController
             'status' => 'pending',
             'name' => $user->name,
             'email' => $user->email,
+            'client_id'=>$user->id,
             'code' => date('Ymd-His') . rand(10, 99),
         ]);
     

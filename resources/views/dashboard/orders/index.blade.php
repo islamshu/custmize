@@ -66,7 +66,7 @@
                                                 @foreach ($orders as $key => $order)
                                                     <tr>
                                                         <th>{{ $key + 1 }}</th>
-                                                        <th>{{ $order->order_number }}</th>
+                                                        <th>{{ $order->code }}</th>
                                                         <th>{{ $order->customer_name }}</th>
                                                         <th>{{ number_format($order->total_amount, 2) }}</th>
                                                         <th>{{ $order->created_at->format('d-m-Y') }}</th>
