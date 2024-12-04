@@ -110,7 +110,7 @@ class CheckoutController extends BaseController
             'CustomerMobile' => $user->phone,
             'CustomerEmail' => $user->email,
             'CallBackUrl' => route('payment.success',$order->id),
-            'ErrorUrl' =>  route('payment.error'),
+            'ErrorUrl' =>  route('payment.error',$order->id),
             'Language' => 'ar',
             'CustomerReference' => 'order_' . $order->id,
             'UserDefinedField' => 'CustomData',

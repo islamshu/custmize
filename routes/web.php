@@ -59,7 +59,7 @@ Route::get('/removeCart', [HomeController::class, 'removeCart']);
 Route::get('/check-cart', [HomeController::class, 'checkCart']);
 Route::post('/apply-coupon', [HomeController::class, 'applyCoupon']);
 Route::get('/payment/success/{order}', [HomeController::class, 'paymentSuccess'])->name('payment.success');
-Route::get('/payment/error', [HomeController::class, 'paymentError'])->name('payment.error');
+Route::get('/payment/error/{order}', [HomeController::class, 'paymentError'])->name('payment.error');
 
 Route::post('/process-payment', [PaymentController::class, 'initiatePayment'])->name('process.payment');
 Route::get('/payment/callback/{id}', [PaymentController::class, 'paymentCallback'])->name('payment.callback');

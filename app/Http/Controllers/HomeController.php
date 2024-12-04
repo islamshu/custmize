@@ -38,7 +38,7 @@ class HomeController extends Controller
         $order->save();
         return view('payment.success', ['order' => $order]);
     }
-    public function paymentError()
+    public function paymentError($orderId)
     {
         // Retrieve the order details
         $order = Order::with('details')->findOrFail($orderId);
