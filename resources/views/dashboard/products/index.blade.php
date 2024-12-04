@@ -70,7 +70,7 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>{{ __('Image') }}</th>
+                                                <th>{{ __('3D model') }}</th>
 
                                                 <th>{{ __('Name') }}</th>
                                                 <th>{{ __('Type') }}</th>
@@ -84,7 +84,7 @@
                                             <tr>
                                                 <td>{{ $key +1 }}</td>
                                                 <td>
-                                                    <img src="{{ asset('uploads/'.($product->image)) }}" width="50" height="50" alt="">
+                                                    <a href="{{$product->image}}" target="_blank" class="btn btn-info">{{__('Click to dawanlod')}}</a>
                                                 </td>
                                                 <td>{{ $product->name }}</td>
                                                 <td>{{ $product->category->name }} / {{ $product->subcategory->name }} </td>
