@@ -57,7 +57,7 @@
 
                                                 </select>
                                             </div>
-                                            
+
 
                                             <!-- Product Name -->
                                             <div class="form-group col-8">
@@ -74,13 +74,11 @@
                                             </div>
 
                                             <div class="form-group col-8">
-                                                <label for="name">{{ __('3d Model') }}</label>
-                                                <input type="file" id="image" name="image"  accept=".obj,.fbx,.glb,.gltf"
-                                                    class="form-control image" required>
-                                                <img src="" width="100" height="100" class="image-preview"
-                                                    alt="">
+                                                <label for="name">{{ __('3D model') }}</label>
+                                                <input type="file" id="file" class="form-control" name="file"
+                                                    accept=".glb,.gltf">
                                             </div>
-                                            
+
 
                                             <div class="form-group col-8">
                                                 <div class="form-group">
@@ -109,8 +107,8 @@
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="description">{{ __('Delivery date') }}</label>
-                                            <input type="number" name="delivery_date" class="form-control" >
-                                                </div>
+                                                <input type="number" name="delivery_date" class="form-control">
+                                            </div>
                                             <input type="hidden" id="color_type" value="0">
 
                                             <!-- Fixed Price -->
@@ -124,11 +122,11 @@
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="min_sale">{{ __('Min product can be sale') }}</label>
-                                                <input type="number" id="min_sale" name="min_sale" class="form-control"
-                                                    value="{{ old('min_sale') }}"
+                                                <input type="number" id="min_sale" name="min_sale"
+                                                    class="form-control" value="{{ old('min_sale') }}"
                                                     placeholder="{{ __('Min product can be sale') }}" required>
                                             </div>
-                                            
+
                                             <!-- Colors Section (for T-shirt) -->
                                             <div id="colors-section" class="form-group col-8 d-none"
                                                 style="border: 1px solid #ddd; padding: 15px;">
@@ -151,7 +149,8 @@
                                             <div id="sizes-section" class="form-group col-8 d-none"
                                                 style="border: 1px solid #ddd; padding: 15px;">
                                                 <label>{{ __('Sizes') }}</label>
-                                                <select id="sizes" name="sizes[]" class="form-control select2" multiple>
+                                                <select id="sizes" name="sizes[]" class="form-control select2"
+                                                    multiple>
                                                     @foreach ($sizes as $size)
                                                         <option value="{{ $size->id }}"
                                                             {{ collect(old('sizes'))->contains($size->id) ? 'selected' : '' }}>
