@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\DiscountCode;
+use App\Models\ErrorPayment;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
@@ -129,7 +130,11 @@ class CheckoutController extends BaseController
         DB::rollBack();
 
         // Log the error for debugging
-        \Log::error('Order placement failed: ' . $e->getMessage());
+        $error = new ErrorPayment();
+        $error->code =  date('Ymd-His') . rand(10, 99);
+        $error->descripton = $e->getMessage();
+        $error->save();
+        // \Log::error('Order placement failed: ' . $e->getMessage());
         return $this->sendError(__('Payment initiation failed'));
 
     }
