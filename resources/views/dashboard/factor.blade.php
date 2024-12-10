@@ -82,10 +82,10 @@
                                                     </div>
 
                                                     <!-- Price for Greater -->
-                                                    <div class="form-group col-md-4 mb-2">
+                                                    {{-- <div class="form-group col-md-4 mb-2">
                                                         <label for="input_price_greater">{{ __('السعر عند الناتج أكبر') }}</label>
                                                         <input type="number" step="0.01" id="input_price_greater" value="{{get_general_value('price_greater')}}" name="general[price_greater]" class="form-control border-primary" placeholder="{{ __('Price for Greater') }}" oninput="calculateEquation()">
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
 
                                                 <div class="row">
@@ -124,7 +124,7 @@
             var threshold = parseFloat(document.getElementById('input_threshold').value) || 0;
             var priceLess = parseFloat(document.getElementById('input_price_less').value) || 0;
             var priceEqual = parseFloat(document.getElementById('input_price_equal').value) || 0;
-            var priceGreater = parseFloat(document.getElementById('input_price_greater').value) || 0;
+            // var priceGreater = parseFloat(document.getElementById('input_price_greater').value) || 0;
 
             // Convert percentage to decimal
             var percentageDecimal = percentage ;
@@ -139,7 +139,7 @@
             // Prepare the results for all cases
             var lessMessage = "الناتج: " + result.toFixed(2) + " أصغر من العامل (" + threshold + "). السعر: " + priceLess;
             var equalMessage = "الناتج: " + result.toFixed(2) + " مساوي للعامل (" + threshold + "). السعر: " + priceEqual;
-            var greaterMessage = "الناتج: " + result.toFixed(2) + " أكبر من العامل (" + threshold + "). السعر: " + priceGreater;
+            var greaterMessage = "الناتج: " + result.toFixed(2) + " أكبر من العامل (" + threshold + "). السعر: " + result.toFixed(2);
 
             // Display all results
             document.getElementById('comparison_result').innerHTML = `

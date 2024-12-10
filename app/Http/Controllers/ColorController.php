@@ -45,7 +45,7 @@ public function update(Request $request, $id)
         'code' => 'required|string|max:7',
     ]);
 
-    $color = Color::find($id)->useOriginalFields();
+    $color = Color::find($id);
     $color->update([
         'name' => $request->name,
         'name_ar' => $request->name_ar,

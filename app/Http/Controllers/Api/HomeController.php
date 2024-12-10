@@ -11,6 +11,7 @@ use App\Http\Resources\ProductResourse;
 use App\Models\Banner;
 use App\Models\DiscountCode;
 use App\Models\Product;
+use App\Services\UnsplashService;
 
 class HomeController extends BaseController
 {
@@ -98,6 +99,20 @@ class HomeController extends BaseController
         ];
         return $this->sendResponse($res, 'success');
     }
+    public function images(Request $request,UnsplashService $unsplashService )
+    {
+        $query = request('query',$request->search); // Default keyword: "addidas logo"
+        $images = $unsplashService->searchImages($query);
+    
+        // Extract only the 'urls' field from each image
+        $imageUrls = array_map(function($image) {
+            return $image['urls']['thumb'];
+        }, $images['results']);
+    
+        return $imageUrls;
+    }
+    
+    
     public function example_size_calculate(Request $request)
 {
     // الحصول على القيم من الطلب

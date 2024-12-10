@@ -67,6 +67,8 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th >{{ __('name') }}</th>
+                                                <th >{{ __('Name in arabic') }}</th>
+
                                                 <th>{{ __('code') }}</th>
                                                 {{-- <th>{{ __('Status') }}</th> --}}
                                                 <th>{{ __('Action') }}</th>
@@ -76,7 +78,9 @@
                                             @foreach ($colors as $key => $item)
                                                 <tr>
                                                     <th>{{ $key + 1 }}</th>
-                                                    <th>{{ $item->display_name  }}</th>
+                                                    <th>{{ $item->name  }}</th>
+                                                    <th>{{ $item->name_ar  }}</th>
+
                                                     <td>
                                                         <!-- عرض المربع مع اللون -->
                                                         <div style="width: 20px; height: 20px; background-color: {{ $item->code }}; display: inline-block; border: 1px solid #000;"></div>
@@ -104,6 +108,8 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th >{{ __('name') }}</th>
+                                                <th >{{ __('Name in arabic') }}</th>
+
                                                 <th>{{ __('code') }}</th>
                                                 {{-- <th>{{ __('Status') }}</th> --}}
                                                 <th>{{ __('Action') }}</th>

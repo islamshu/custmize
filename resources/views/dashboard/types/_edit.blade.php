@@ -11,13 +11,22 @@
             <form id="edit_fast_type" >
                 @csrf
                 <div class=""></div>
-                <input type="hidden" id="edit-id">
+                <input type="hidden" id="edit-id" >
 
 
                 <div class="modal-body">
                     <fieldset class="form-group floating-label-form-group">
-                        <label for="name">{{ __('name') }}</label>
+                        <label for="name">{{ __('Size name') }}</label>
                         <input type="text" class="form-control" required  name="name" id="edit-name">
+                        <div class="invalid-feedback">
+                        </div>
+                    </fieldset>
+                   
+                    <br>
+                    
+                    <fieldset class="form-group floating-label-form-group">
+                        <label for="name">{{ __('name in arabic') }}</label>
+                        <input type="text" class="form-control" required  name="name_ar" id="edit-name_ar">
                         <div class="invalid-feedback">
                         </div>
                     </fieldset>

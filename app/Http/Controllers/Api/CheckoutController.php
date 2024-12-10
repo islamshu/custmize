@@ -90,6 +90,8 @@ class CheckoutController extends BaseController
                 'order_id' => $order->id,
                 'product_name'=>Product::find($orderData['product_id'])->name,
                 'product_id' => $orderData['product_id'],
+                'color_id'=>$orderData['color_id'],
+                'size_id'=>$orderData['size_id'],
                 'quantity' => $orderData['quantity'],
                 'price_without_size_color' => $orderData['price_without_size_color_price'],
                 'price_for_size_color' => $orderData['price_for_size_color_price'],

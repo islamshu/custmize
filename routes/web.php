@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
 use App\Models\Banner;
+use App\Services\UnsplashService;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,12 @@ use App\Models\Banner;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('/unsplash-images', function (UnsplashService $unsplashService) {
+    $query = request('query', 'addidas logo'); // الكلمة المفتاحية الافتراضية: "nature"
+    $images = $unsplashService->searchImages($query);
+    return $images['results'];
+    return view('unsplash', ['images' => $images['results']]);
+});
 Route::get('/login', [HomeController::class,'login'])->name('login');
 Route::post('/login', [HomeController::class,'post_login'])->name('post_login');
 Route::get('/carts', [HomeController::class,'cart'])->name('cart');

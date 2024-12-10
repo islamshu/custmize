@@ -3,6 +3,7 @@
 use App\Models\Color;
 use App\Models\GeneralInfo;
 use App\Models\Product;
+use App\Models\Size;
 use Illuminate\Support\Facades\File;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
@@ -13,6 +14,10 @@ function openJSONFile($code){
         $jsonString = json_decode($jsonString, true);
     }
     return $jsonString;
+}
+function get_color($code){
+    $color = Color::find($code);
+    return $color;
 }
 function saveJSONFile($code, $data){
     ksort($data);
@@ -33,13 +38,14 @@ $pro = Product::find($id);
 return @$pro->colors()->first()->front_image; 
 
 }
-function get_color($id){
-    $color = Color::find($id);
-    return $color->name;
-}
+
 function get_color_code($id){
     $color = Color::find($id);
     return $color->code;
+}
+function get_size($id){
+    $size = Size::find($id);
+    return $size->name;
 }
 
  function addToJsonFile($name)

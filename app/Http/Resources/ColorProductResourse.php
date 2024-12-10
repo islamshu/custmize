@@ -15,9 +15,9 @@ class ColorProductResourse extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=> $this->id,
+            "id"=> $this->color->id,
             "name"=> $this->color->name,
-            'color_code'=>$this->color->code,
+            'color_code'=>$this->color->id,
             'have_front_image'=>$this->front_image ?true : false,
             'have_back_image'=>$this->back_image ?true : false,
             'front_image'=>$this->front_image != null  ? asset('uploads/'.$this->front_image)  : null,

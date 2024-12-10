@@ -67,6 +67,8 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th >{{ __('name') }}</th>
+                                                <th >{{ __('Name in arabic') }}</th>
+
                                                 {{-- <th>{{ __('Status') }}</th> --}}
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
@@ -75,30 +77,36 @@
                                             @foreach ($sizes as $key => $item)
                                                 <tr>
                                                     <th>{{ $key + 1 }}</th>
-                                                    <th>{{ $item->dispaly_name }}</th>
-                                                                                              
+                                                    <th>{{ $item->name }}</th>
+                                                    <th>{{ $item->name_ar }}</th> <!-- إضافة العمود للغة العربية -->
                                                     <th>
-                                                        
-                                                        <button class="btn btn-primary edit-btn" data-id="{{ $item->id }}" data-name="{{ $item->name }}"data-name_ar="{{ $item->name_ar }}"   data-toggle="modal"
-                                                            data-target="#edit_model">{{ __('Edit Size') }}</button>
-
-                                                        <form style="display: inline-block"
-                                                            action="{{ route('sizes.destroy', $item->id) }}"
-                                                            method="post">
+                                                        <button class="btn btn-primary edit-btn" 
+                                                                data-id="{{ $item->id }}" 
+                                                                data-name="{{ $item->name }}" 
+                                                                data-name_ar="{{ $item->name_ar }}" 
+                                                                data-toggle="modal" 
+                                                                data-target="#edit_model">{{ __('Edit Size') }}</button>
+                                        
+                                                        <form style="display: inline-block" 
+                                                              action="{{ route('sizes.destroy', $item->id) }}" 
+                                                              method="post">
                                                             @csrf
                                                             @method('delete')
-                                                            <button class="btn btn-danger delete-confirm "><i
-                                                                    class="ft-delete"></i></button>
+                                                            <button class="btn btn-danger delete-confirm">
+                                                                <i class="ft-delete"></i>
+                                                            </button>
                                                         </form>
                                                     </th>
                                                 </tr>
                                             @endforeach
-
                                         </tbody>
+                                        
                                         <tfoot>
                                             <tr>
                                                 <th>#</th>
                                                 <th >{{ __('name') }}</th>
+                                                <th >{{ __('Name in arabic') }}</th>
+
                                                 {{-- <th>{{ __('Status') }}</th> --}}
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
@@ -129,7 +137,7 @@
      $('.edit-btn').on('click', function() {
             $('#edit-id').val($(this).data('id'));
             $('#edit-name').val($(this).data('name'));
-            $('#edit-name-ar').val($(this).data('name_ar'));
+            $('#edit-name_ar').val($(this).data('name_ar'));
 
         });
     $("#edit_fast_size").submit(function(event) {
@@ -143,7 +151,7 @@
            url: url,
            data: {
                 name: $('#edit-name').val(),
-                name_ar: $('#edit-name-ar').val(),
+                name_ar: $('#edit-name_ar').val(),
 
                 _token: '{{ csrf_token() }}' // Alternatively, you can use the setup
             },          

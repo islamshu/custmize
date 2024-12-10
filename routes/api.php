@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\UserController;
+use App\Services\UnsplashService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::post('forgotPassword',[UserController::class,'forgotPassword']);
 Route::post('password_reset',[UserController::class,'resetPassword'])->name('password_reset');
 Route::get('size_calculate',[HomeController::class,'size_calculate'])->name('size_calculate');
 Route::get('example_size_calculate',[HomeController::class,'example_size_calculate'])->name('size_calculate');
+Route::get('images', [HomeController::class,'images'])->name('images');
 
 Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);

@@ -18,6 +18,12 @@
                         <div class="invalid-feedback">
                         </div>
                     </fieldset>
+                    <fieldset class="form-group floating-label-form-group">
+                        <label for="name">{{ __('name in arabic') }}</label>
+                        <input type="text" class="form-control" required  name="name_ar" id="name_ar">
+                        <div class="invalid-feedback">
+                        </div>
+                    </fieldset>
                    
                     <br>
                   

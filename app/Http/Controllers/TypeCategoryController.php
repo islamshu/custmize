@@ -16,10 +16,13 @@ public function store(Request $request)
 {
     $request->validate([
         'name' => 'required|string|max:255',
+        'name_ar' => 'required|string|max:255',
+
     ]);
 
     TypeCategory::create([
         'name' => $request->name,
+        'name_ar'=>$request->name_ar,
     ]);
     return response()->json(['success' => 'true',200]);
 
@@ -35,11 +38,16 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'name' => 'required|string|max:255',
+        'name_ar' => 'required|string|max:255',
+
     ]);
 
     $TypeCategory = TypeCategory::find($id);
     $TypeCategory->update([
         'name' => $request->name,
+        'name_ar' => $request->name_ar,
+
+
     ]);
 
     return response()->json(['success' => __('TypeCategory updated successfully')]);
