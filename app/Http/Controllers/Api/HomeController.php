@@ -95,7 +95,7 @@ class HomeController extends BaseController
             'factor' => get_general_value('threshold'),
             'if_output_is_less_factor' => get_general_value('price_less'),
             'if_output_is_equal_factor' => get_general_value('price_equal'),
-            'if_output_is_greater_factor' => get_general_value('price_greater'),
+            // 'if_output_is_greater_factor' => get_general_value('price_greater'),
         ];
         return $this->sendResponse($res, 'success');
     }
@@ -130,7 +130,7 @@ class HomeController extends BaseController
     $threshold = get_general_value('threshold');
     $priceLess = get_general_value('price_less');
     $priceEqual = get_general_value('price_equal');
-    $priceGreater = get_general_value('price_greater');
+    // $priceGreater = get_general_value('price_greater');
 
     // حساب الناتج
     $result = $hight * $width * $percentage;
@@ -147,7 +147,7 @@ class HomeController extends BaseController
         $price = $priceEqual;
     } else {
         $comparison = "Result is greater than the threshold.";
-        $price = $priceGreater;
+        $price = $result;
     }
 
     // إعداد الاستجابة
