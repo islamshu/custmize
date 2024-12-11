@@ -26,7 +26,7 @@
                     
                     <fieldset class="form-group floating-label-form-group">
                         <label for="name">{{ __('Size name in arabic') }}</label>
-                        <input type="text" class="form-control" required  name="name_ar" id="edit-name-ar">
+                        <input type="text" class="form-control" required  name="name_ar" id="edit-name_ar">
                         <div class="invalid-feedback">
                         </div>
                     </fieldset>
