@@ -28,7 +28,7 @@ class UserResource extends JsonResource
             'state'=>$this->state,
             'country'=>$this->country,
 
-            // 'token' => $this->createToken('Personal Access Token')->accessToken,
+            'token' => $this->createToken('Personal Access Token')->accessToken,
         ];
     }
 }
