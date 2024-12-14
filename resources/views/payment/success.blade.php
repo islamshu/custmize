@@ -88,7 +88,7 @@
                         <td>{{ $detail->quantity }}</td>
                         <td>{{ number_format($detail->full_price, 2) }} ريال</td>
                         <td>    <img src="{{ $url.$detail->front_image }}" alt="الصورة الأمامية" style="width: 100px; height: auto;"></td>
-                        <td>@if($detail->back_image == null) {{'_'}} @else<img src="{{ $url. $detail->back_image)}}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
+                        <td>@if($detail->back_image == null) {{'_'}} @else<img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
                     </tr>
                 @endforeach
             </tbody>
