@@ -234,7 +234,7 @@ class UserController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validation->messages()->all());
+            return $this->sendError($validator->messages()->all());
         }
 
         // Update user information
