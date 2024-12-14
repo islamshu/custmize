@@ -74,13 +74,21 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    if(env('APP_ENV') == 'production'){
+                        $url = 'http://custmize.digitalgo.net/storage/images/';
+                    }else{
+                        $url = 'http://127.0.0.1:8000/storage/images/';
+
+                    }
+                @endphp
                 @foreach ($order->details as $detail)
                     <tr>
                         <td>{{ $detail->product_id }}</td>
                         <td>{{ $detail->quantity }}</td>
                         <td>{{ number_format($detail->full_price, 2) }} ريال</td>
-                        <td>    <img src="{{ url('storage/'. $detail->front_image) }}" alt="الصورة الأمامية" style="width: 100px; height: auto;"></td>
-                        <td>@if($detail->back_image == null) {{'_'}} @else<img src="{{url('storage/'. $detail->back_image )}}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
+                        <td>    <img src="{{ $url.$detail->front_image }}" alt="الصورة الأمامية" style="width: 100px; height: auto;"></td>
+                        <td>@if($detail->back_image == null) {{'_'}} @else<img src="{{ $url. $detail->back_image)}}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
                     </tr>
                 @endforeach
             </tbody>
