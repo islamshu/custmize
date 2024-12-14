@@ -53,7 +53,7 @@
 
     <div class="order-info">
         <h2>معلومات الطلب</h2>
-        <p><strong>رقم الطلب:</strong> {{ $order->id }}</p>
+        <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
         <p><strong>الإسم:</strong> {{ $order->name }}</p>
         <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
         <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
