@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\Confirm_email;
+use App\Mail\OrderSuccessMail;
 use App\Models\Client;
 use App\Models\DiscountCode;
 use App\Models\GeneralInfo;
@@ -36,6 +37,7 @@ class HomeController extends Controller
         $order = Order::with('details')->findOrFail($orderId);
         $order->status = 'completed';
         $order->save();
+        Mail::to($order->email)->send(new OrderSuccessMail($order));
         return view('payment.success', ['order' => $order]);
     }
     public function paymentError($orderId)

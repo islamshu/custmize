@@ -80,7 +80,7 @@
                         <td>{{ $detail->quantity }}</td>
                         <td>{{ number_format($detail->full_price, 2) }} دينار كويتي</td>
                         <td><img src="{{asset('storage/'. $detail->front_image )}}" alt="الصورة الأمامية" style="width: 100px; height: auto;"></td>
-                        <td><img src="{{asset('storage/'. $detail->back_image )}}" alt="الصورة الخلفية" style="width: 100px; height: auto;"></td>
+                        <td>@if($detail->back_image == null) {{_}} @else<img src="{{asset('storage/'. $detail->back_image )}}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
                     </tr>
                 @endforeach
             </tbody>

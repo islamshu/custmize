@@ -124,6 +124,7 @@ class UserController extends BaseController
         $validation = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:clients,email',
+            'phone' => 'required|unique:clients,phone',
             'password' => 'required',
             'confirm_password' => 'required|same:password'
         ]);
@@ -136,6 +137,8 @@ class UserController extends BaseController
         }
         $user = new Client();
         $user->name = $request->name;
+        $user->phone = $request->phone;
+
         $user->password = bcrypt($request->password);
         $user->email = $request->email;
         do {
@@ -223,7 +226,7 @@ class UserController extends BaseController
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:clients,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'required|unique:clients,phone,' . $user->id,
             'gender' => 'required|string|in:male,female',
             'DOB' => 'nullable|date',
             'state' => 'nullable|string|max:100',
