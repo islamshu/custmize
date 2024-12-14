@@ -76,9 +76,9 @@
             <tbody>
                 @php
                     if(env('APP_ENV') == 'production'){
-                        $url = 'http://custmize.digitalgo.net/storage/images/';
+                        $url = 'http://custmize.digitalgo.net/storage/';
                     }else{
-                        $url = 'http://127.0.0.1:8000/storage/images/';
+                        $url = 'http://127.0.0.1:8000/storage/';
 
                     }
                 @endphp
