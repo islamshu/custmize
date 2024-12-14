@@ -56,9 +56,9 @@
         <p><strong>رقم الطلب:</strong> {{ $order->id }}</p>
         <p><strong>الإسم:</strong> {{ $order->name }}</p>
         <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
-        <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} دينار كويتي</p>
-        <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} دينار كويتي</p>
-        <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} دينار كويتي</p>
+        <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
+        <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
+        <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
     </div>
 
     <div class="order-details">
@@ -78,9 +78,9 @@
                     <tr>
                         <td>{{ $detail->product_id }}</td>
                         <td>{{ $detail->quantity }}</td>
-                        <td>{{ number_format($detail->full_price, 2) }} دينار كويتي</td>
-                        <td><img src="{{asset('storage/'. $detail->front_image )}}" alt="الصورة الأمامية" style="width: 100px; height: auto;"></td>
-                        <td>@if($detail->back_image == null) {{'_'}} @else<img src="{{asset('storage/'. $detail->back_image )}}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
+                        <td>{{ number_format($detail->full_price, 2) }} ريال</td>
+                        <td>    <img src="{{ url('storage/'. $detail->front_image) }}" alt="الصورة الأمامية" style="width: 100px; height: auto;"></td>
+                        <td>@if($detail->back_image == null) {{'_'}} @else<img src="{{url('storage/'. $detail->back_image )}}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
                     </tr>
                 @endforeach
             </tbody>
