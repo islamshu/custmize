@@ -1,20 +1,44 @@
 <?php
 return [
-    'paths' => ['api/*', 'oauth/*'], // Apply CORS to API and Passport routes
+    /*
+    |--------------------------------------------------------------------------
+    | Cross-Origin Resource Sharing (CORS) Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the configuration options for CORS requests.
+    |
+    */
 
-    'allowed_methods' => ['*'], // Allow all HTTP methods
-
-    'allowed_origins' => [
-        'http://printlogo.custmize.digitalgo.net', // Your front-end domain
+    'paths' => [
+        'api/*', // Apply CORS to API routes
+        'oauth/*', // Include Passport routes like token and clients
+        'sanctum/csrf-cookie', // Optional if you're using Sanctum
     ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins' => [
+        'http://front.custmize.digitalgo.net', // Replace with your front-end URL
+        'http://printlogo.custmize.digitalgo.net', // Replace with your front-end URL
+        'https://printlogo.custmize.digitalgo.net/'
 
-    'allowed_headers' => ['*'], // Allow all headers
+    ],
 
-    'exposed_headers' => ['Authorization'], // Expose Authorization header
+    'allowed_methods' => [
+        'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'
+    ],
 
-    'max_age' => 0,
+    'allowed_headers' => [
+        'Content-Type',
+        'X-Auth-Token',
+        'X-Requested-With',
+        'Authorization', // Allow Authorization header for OAuth tokens
+        'Accept',
+    ],
 
-    'supports_credentials' => true, // Set to true if using cookies or credentials
+    'exposed_headers' => [
+        'Authorization', // Expose Authorization header to front-end
+    ],
+
+    'max_age' => 60 * 60 * 24, // Allow caching for a day
+
+    'supports_credentials' => true, // Enable credentials for Passport tokens
 ];
