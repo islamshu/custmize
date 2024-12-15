@@ -15,12 +15,7 @@ return [
         'sanctum/csrf-cookie', // Optional if you're using Sanctum
     ],
 
-    'allowed_origins' => [
-        'http://front.custmize.digitalgo.net', // Replace with your front-end URL
-        'http://printlogo.custmize.digitalgo.net', // Replace with your front-end URL
-        'https://printlogo.custmize.digitalgo.net/'
-
-    ],
+    'allowed_origins' => ['*'],
 
     'allowed_methods' => [
         'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'
