@@ -87,7 +87,12 @@
                         <td>{{ $detail->product_id }}</td>
                         <td>{{ $detail->quantity }}</td>
                         <td>{{ number_format($detail->full_price, 2) }} ريال</td>
-                        <td>    <img src="{{ $url.$detail->front_image }}" alt="الصورة الأمامية" style="width: 100px; height: auto;"></td>
+                        <td>   <img 
+                            src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" 
+                            alt="الصورة الأمامية" 
+                            style="width: 100px; height: auto;"
+                        >
+                        </td>
                         <td>@if($detail->back_image == null) {{'_'}} @else<img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
                     </tr>
                 @endforeach
