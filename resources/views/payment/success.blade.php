@@ -87,11 +87,7 @@
                         <td>{{ $detail->product_id }}</td>
                         <td>{{ $detail->quantity }}</td>
                         <td>{{ number_format($detail->full_price, 2) }} ريال</td>
-                        <td>   <img 
-                            src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" 
-                            alt="الصورة الأمامية" 
-                            style="width: 100px; height: auto;"
-                        >
+                        <td><img class="gb_Nd" src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r5.png" srcset="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r5.png 1x, https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_2x_r5.png 2x " alt="" aria-hidden="true" role="presentation" style="width:109px;height:40px">
                         </td>
                         <td>@if($detail->back_image == null) {{'_'}} @else<img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
                     </tr>
