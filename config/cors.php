@@ -9,13 +9,11 @@ return [
     |
     */
 
-    'paths' => [
-        'api/*', // Apply CORS to API routes
-        'oauth/*', // Include Passport routes like token and clients
-        'sanctum/csrf-cookie', // Optional if you're using Sanctum
+    'allowed_origins' => [
+        '*', // Allow all origins (for development) - Replace with specific origins in production
+        'http://front.custmize.digitalgo.net' // Allow specific origin,
+        
     ],
-
-    'allowed_origins' => ['*'],
 
     'allowed_methods' => [
         'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'
@@ -25,15 +23,14 @@ return [
         'Content-Type',
         'X-Auth-Token',
         'X-Requested-With',
-        'Authorization', // Allow Authorization header for OAuth tokens
-        'Accept',
+        'Authorization'
     ],
 
     'exposed_headers' => [
-        'Authorization', // Expose Authorization header to front-end
+         // ... any headers you want to expose to the client
     ],
 
     'max_age' => 60 * 60 * 24, // Allow caching for a day
 
-    'supports_credentials' => true, // Enable credentials for Passport tokens
+    'supports_credentials' => false, // Set to true if cookies are passed in cross-origin requests
 ];
