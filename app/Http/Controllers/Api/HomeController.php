@@ -99,6 +99,29 @@ class HomeController extends BaseController
         ];
         return $this->sendResponse($res, 'success');
     }
+    public function size_calculate_new(Request $request)
+    {
+        $width = $request->query('width');
+        $height = $request->query('height');
+
+        $area = $height * $width;
+        $price = 0;
+        // تطبيق الشروط
+        if ($area <= 3) {
+            $price = 3;
+        } elseif ($area <= 8) {
+            $price = 4;
+        } elseif ($area <= 15) {
+            $price = 6;
+        } elseif ($area <= 21) {
+            $price = 8;
+        } elseif ($area <= 30) {
+            $price = 10;
+        } else {
+            $price = "خارج النطاق المحدد";
+        }
+        return $this->sendResponse($area, 'success');
+    }
     public function images(Request $request,UnsplashService $unsplashService )
     {
         $query = request('query',$request->search); // Default keyword: "addidas logo"
