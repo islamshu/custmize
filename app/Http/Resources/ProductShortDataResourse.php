@@ -19,6 +19,7 @@ class ProductShortDataResourse extends JsonResource
             'title'=>$this->name,
             'image'=> $this->image,  
             'slug'=>$this->slug,
+            '3d_show'=>route('viwer',$this->id),
             'url'=>route('get_single_product',$this->slug),   
         ];
     }
