@@ -30,10 +30,12 @@ class Product extends Model
 {
     return $this->belongsToMany(Client::class, 'favorites', 'product_id', 'client_id');
 }
-    public function colors()
-    {
-        return $this->hasMany(ProductColor::class);
-    }
+public function colors()
+{
+    return $this->belongsToMany(Color::class, 'product_colors', 'product_id', 'product_color_id')
+                ->withPivot(['front_image', 'back_image', 'price']);
+}
+
     public function pen()
     {
         return $this->hasOne(Pen::class);

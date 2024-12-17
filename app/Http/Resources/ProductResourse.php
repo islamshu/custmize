@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\TypeCategory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,13 +26,13 @@ class ProductResourse extends JsonResource
             'delivery_date' => $this->delivery_date,
             'have_color' => $this->have_color($this),
             'colors' => ColorProductResourse::collection($this->colors),
-            'have_size' => $this->have_size($this),
-            'sizes' => SizeProductResourse::collection($this->sizes),
+            // 'have_size' => $this->have_size($this),
+            // 'sizes' => SizeProductResourse::collection($this->sizes),
             'category'=>new CategoryResourse($this->category),
             'sub_category'=>new CategoryResourse($this->subcategory),
             'min_sale'=>$this->min_sale,
             'guidness_image'=>$this->guidness_image($this),
-            'matiral'=>'cotton'
+            'matiral'=>new TypeCategoryResourse(TypeCategory::find($this->type_id)),
 
 
         ];

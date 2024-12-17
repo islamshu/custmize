@@ -1,47 +1,5 @@
 @extends('layouts.master')
-@section('style')
-    <style>
-        .color-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: #f9f9f9;
-        }
 
-        .color-card h5 {
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-            color: #333;
-        }
-
-        .sizes-container {
-            margin-top: 10px;
-        }
-
-        .size-group {
-            padding: 10px;
-            border: 1px dashed #ccc;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-
-        .remove-size {
-            color: white;
-            background-color: red;
-            border: none;
-            padding: 7px;
-            border-radius: 35%;
-            cursor: pointer;
-            margin-top: 25px;
-        }
-
-
-        .remove-size:hover {
-            background-color: darkred;
-        }
-    </style>
-@endsection
 @section('content')
     <div class="app-content content">
         <div class="content-wrapper">
@@ -173,19 +131,36 @@
                                             <div id="colors-section" class="form-group col-8 d-none"
                                                 style="border: 1px solid #ddd; padding: 15px;">
                                                 <label>{{ __('Colors') }}</label>
-                                                <select id="colors" name="color_ids[]" class="form-control select2" multiple>
+                                                <select id="colors" name="colors[]" class="form-control select2"
+                                                    multiple>
                                                     @foreach ($colors as $color)
-                                                        <option value="{{ $color->id }}">{{ $color->name }}</option>
+                                                        <option value="{{ $color->id }}"
+                                                            {{ collect(old('colors'))->contains($color->id) ? 'selected' : '' }}>
+                                                            {{ $color->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                <div id="colors-container" class="mt-3">
+                                                <div id="colors-container">
 
                                                 </div>
                                             </div>
 
 
                                             <!-- Sizes Section (for T-shirt) -->
-
+                                            <div id="sizes-section" class="form-group col-8 d-none"
+                                                style="border: 1px solid #ddd; padding: 15px;">
+                                                <label>{{ __('Sizes') }}</label>
+                                                <select id="sizes" name="sizes[]" class="form-control select2"
+                                                    multiple>
+                                                    @foreach ($sizes as $size)
+                                                        <option value="{{ $size->id }}"
+                                                            {{ collect(old('sizes'))->contains($size->id) ? 'selected' : '' }}>
+                                                            {{ $size->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div id="sizes-container">
+                                                    <!-- This will be filled dynamically if needed -->
+                                                </div>
+                                            </div>
                                             <div class="form-group col-8 d-none type_product">
                                                 <label for="pen_type">{{ __('Type') }}</label>
                                                 <select id="type_product" name="type_product" class="form-control">
@@ -353,148 +328,136 @@
 
 
 
+            // Handle Colors selection
+            // $('#colors').on('change', function() {
+            //     const selectedColors = $(this).val();
+            //     const colorsContainer = document.getElementById('colors-container');
+            //     colorsContainer.innerHTML = ''; // Clear previous fields
+
+            //     if (selectedColors.length > 0) {
+            //         selectedColors.forEach(function(colorId) {
+            //             const colorName = document.querySelector(
+            //                 `#colors option[value="${colorId}"]`).text;
+            //             var colortype = $('#color_type').val();
+
+            //             let colorFields = '';
+            //             if (colortype == 2) {
+            //                 colorFields = `
+        //                 <div class="color-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
+        //                     <h5>${colorName}</h5>
+        //                     <div class="form-row">
+        //                         <input type="hidden" name="colors[${colorId}][id]" value="${colorId}" class="form-control">
+
+        //                         <div class="col-md-4">
+        //                             <label>{{ __('Front Image') }}</label>
+        //                             <input type="file" name="colors[${colorId}][front_image]" class="form-control" accept="image/*" onchange="previewImage(this, 'front-preview-${colorId}')">
+        //                             <img id="front-preview-${colorId}" class="mt-2" style="max-width: 100px; display: none;">
+        //                         </div>
+        //                         <div class="col-md-4">
+        //                             <label>{{ __('Back Image') }}</label>
+        //                             <input type="file" name="colors[${colorId}][back_image]" class="form-control" accept="image/*" onchange="previewImage(this, 'back-preview-${colorId}')">
+        //                             <img id="back-preview-${colorId}" class="mt-2" style="max-width: 100px; display: none;">
+        //                         </div>
+        //                         <div class="col-md-4">
+        //                             <label>{{ __('Price') }}</label>
+        //                             <input type="number" name="colors[${colorId}][price]" class="form-control" ">
+        //                         </div>
+        //                     </div>
+        //                 </div>`;
+            //             } else if (colortype == 1) {
+            //                 colorFields = `
+        //                 <div class="color-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
+        //                     <h5>${colorName}</h5>
+        //                     <div class="form-row">
+        //                         <input type="hidden" name="colors[${colorId}][id]" value="${colorId}" class="form-control">
+
+        //                         <div class="col-md-6">
+        //                             <label>{{ __('Image') }}</label>
+        //                             <input type="file" name="colors[${colorId}][front_image]" class="form-control" accept="image/*" onchange="previewImage(this, 'front-preview-${colorId}')">
+        //                             <img id="front-preview-${colorId}" class="mt-2" style="max-width: 100px; display: none;">
+        //                         </div>
+        //                         <div class="col-md-6">
+        //                             <label>{{ __('Price') }}</label>
+        //                             <input type="number" name="colors[${colorId}][price]" class="form-control" ">
+        //                         </div>
+
+        //                     </div>
+        //                 </div>`;
+            //             }
+
+
+            //             colorsContainer.insertAdjacentHTML('beforeend', colorFields);
+            //         });
+            //     }
+            // });
             let colorsData = {}; // لتخزين بيانات الألوان
 
             // Handle Colors selection
             $('#colors').on('change', function() {
-                const selectedColors = $(this).val(); // Get selected colors
-                const colorsContainer = $('#colors-container');
+                const selectedColors = $(this).val();
+                const colorsContainer = document.getElementById('colors-container');
+                colorsContainer.innerHTML = ''; // Clear previous fields
 
-                selectedColors.forEach(function(colorId) {
-                    if (!colorsData[colorId]) {
-                        colorsData[colorId] = {
-                            sizes: []
-                        }; // Initialize data for the new color
+                if (selectedColors.length > 0) {
+                    selectedColors.forEach(function(colorId) {
+                        const colorName = document.querySelector(
+                            `#colors option[value="${colorId}"]`).text;
+                        let colortype = $('#color_type').val();
 
-                        // Render the color card
-                        colorsContainer.append(renderColorCard(colorId));
-                    }
-                });
+                        // Use existing data if available
+                        const colorData = colorsData[colorId] || {
+                            front_image: '',
+                            back_image: '',
+                            price: ''
+                        };
 
-                // Remove unselected colors
-                for (let colorId in colorsData) {
-                    if (!selectedColors.includes(colorId)) {
-                        delete colorsData[colorId]; // Remove data
-                        $(`#color-card-${colorId}`).remove(); // Remove card
-                    }
-                }
-            });
+                        let colorFields = '';
+                        if (colortype == 2) {
+                            colorFields = `
+                <div class="color-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
+                    <h5>${colorName}</h5>
+                    <div class="form-row">
+                        <input type="hidden" name="colors[${colorId}][id]" value="${colorId}" class="form-control">
 
-            // Render a color card
-            function renderColorCard(colorId) {
-    const colorName = $(`#colors option[value="${colorId}"]`).text();
-    return `
-        <div class="color-card" id="color-card-${colorId}">
-            <h5>${colorName}</h5>
-            <div class="form-row">
-                <!-- Front Image -->
-                <div class="col-md-4">
-                    <label>{{ __('Front Image') }} <span style="color:red">*</span></label>
-                    <input type="file" name="colors_data[${colorId}][front_image]"  required
-                           class="form-control" onchange="previewUploadedImage(this, 'front-preview-${colorId}')">
-                    <img id="front-preview-${colorId}" src="#" 
-                         style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover; border:1px solid #ddd; border-radius:8px;" />
-                </div>
-                
-                <!-- Back Image -->
-                <div class="col-md-4">
-                    <label>{{ __('Back Image') }}</label>
-                    <input type="file" name="colors_data[${colorId}][back_image]" 
-                           class="form-control" onchange="previewUploadedImage(this, 'back-preview-${colorId}')">
-                    <img id="back-preview-${colorId}" src="#" 
-                         style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover; border:1px solid #ddd; border-radius:8px;" />
-                </div>
+                        <div class="col-md-4">
+                            <label>{{ __('Front Image') }}</label>
+                            <input type="file" name="colors[${colorId}][front_image]" class="form-control" accept="image/*" onchange="previewImage(this, 'front-preview-${colorId}')">
+                            <img id="front-preview-${colorId}" src="${colorData.front_image}" class="mt-2" style="max-width: 100px; display: ${colorData.front_image ? 'block' : 'none'};">
+                        </div>
+                        <div class="col-md-4">
+                            <label>{{ __('Back Image') }}</label>
+                            <input type="file" name="colors[${colorId}][back_image]" class="form-control" accept="image/*" onchange="previewImage(this, 'back-preview-${colorId}')">
+                            <img id="back-preview-${colorId}" src="${colorData.back_image}" class="mt-2" style="max-width: 100px; display: ${colorData.back_image ? 'block' : 'none'};">
+                        </div>
+                        <div class="col-md-4">
+                            <label>{{ __('Price') }}</label>
+                            <input type="number" name="colors[${colorId}][price]" class="form-control" value="${colorData.price}">
+                        </div>
+                    </div>
+                </div>`;
+                        } else if (colortype == 1) {
+                            colorFields = `
+                <div class="color-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
+                    <h5>${colorName}</h5>
+                    <div class="form-row">
+                        <input type="hidden" name="colors[${colorId}][id]" value="${colorId}" class="form-control">
 
-                <!-- Price -->
-                <div class="col-md-4">
-                    <label>{{ __('Price') }}</label>
-                    <input type="number" name="colors_data[${colorId}][price]" class="form-control">
-                </div>
-            </div>
+                        <div class="col-md-6">
+                            <label>{{ __('Image') }}</label>
+                            <input type="file" name="colors[${colorId}][front_image]" class="form-control" accept="image/*" onchange="previewImage(this, 'front-preview-${colorId}')">
+                            <img id="front-preview-${colorId}" src="${colorData.front_image}" class="mt-2" style="max-width: 100px; display: ${colorData.front_image ? 'block' : 'none'};">
+                        </div>
+                        <div class="col-md-6">
+                            <label>{{ __('Price') }}</label>
+                            <input type="number" name="colors[${colorId}][price]" class="form-control" value="${colorData.price}">
+                        </div>
+                    </div>
+                </div>`;
+                        }
 
-            <!-- Sizes Container -->
-            <div class="sizes-container mt-2" id="sizes-container-${colorId}"></div>
-            <button type="button" class="btn btn-primary btn-sm mt-2 add-size" 
-                    data-color-id="${colorId}">{{ __('Add Size') }}</button>
-        </div>
-    `;
-}
-
-
-            // Render size fields
-            function renderSizes(colorId, sizes) {
-                let sizesFields = '';
-                sizes.forEach((size, index) => {
-                    sizesFields += renderSizeField(colorId, index, size.id, size.price);
-                });
-                return sizesFields;
-            }
-
-            // Render a single size field
-            function renderSizeField(colorId, index, sizeId = '', price = '') {
-                return `
-        <div class="size-group form-row">
-            <div class="col-md-6">
-                <label>{{ __('Size') }}</label>
-                <select name="colors_data[${colorId}][sizes][${index}][id]" class="form-control">
-                    @foreach ($sizes as $size)
-                        <option value="{{ $size->id }}" ${sizeId == '{{ $size->id }}' ? 'selected' : ''}>{{ $size->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label>{{ __('Price') }}</label>
-                <input type="number" name="colors_data[${colorId}][sizes][${index}][price]" class="form-control" value="${price}">
-            </div>
-            <div class="col-md-2 d-flex align-items-center">
-                <button type="button" class="remove-size" onclick="removeSize(${colorId}, ${index})">&times;</button>
-            </div>
-        </div>
-    `;
-            }
-
-            // Add size dynamically
-            $(document).on('click', '.add-size', function() {
-                const colorId = $(this).data('color-id');
-                const sizesContainer = $(`#sizes-container-${colorId}`);
-                const sizeIndex = colorsData[colorId].sizes.length; // Get the next index
-
-                colorsData[colorId].sizes.push({
-                    id: '',
-                    price: ''
-                }); // Add size data
-                sizesContainer.append(renderSizeField(colorId, sizeIndex)); // Add size field
-            });
-
-            // Remove size
-            window.removeSize = function(colorId, index) {
-                colorsData[colorId].sizes.splice(index, 1); // Remove the size from the data
-                const sizeGroup = document.querySelector(
-                    `#sizes-container-${colorId} .size-group:nth-child(${index + 1})`);
-                if (sizeGroup) {
-                    sizeGroup.remove(); // Remove the size from the DOM
-                }
-            };
-            $('#colors').on('change', function() {
-                $('.color-group').each(function() {
-                    const colorId = $(this).find('input[name$="[id]"]').val();
-                    const colorPrice = $(this).find('input[name$="[price]"]').val();
-                    const sizes = [];
-
-                    $(this).find('.size-group').each(function() {
-                        const sizeId = $(this).find('select').val();
-                        const sizePrice = $(this).find('input[name$="[price]"]').val();
-                        sizes.push({
-                            id: sizeId,
-                            price: sizePrice
-                        });
+                        colorsContainer.insertAdjacentHTML('beforeend', colorFields);
                     });
-
-                    colorsData[colorId] = {
-                        price: colorPrice,
-                        sizes: sizes
-                    };
-                });
+                }
             });
             $('#colors-container').on('change', 'input', function() {
                 const colorId = $(this).closest('.color-group').find('input[name^="colors"]').val();
@@ -563,19 +526,7 @@
         });
 
         let selectedFiles = []; // To track the selected files
-        function previewUploadedImage(input, previewId) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
 
-        reader.onload = function(e) {
-            const img = document.getElementById(previewId);
-            img.src = e.target.result; // تعيين الصورة المُحمّلة
-            img.style.display = "block"; // عرض الصورة
-        };
-
-        reader.readAsDataURL(input.files[0]); // قراءة الملف
-    }
-}
         function previewImages() {
             var previewContainer = document.getElementById('image-preview');
             var files = document.getElementById('images').files;

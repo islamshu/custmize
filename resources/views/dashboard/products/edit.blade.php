@@ -1,5 +1,47 @@
 @extends('layouts.master')
+@section('style')
+    <style>
+        .color-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
 
+        .color-card h5 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .sizes-container {
+            margin-top: 10px;
+        }
+
+        .size-group {
+            padding: 10px;
+            border: 1px dashed #ccc;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .remove-size {
+            color: white;
+            background-color: red;
+            border: none;
+            padding: 7px;
+            border-radius: 35%;
+            cursor: pointer;
+            margin-top: 25px;
+        }
+
+
+        .remove-size:hover {
+            background-color: darkred;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="app-content content">
         <div class="content-wrapper">
@@ -80,40 +122,48 @@
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="name">{{ __('3D model') }}</label>
-                                        <input type="file" id="file" class="form-control" name="file" accept=".glb,.gltf" >
-                                            <a href="{{$product->image}}">preview model</a>
+                                                <input type="file" id="file" class="form-control" name="file"
+                                                    accept=".glb,.gltf">
+                                                <a href="{{ $product->image }}">preview model</a>
                                             </div>
-                                        
+
                                             <div class="form-group col-8">
                                                 <div class="form-group">
                                                     <label for="images">{{ __('Guidness Image') }}</label>
-                                                    <input  type="file" name="guidness[]" id="images"
+                                                    <input type="file" name="guidness[]" id="images"
                                                         class="form-control" multiple onchange="previewImages()">
                                                 </div>
                                                 <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
 
                                                     <!-- عرض الصور القديمة -->
-                                                    <div id="existing-images" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                                    <div id="existing-images"
+                                                        style="display: flex; gap: 10px; flex-wrap: wrap;">
                                                         @foreach (json_decode($product->guidness_pic) as $item)
-                                                        <div class="image-container" style="position: relative; width: 100px; height: 100px;">
-                                                            <img src="{{ asset('uploads/'.$item) }}" alt="Uploaded Image"
-                                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-                                                            <span class="delete-existing" 
-                                                                  onclick="removeExistingImage('{{ $item }}', this)"
-                                                                  style="position: absolute; top: 5px; right: 5px; color: white; background-color: red; border-radius: 50%; cursor: pointer; padding: 5px;">&times;</span>
-                                                        </div>
+                                                            <div class="image-container"
+                                                                style="position: relative; width: 100px; height: 100px;">
+                                                                <img src="{{ asset('uploads/' . $item) }}"
+                                                                    alt="Uploaded Image"
+                                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                                                                <span class="delete-existing"
+                                                                    onclick="removeExistingImage('{{ $item }}', this)"
+                                                                    style="position: absolute; top: 5px; right: 5px; color: white; background-color: red; border-radius: 50%; cursor: pointer; padding: 5px;">&times;</span>
+                                                            </div>
                                                         @endforeach
                                                     </div>
-                                            
-                                                    <!-- عرض معاينة الصور الجديدة -->
-                                                    <div id="image-preview" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
-                                                </div>
-                                                <input type="hidden" name="deleted_images" id="deleted_images" value="">
 
-                                            
+                                                    <!-- عرض معاينة الصور الجديدة -->
+                                                    <div id="image-preview"
+                                                        style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                                                </div>
+                                                <input type="hidden" name="deleted_images" id="deleted_images"
+                                                    value="">
+
+
                                                 <!-- عرض معاينة الصور الجديدة -->
-                                                <div id="image-preview" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
-                                            
+                                                <div id="image-preview"
+                                                    style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                                </div>
+
                                             </div>
 
                                             <!-- Description -->
@@ -129,8 +179,9 @@
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="description">{{ __('Delivery date') }}</label>
-                                            <input type="number" value="{{ $product->delivery_date }}" name="delivery_date" class="form-control" >
-                                                </div>
+                                                <input type="number" value="{{ $product->delivery_date }}"
+                                                    name="delivery_date" class="form-control">
+                                            </div>
 
                                             <!-- Fixed Price -->
 
@@ -144,7 +195,8 @@
                                             </div>
                                             <div class="form-group col-8">
                                                 <label for="min_sale">{{ __('Min product can be sale') }}</label>
-                                                <input type="number" id="min_sale" name="min_sale" class="form-control"
+                                                <input type="number" id="min_sale" name="min_sale"
+                                                    class="form-control"
                                                     value="{{ old('min_sale', @$product->min_sale) }}"
                                                     placeholder="{{ __('Min product can be sale') }}" required>
                                             </div>
@@ -154,165 +206,138 @@
                                                 $attributes = json_decode($product->subcategory->attributs);
                                             @endphp
 
-                                            @if (in_array('colors1', $attributes) || in_array('colors2', $attributes))
-                                                <input type="hidden" id="color_type"
-                                                    value="{{ in_array('colors1', $attributes) ? 1 : 2 }}">
-
-                                                <div id="colors-section" class="form-group col-8 "
-                                                    style="border: 1px solid #ddd; padding: 15px;">
-                                                    <label>{{ __('Colors') }}</label>
-                                                    <select id="colors" name="colors[]" class="form-control select2"
-                                                        multiple>
-                                                        @foreach ($colors as $color)
-                                                            <option value="{{ $color->id }}"
-                                                                {{ in_array($color->id, @$product->colors->pluck('color_id')->toArray()) ? 'selected' : '' }}>
-                                                                {{ $color->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <div id="colors-container">
-                                                        @foreach ($product->colors as $productColor)
-                                                            <div id="color-{{ $productColor->color_id }}"
-                                                                class="color-group mb-3"
-                                                                style="border: 1px solid #ccc; padding: 15px;">
-                                                                <h5>{{ $productColor->color->name }}</h5>
-                                                                <div class="form-row">
-                                                                    <!-- حفظ معرف اللون -->
-                                                                    <input type="hidden"
-                                                                        name="colors[{{ $productColor->color_id }}][id]"
-                                                                        value="{{ $productColor->color_id }}" />
-
-                                                                    <!-- صورة أمامية -->
-                                                                    <div class="col-md-4">
-                                                                        <label>{{ __('Front Image') }}</label>
-                                                                        <input type="file"
-                                                                            name="colors[{{ $productColor->color_id }}][front_image]"
-                                                                            class="form-control" accept="image/*">
-                                                                        @if ($productColor->front_image)
-                                                                            <img src="{{ asset('uploads/' . $productColor->front_image) }}"
-                                                                                class="mt-2" style="max-width: 100px;">
-                                                                            <input type="hidden"
-                                                                                name="colors[{{ $productColor->color_id }}][old_front_image]"
-                                                                                value="{{ $productColor->front_image }}">
-                                                                        @endif
-                                                                    </div>
-
-                                                                    <!-- صورة خلفية (إذا كانت مطلوبة) -->
-                                                                    <div
-                                                                        class="col-md-4 {{ in_array('colors2', $attributes) ? '' : 'd-none' }}">
-                                                                        <label>{{ __('Back Image') }}</label>
-                                                                        <input type="file"
-                                                                            name="colors[{{ $productColor->color_id }}][back_image]"
-                                                                            class="form-control" accept="image/*">
-                                                                        @if ($productColor->back_image)
-                                                                            <img src="{{ asset('uploads/' . $productColor->back_image) }}"
-                                                                                class="mt-2" style="max-width: 100px;">
-                                                                            <input type="hidden"
-                                                                                name="colors[{{ $productColor->color_id }}][old_back_image]"
-                                                                                value="{{ $productColor->back_image }}">
-                                                                        @endif
-                                                                    </div>
-
-                                                                    <!-- سعر اللون -->
-                                                                    <div class="col-md-4">
-                                                                        <label>{{ __('Price') }}</label>
-                                                                        <input type="number"
-                                                                            name="colors[{{ $productColor->color_id }}][price]"
-                                                                            value="{{ $productColor->price }}"
-                                                                            class="form-control">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-
-                                                </div>
-                                            @endif
-
-                                            <!-- Sizes Section (for T-shirt) -->
-                                            <div id="sizes-section"
-                                                class="form-group col-8 {{ in_array('sizes', $attributes) == true ? '' : 'd-none' }}"
+                                            <div id="colors-section" class="form-group col-8"
                                                 style="border: 1px solid #ddd; padding: 15px;">
-                                                <label>{{ __('Sizes') }}</label>
-                                                @php
-                                                    $array_size = [];
-                                                @endphp
-                                                @foreach (@$product->sizes as $item)
-                                                    @php
-                                                        array_push($array_size, $item->size_name);
-                                                    @endphp
-                                                @endforeach
-                                                <select id="sizes" name="sizes[]" class="form-control select2"
+                                                <label>{{ __('Colors') }}</label>
+                                                <select id="colors" name="color_ids[]" class="form-control select2"
                                                     multiple>
-                                                    @foreach ($sizes as $size)
-                                                        <option value="{{ $size->name }}"
-                                                            {{ in_array($size->name, $array_size) ? 'selected' : '' }}>
-                                                            {{ $size->name }}</option>
+                                                    @foreach ($colors as $color)
+                                                        <option value="{{ $color->id }}"
+                                                            @if ($product->colors->pluck('id')->contains($color->id)) selected @endif>
+                                                            {{ $color->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
-                                                <div id="sizes-container">
-                                                    @foreach ($product->sizes as $key => $item)
-                                                        <div class="size-group mb-3"
+
+                                                <!-- Container for dynamic color inputs -->
+                                                <div id="colors-container" class="mt-3">
+                                                    @foreach ($product->colors as $color)
+                                                        <div id="color-{{ $color->id }}" class="color-group mb-3"
                                                             style="border: 1px solid #ccc; padding: 15px;">
+                                                            <h5>{{ $color->name }}</h5>
                                                             <div class="form-row">
-                                                                <div class="col-md-6">
-                                                                    <label>{{ __('Size') }}</label>
-                                                                    <input type="text" disable readonly
+                                                                <!-- Front Image -->
+                                                                <div class="col-md-4">
+                                                                    <label>{{ __('Front Image') }}</label>
+                                                                    <input type="file"
+                                                                        name="colors_data[{{ $color->id }}][front_image]"
                                                                         class="form-control"
-                                                                        name="sizes[{{ $key }}][name]"
-                                                                        value="{{ $item->size_name }}">
+                                                                        onchange="previewImage(this, 'front-preview-{{ $color->id }}')">
+                                                                    <img id="front-preview-{{ $color->id }}"
+                                                                        src="{{ asset('storage/' . $color->pivot->front_image) }}"
+                                                                        style="margin-top:10px; width:100px; height:100px; object-fit:cover;">
                                                                 </div>
-                                                                <div class="col-md-6">
+
+                                                                <!-- Back Image -->
+                                                                <div class="col-md-4">
+                                                                    <label>{{ __('Back Image') }}</label>
+                                                                    <input type="file"
+                                                                        name="colors_data[{{ $color->id }}][back_image]"
+                                                                        class="form-control"
+                                                                        onchange="previewImage(this, 'back-preview-{{ $color->id }}')">
+                                                                    @if ($color->pivot->back_image)
+                                                                        <img id="back-preview-{{ $color->id }}"
+                                                                            src="{{ asset('storage/' . $color->pivot->back_image) }}"
+                                                                            style="margin-top:10px; width:100px; height:100px; object-fit:cover;">
+                                                                    @endif
+                                                                </div>
+
+                                                                <!-- Price -->
+                                                                <div class="col-md-4">
                                                                     <label>{{ __('Price') }}</label>
                                                                     <input type="number"
-                                                                        name="sizes[{{ $key }}][price]"
-                                                                        value="{{ $item->price }}" class="form-control" ">
-                                                                </div>
-                                                                
-                                                            </div>
-                                                        </div>
-     @endforeach
-                                                                    <!-- This will be filled dynamically if needed -->
+                                                                        name="colors_data[{{ $color->id }}][price]"
+                                                                        class="form-control"
+                                                                        value="{{ $color->pivot->price }}">
                                                                 </div>
                                                             </div>
 
-                                                            <div
-                                                                class="form-group col-8 type_product  {{ in_array('types', $attributes) == true ? '' : 'd-none' }}">
-                                                                <label for="pen_type">{{ __('Type') }}</label>
-                                                                @php
-                                                                    $types = App\Models\CategoryTypes::where(
-                                                                        'sub_category_id',
-                                                                        $product->subcategory_id,
-                                                                    )->get(['type_id']);
-                                                                    $arr = [];
-                                                                    foreach ($types as $t) {
-                                                                        array_push($arr, $t->type_id);
-                                                                    }
-                                                                    $typess = App\Models\TypeCategory::whereIn(
-                                                                        'id',
-                                                                        $arr,
-                                                                    )->get();
-
-                                                                @endphp
-                                                                @foreach ($typess as $item)
+                                                            <!-- Sizes Section -->
+                                                            <div class="sizes-container mt-3"
+                                                                id="sizes-container-{{ $color->id }}">
+                                                                @foreach ($color->sizes($product->id)->get() as $index=> $size)
+                                                                <div class="size-group form-row">
+                                                                        <div class="col-md-6">
+                                                                            <label>{{ __('Size') }}</label>
+                                                                            <select
+                                                                                name="colors_data[{{ $color->id }}][sizes][{{ $index }}][id]"
+                                                                                class="form-control">
+                                                                                @foreach ($sizes as $availableSize)
+                                                                                    <option
+                                                                                        value="{{ $availableSize->id }}"
+                                                                                        {{ $size->id == $availableSize->id ? 'selected' : '' }}>
+                                                                                        {{ $availableSize->name }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <label>{{ __('Price') }}</label>
+                                                                            <input type="number"
+                                                                                name="colors_data[{{ $color->id }}][sizes][{{ $index }}][price]"
+                                                                                class="form-control"
+                                                                                value="{{ $size->pivot->price }}">
+                                                                        </div>
+                                                                        <div class="col-md-2 d-flex align-items-center">
+                                                                            <button type="button"
+                                                                                class="btn btn-danger remove-size">&times;</button>
+                                                                        </div>
+                                                                    </div>
                                                                 @endforeach
-                                                                <select id="type_product" name="type_product"
-                                                                    class="form-control">
-                                                                    <option value="" disabled>{{ __('choose') }}
-                                                                    </option>
-
-                                                                    @foreach ($typess as $item)
-                                                                        <option value="{{ $item->id }}">
-                                                                            {{ $item->name }}</option>
-                                                                    @endforeach
-                                                                </select>
                                                             </div>
+                                                            <button type="button"
+                                                                class="btn btn-primary btn-sm mt-2 add-size"
+                                                                data-color-id="{{ $color->id }}">
+                                                                {{ __('Add Size') }}
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
 
-                                                            <!-- Pen Specific Fields (for Pen) -->
+                                            <div
+                                                class="form-group col-8 type_product  {{ in_array('types', $attributes) == true ? '' : 'd-none' }}">
+                                                <label for="pen_type">{{ __('Type') }}</label>
+                                                @php
+                                                    $types = App\Models\CategoryTypes::where(
+                                                        'sub_category_id',
+                                                        $product->subcategory_id,
+                                                    )->get(['type_id']);
+                                                    $arr = [];
+                                                    foreach ($types as $t) {
+                                                        array_push($arr, $t->type_id);
+                                                    }
+                                                    $typess = App\Models\TypeCategory::whereIn('id', $arr)->get();
+
+                                                @endphp
+                                                @foreach ($typess as $item)
+                                                @endforeach
+                                                <select id="type_product" name="type_product" class="form-control">
+                                                    <option value="" disabled>{{ __('choose') }}
+                                                    </option>
+
+                                                    @foreach ($typess as $item)
+                                                        <option value="{{ $item->id }}">
+                                                            {{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Pen Specific Fields (for Pen) -->
 
 
-                                                            <!-- Submit Button -->
-                                                            <button type="submit"
-                                                                class="btn btn-success">{{ __('Save') }}</button>
+                                            <!-- Submit Button -->
+                                            <button type="submit" class="btn btn-success">{{ __('Save') }}</button>
                                         </form>
                                     </div>
                                 </div>
@@ -605,107 +630,76 @@
             // });
             $('#colors').on('change', function() {
                 const selectedColors = $(this).val(); // الألوان المحددة حاليًا
-                const colorsContainer = document.getElementById('colors-container');
+                const colorsContainer = $('#colors-container');
 
-                // حافظ على الحقول الحالية وأضف الألوان الجديدة فقط
-                if (selectedColors.length > 0) {
+                // إضافة الألوان الجديدة
+                if (selectedColors && selectedColors.length > 0) {
                     selectedColors.forEach(function(colorId) {
-                        // إذا كان اللون غير موجود في DOM بالفعل، أضفه
-                        if (!document.getElementById('color-' + colorId)) {
-                            const colorName = document.querySelector(
-                                `#colors option[value="${colorId}"]`).text;
-                            var colortype = $('#color_type').val();
+                        if (!document.getElementById(`color-${colorId}`)) {
+                            const colorName = $(`#colors option[value="${colorId}"]`).text();
 
-                            let colorFields = '';
-                            if (colortype == 2) {
-                                colorFields = `
-                    <div id="color-${colorId}" class="color-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
-                        <h5>${colorName}</h5>
-                        <div class="form-row">
-                            <input type="hidden" name="colors[${colorId}][id]" value="${colorId}" class="form-control">
-                            <div class="col-md-4">
-                                <label>{{ __('Front Image') }}</label>
-                                <input type="file" name="colors[${colorId}][front_image]" class="form-control" accept="image/*">
-                                <img id="front-preview-${colorId}" class="mt-2" style="max-width: 100px; display: none;">
-                            </div>
-                            <div class="col-md-4">
-                                <label>{{ __('Back Image') }}</label>
-                                <input type="file" name="colors[${colorId}][back_image]" class="form-control" accept="image/*">
-                                <img id="back-preview-${colorId}" class="mt-2" style="max-width: 100px; display: none;">
-                            </div>
-                            <div class="col-md-4">
-                                <label>{{ __('Price') }}</label>
-                                <input type="number" name="colors[${colorId}][price]" class="form-control">
-                            </div>
-                        </div>
-                    </div>`;
-                            } else if (colortype == 1) {
-                                colorFields = `
-                    <div id="color-${colorId}" class="color-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
-                        <h5>${colorName}</h5>
-                        <div class="form-row">
-                            <input type="hidden" name="colors[${colorId}][id]" value="${colorId}" class="form-control">
-                            <div class="col-md-4">
-                                <label>{{ __('Image') }}</label>
-                                <input type="file" name="colors[${colorId}][front_image]" class="form-control" accept="image/*">
-                                <img id="front-preview-${colorId}" class="mt-2" style="max-width: 100px; display: none;">
-                            </div>
-                            <div class="col-md-4">
-                                <label>{{ __('Price') }}</label>
-                                <input type="number" name="colors[${colorId}][price]" class="form-control">
-                            </div>
-                        </div>
-                    </div>`;
-                            }
+                            const colorField = `
+                        <div id="color-${colorId}" class="color-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
+                            <h5>${colorName}</h5>
+                            <div class="form-row">
+                                <!-- Front Image -->
+                                <div class="col-md-4">
+                                    <label>{{ __('Front Image') }}</label>
+                                    <input type="file" name="colors_data[${colorId}][front_image]" class="form-control" 
+                                           onchange="previewImage(this, 'front-preview-${colorId}')">
+                                    <img id="front-preview-${colorId}" style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover;">
+                                </div>
 
-                            // أضف اللون الجديد
-                            colorsContainer.insertAdjacentHTML('beforeend', colorFields);
+                                <!-- Back Image -->
+                                <div class="col-md-4">
+                                    <label>{{ __('Back Image') }}</label>
+                                    <input type="file" name="colors_data[${colorId}][back_image]" class="form-control" 
+                                           onchange="previewImage(this, 'back-preview-${colorId}')">
+                                    <img id="back-preview-${colorId}" style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover;">
+                                </div>
+
+                                <!-- Price -->
+                                <div class="col-md-4">
+                                    <label>{{ __('Price') }}</label>
+                                    <input type="number" name="colors_data[${colorId}][price]" class="form-control">
+                                </div>
+                            </div>
+
+                            <!-- Sizes Container -->
+                            <div class="sizes-container mt-3" id="sizes-container-${colorId}"></div>
+                            <button type="button" class="btn btn-primary btn-sm add-size" data-color-id="${colorId}">
+                                {{ __('Add Size') }}
+                            </button>
+                        </div>
+                    `;
+
+                            colorsContainer.append(colorField);
                         }
                     });
                 }
 
-                // تحقق من الألوان التي تم إلغاء تحديدها واحذف الحقول المرتبطة بها
+                // إزالة الألوان التي لم يتم تحديدها
                 $('.color-group').each(function() {
-                    const colorId = $(this).attr('id').replace('color-',
-                    ''); // الحصول على colorId من div
+                    const colorId = $(this).attr('id').replace('color-', '');
                     if (!selectedColors.includes(colorId)) {
-                        $(this).remove(); // حذف الحقول الخاصة باللون
+                        $(this).remove();
                     }
                 });
             });
-            $('#sizes').on('change', function() {
-                const selectedsizes = $(this).val();
-                const SizeContainer = document.getElementById('sizes-container');
-                SizeContainer.innerHTML = ''; // Clear previous fields
-
-                if (selectedsizes.length > 0) {
-                    selectedsizes.forEach(function(sizeId) {
-                        const sizeName = document.querySelector(
-                            `#sizes option[value="${sizeId}"]`).text;
-
-                        let colorFields = '';
-                        colorFields = `
-                        <div class="size-group mb-3" style="border: 1px solid #ccc; padding: 15px;">
-                            <div class="form-row">
-                                <input type="hidden" name="colors[${sizeId}][id]" value="${sizeId}" class="form-control">
-
-                                <div class="col-md-6">
-                                <label>{{ __('Size') }}</label>
-                                    <input type="text" disable readonly class="form-control" name="sizes[${sizeId}][name]" value="${sizeName}" >
-                                </div>
-                                <div class="col-md-6">
-                                    <label>{{ __('Price') }}</label>
-                                    <input type="number" name="sizes[${sizeId}][price]" class="form-control" ">
-                                </div>
-                                
-                            </div>
-                        </div>`;
-
-
-                        SizeContainer.insertAdjacentHTML('beforeend', colorFields);
-                    });
-                }
+            $(document).on('click', '.remove-size', function() {
+                $(this).closest('.size-group').remove();
             });
+
+            // عرض الصور
+            window.previewImage = function(input, previewId) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $(`#${previewId}`).attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            };
 
 
             // Preview image function
@@ -721,85 +715,135 @@
             };
         });
         let selectedFiles = []; // لتتبع الملفات الجديدة
-let deletedImages = []; // لتتبع الصور المحذوفة
+        let deletedImages = []; // لتتبع الصور المحذوفة
 
-function previewImages() {
-    var previewContainer = document.getElementById('image-preview');
-    var files = document.getElementById('images').files;
+        function previewImages() {
+            var previewContainer = document.getElementById('image-preview');
+            var files = document.getElementById('images').files;
 
-    // مسح المعاينات السابقة
-    previewContainer.innerHTML = "";
-    selectedFiles = Array.from(files); // حفظ الملفات المحددة
+            // مسح المعاينات السابقة
+            previewContainer.innerHTML = "";
+            selectedFiles = Array.from(files); // حفظ الملفات المحددة
 
-    selectedFiles.forEach((file, index) => {
-        var reader = new FileReader();
+            selectedFiles.forEach((file, index) => {
+                var reader = new FileReader();
 
-        reader.onload = function (e) {
-            var imageContainer = document.createElement('div');
-            imageContainer.style.position = "relative";
-            imageContainer.style.width = "100px";
-            imageContainer.style.height = "100px";
-            imageContainer.style.marginRight = "10px";
+                reader.onload = function(e) {
+                    var imageContainer = document.createElement('div');
+                    imageContainer.style.position = "relative";
+                    imageContainer.style.width = "100px";
+                    imageContainer.style.height = "100px";
+                    imageContainer.style.marginRight = "10px";
 
-            // إنشاء عنصر الصورة
-            var img = document.createElement('img');
-            img.src = e.target.result;
-            img.style.width = "100%";
-            img.style.height = "100%";
-            img.style.objectFit = "cover";
-            img.style.borderRadius = "8px";
+                    // إنشاء عنصر الصورة
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = "100%";
+                    img.style.height = "100%";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "8px";
 
-            // إنشاء زر الحذف (X)
-            var deleteBtn = document.createElement('span');
-            deleteBtn.innerHTML = "&times;";
-            deleteBtn.style.position = "absolute";
-            deleteBtn.style.top = "5px";
-            deleteBtn.style.right = "5px";
-            deleteBtn.style.color = "white";
-            deleteBtn.style.backgroundColor = "red";
-            deleteBtn.style.borderRadius = "50%";
-            deleteBtn.style.cursor = "pointer";
-            deleteBtn.style.padding = "5px";
-            deleteBtn.onclick = function() {
-                removeImage(index); // إزالة الصورة من الملفات المحددة
+                    // إنشاء زر الحذف (X)
+                    var deleteBtn = document.createElement('span');
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.style.position = "absolute";
+                    deleteBtn.style.top = "5px";
+                    deleteBtn.style.right = "5px";
+                    deleteBtn.style.color = "white";
+                    deleteBtn.style.backgroundColor = "red";
+                    deleteBtn.style.borderRadius = "50%";
+                    deleteBtn.style.cursor = "pointer";
+                    deleteBtn.style.padding = "5px";
+                    deleteBtn.onclick = function() {
+                        removeImage(index); // إزالة الصورة من الملفات المحددة
+                    };
+
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(deleteBtn);
+                    previewContainer.appendChild(imageContainer);
+                };
+
+                reader.readAsDataURL(file); // تحويل الملف إلى رابط بيانات للمعاينة
+            });
+        }
+
+        function removeImage(index) {
+            selectedFiles.splice(index, 1); // إزالة الملف من مصفوفة الملفات المحددة
+            updateFileInput(); // تحديث حقل الإدخال
+            previewImages(); // إعادة عرض المعاينات
+        }
+
+        function removeExistingImage(imageName, element) {
+            if (confirm('Are you sure you want to remove this image?')) {
+                // إزالة الصورة من العرض
+                element.parentElement.remove(); // إزالة العنصر الحاوي للصورة
+
+                // إضافة اسم الصورة إلى قائمة الصور المحذوفة
+                deletedImages.push(imageName);
+                document.getElementById('deleted_images').value = JSON.stringify(deletedImages);
+            }
+        }
+
+        function updateFileInput() {
+            var dataTransfer = new DataTransfer();
+
+            selectedFiles.forEach(file => {
+                dataTransfer.items.add(file); // إضافة الملفات المتبقية إلى الإدخال
+            });
+
+            document.getElementById('images').files = dataTransfer.files; // تحديث حقل الإدخال
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+
+            // إضافة حجم جديد
+            $(document).on('click', '.add-size', function() {
+                const colorId = $(this).data('color-id');
+                const sizesContainer = $(`#sizes-container-${colorId}`);
+                const sizeIndex = sizesContainer.find('.size-group').length;
+
+                const sizeField = `
+            <div class="size-group form-row">
+                <div class="col-md-6">
+                    <label>{{ __('Size') }}</label>
+                    <select name="colors_data[${colorId}][sizes][${sizeIndex}][id]" class="form-control">
+                        @foreach ($sizes as $availableSize)
+                            <option value="{{ $availableSize->id }}">{{ $availableSize->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>{{ __('Price') }}</label>
+                    <input type="number" name="colors_data[${colorId}][sizes][${sizeIndex}][price]" 
+                           class="form-control" value="">
+                </div>
+                <div class="col-md-2 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger remove-size">&times;</button>
+                </div>
+            </div>
+        `;
+
+                sizesContainer.append(sizeField);
+            });
+
+            // حذف حجم
+            $(document).on('click', '.remove-size', function() {
+                $(this).closest('.size-group').remove();
+            });
+
+            // عرض الصور المرفوعة
+            window.previewImage = function(input, previewId) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#' + previewId).attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
             };
-
-            imageContainer.appendChild(img);
-            imageContainer.appendChild(deleteBtn);
-            previewContainer.appendChild(imageContainer);
-        };
-
-        reader.readAsDataURL(file); // تحويل الملف إلى رابط بيانات للمعاينة
-    });
-}
-
-function removeImage(index) {
-    selectedFiles.splice(index, 1); // إزالة الملف من مصفوفة الملفات المحددة
-    updateFileInput(); // تحديث حقل الإدخال
-    previewImages(); // إعادة عرض المعاينات
-}
-
-function removeExistingImage(imageName, element) {
-    if (confirm('Are you sure you want to remove this image?')) {
-        // إزالة الصورة من العرض
-        element.parentElement.remove(); // إزالة العنصر الحاوي للصورة
-
-        // إضافة اسم الصورة إلى قائمة الصور المحذوفة
-        deletedImages.push(imageName);
-        document.getElementById('deleted_images').value = JSON.stringify(deletedImages);
-    }
-}
-
-function updateFileInput() {
-    var dataTransfer = new DataTransfer();
-    
-    selectedFiles.forEach(file => {
-        dataTransfer.items.add(file); // إضافة الملفات المتبقية إلى الإدخال
-    });
-
-    document.getElementById('images').files = dataTransfer.files; // تحديث حقل الإدخال
-}
-
+        });
     </script>
 @endsection
 
