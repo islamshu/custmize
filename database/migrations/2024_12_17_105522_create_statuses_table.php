@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('type_categories', function (Blueprint $table) {
-            $table->string('name_ar');
+        Schema::create('statuses', function (Blueprint $table) {
+            $table->id();
+            $table->string('name'); // Status name
+            $table->string('name_ar'); // Status name
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('product', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('statuses');
     }
 };

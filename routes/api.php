@@ -51,7 +51,7 @@ function calculateResult($length, $width)
         return "خارج النطاق المحدد";
     }
 }
-Route::get('images', [HomeController::class,'images'])->name('images');
+Route::get('libraray', [HomeController::class,'images'])->name('images');
 
 Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);

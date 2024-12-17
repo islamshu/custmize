@@ -120,7 +120,7 @@ class HomeController extends BaseController
         } else {
             $price = "خارج النطاق المحدد";
         }
-        return $this->sendResponse($area, 'success');
+        return $this->sendResponse($price, 'success');
     }
     public function images(Request $request,UnsplashService $unsplashService )
     {
@@ -131,8 +131,7 @@ class HomeController extends BaseController
         $imageUrls = array_map(function($image) {
             return $image['urls']['thumb'];
         }, $images['results']);
-    
-        return $imageUrls;
+        return $this->sendResponse($imageUrls,'all brands');
     }
     
     

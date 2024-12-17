@@ -19,8 +19,14 @@ class Order extends Model
         'name',
         'email',
         'code',
-        'client_id'
+        'client_id',
+        'shipping'
     ];
+    public function shipping()
+    {
+        return $this->hasOne(Shipping::class);
+    }
+
 
     // Relationship with OrderDetail
     public function details()
@@ -28,7 +34,7 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class);
     }
     public function client()
-{
-    return $this->belongsTo(Client::class, 'client_id');
-}
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
 }

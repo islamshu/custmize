@@ -7,6 +7,7 @@ use App\Models\ErrorPayment;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Models\Shipping;
 use App\Services\MyFatoorahService;
 use Illuminate\Http\Request;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
@@ -30,7 +31,7 @@ class CheckoutController extends BaseController
     {
         $validation = Validator::make($request->all(), [
             'cart.orders' => 'required|array|min:1',
-            'cart.orders.*.front_image' => 'required|url',
+            'cart.orders.*.front_image' => 'required',
             // 'cart.orders.*.back_image' => 'required|url',
             'cart.orders.*.quantity' => 'required|integer|min:1',
             'cart.orders.*.price_without_size_color_price' => 'required|numeric|min:0',
@@ -40,6 +41,13 @@ class CheckoutController extends BaseController
             'total_amount' => 'required|numeric|min:0',
             'discount' => 'required|numeric|min:0',
             'promocode' => 'nullable|string',
+            'shipping'=>'required|boolean',
+            'receiver_name' => $request->shipping == 1 ? 'required' :'nullable', 
+            'address' => $request->shipping == 1 ? 'required' :'nullable', 
+            'city' => $request->shipping == 1 ? 'required' :'nullable', 
+            'postal_code' => $request->shipping == 1 ? 'required' :'nullable', 
+            'country' => $request->shipping == 1 ? 'required' :'nullable', 
+
         ]);
     
         if ($validation->fails()) {
@@ -61,7 +69,7 @@ class CheckoutController extends BaseController
         }
         try {
             DB::beginTransaction();
-
+            // dd($request->shipping);
         $order = Order::create([
             'total_amount' => $total,
             'subtotal' => $subtotal,
@@ -71,8 +79,21 @@ class CheckoutController extends BaseController
             'name' => $user->name,
             'email' => $user->email,
             'client_id'=>$user->id,
+            'shipping'=>$request->shipping == null ? 0 : 1,
             'code' => date('Ymd-His') . rand(10, 99),
         ]);
+        if($request->shipping == 1){
+        $shipping = Shipping::create([
+            'order_id' => $order->id,
+            'receiver_name' => $request->receiver_name,
+            'address' => $request->address,
+            'city' => $request->city,
+            'postal_code' => $request->postal_code,
+            'country' => $request->country,
+        ]);
+    }
+        // $shipping = Shipping::create($request->all());
+
     
         foreach ($cart['orders'] as $orderData) {
             $frontImage = $orderData['front_image'] ?? null;
@@ -131,12 +152,11 @@ class CheckoutController extends BaseController
     } catch (\Exception $e) {
         // Rollback Transaction on Error
         DB::rollBack();
-
         // Log the error for debugging
         $error = new ErrorPayment();
         $error->code =  date('Ymd-His') . rand(10, 99);
         $error->descripton = $e->getMessage();
-        $error->full_request = json_encode($request->cart);
+        $error->full_request = json_encode($request->all());
         $error->save();
         // \Log::error('Order placement failed: ' . $e->getMessage());
         return $this->sendError(__('Payment initiation failed . error code: '.$error->code));
