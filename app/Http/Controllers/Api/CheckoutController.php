@@ -79,6 +79,7 @@ class CheckoutController extends BaseController
             'name' => $user->name,
             'email' => $user->email,
             'client_id'=>$user->id,
+            'status_id'=>0,
             'shipping'=>$request->shipping == null ? 0 : 1,
             'code' => date('Ymd-His') . rand(10, 99),
         ]);

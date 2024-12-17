@@ -36,6 +36,7 @@ class HomeController extends Controller
         // Retrieve the order details
         $order = Order::with('details')->findOrFail($orderId);
         $order->status = 'completed';
+        $order->status_id = 1;
         $order->save();
         Mail::to($order->email)->send(new OrderSuccessMail($order));
         return view('payment.success', ['order' => $order]);
