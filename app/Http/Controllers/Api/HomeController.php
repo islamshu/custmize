@@ -118,7 +118,7 @@ class HomeController extends BaseController
         } elseif ($area <= 30) {
             $price = 10;
         } else {
-            $price = "خارج النطاق المحدد";
+            $price = $area;
         }
         return $this->sendResponse($price, 'success');
     }
@@ -131,6 +131,7 @@ class HomeController extends BaseController
         $imageUrls = array_map(function($image) {
             return $image['urls']['thumb'];
         }, $images['results']);
+        
         return $this->sendResponse($imageUrls,'all brands');
     }
     

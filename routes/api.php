@@ -31,26 +31,7 @@ Route::get('size_calculate',[HomeController::class,'size_calculate'])->name('siz
 Route::get('example_size_calculate',[HomeController::class,'example_size_calculate'])->name('size_calculate');
 Route::get('size_calculate_new',[HomeController::class,'size_calculate_new'])->name('size_calculate_new');
 
-function calculateResult($length, $width)
-{
-    // حساب المساحة
-    $area = $length * $width;
 
-    // تطبيق الشروط
-    if ($area <= 3) {
-        return 3;
-    } elseif ($area <= 8) {
-        return 4;
-    } elseif ($area <= 15) {
-        return 6;
-    } elseif ($area <= 21) {
-        return 8;
-    } elseif ($area <= 30) {
-        return 10;
-    } else {
-        return "خارج النطاق المحدد";
-    }
-}
 Route::get('libraray', [HomeController::class,'images'])->name('images');
 
 Route::middleware(['auth:api', 'is_login'])->group(function () {
