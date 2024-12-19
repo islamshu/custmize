@@ -89,8 +89,12 @@ class HomeController extends BaseController
         $orders = Order::where('client_id',$clinet->id)->where('status','completed')->get();
         $orders = OrderResourse::collection($orders);
         return $this->sendResponse($orders, "all orders");
-
-
+    }
+    public function track_order(Request $request){
+        $clinet = auth('api')->user();
+        $order= Order::where('code',$request->code)->first();
+        $order = new OrderResourse($order);
+        return $this->sendResponse($order, "my order");
     }
     
     public function single_product($slug)
