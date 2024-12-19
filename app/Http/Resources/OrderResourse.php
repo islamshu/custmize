@@ -20,6 +20,7 @@ class OrderResourse extends JsonResource
             'name'=>$this->name,
             'email'=>$this->email,
             'phone'=>$this->phone,
+            'status'=>$this->status,
             'total_amount'=>$this->total_amount,
             'subtotal'=>$this->subtotal,
             'discount_amount'=>$this->discount_amount,
@@ -27,7 +28,6 @@ class OrderResourse extends JsonResource
             'shipping'=>$this->shipping,
             'shipping_info'=>new ShippingResourse($this->shipping_info),
             'order_detiles'=>OrderDetilesResourse::collection($this->details)
-        
         ];
     }
 }
