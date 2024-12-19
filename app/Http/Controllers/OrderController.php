@@ -18,7 +18,20 @@ class OrderController extends Controller
         $orders = Order::with('details')->where('client_id',null)->get();
 
         $title = __('Guest Orders');
-        return view('dashboard.orders.index', compact('orders','title'));    }
+        return view('dashboard.orders.index', compact('orders','title'));  
+    }
+    public function updateStatus(Request $request, Order $order)
+{
+    $validated = $request->validate([
+        'status_id' => 'required|exists:statuses,id',
+    ]);
+
+    $order->status_id = $validated['status_id'];
+    $order->save();
+
+    return response()->json(['success' => true]);
+}
+
     public function clinet_orders()
     {
         // Fetch all orders with their details

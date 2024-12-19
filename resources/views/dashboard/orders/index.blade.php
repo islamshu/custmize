@@ -1,4 +1,9 @@
 @extends('layouts.master')
+@section('style')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+@show
 @section('content')
     <div class="app-content content">
         <div class="content-wrapper">
@@ -71,12 +76,16 @@
                                                         <th>{{ @$order->client->name == null ? 'Guest Order : ' .$order->name : @$order->client->name }}</th>
                                                         <th>{{ number_format($order->total_amount, 2) }}</th>
                                                         <th>{{ $order->created_at->format('d-m-Y') }}</th>
-                                                        <th><select name="" id="">
-                                                            @foreach (App\Models\Status::get() as $item)
-                                                            <option value="{{$item->id}}" @if($order->status_id == $item->id) selected @endif>{{$item->name}}</option>
-
-                                                            @endforeach
-                                                        </select></th>
+                                                        <th>
+                                                            <select class="status-select form-control" data-order-id="{{ $order->id }}">
+                                                                @foreach (App\Models\Status::get() as $item)
+                                                                    <option value="{{ $item->id }}" @if ($order->status_id == $item->id) selected @endif>
+                                                                        {{ $item->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            
+                                                        </th>
                                                         <th>
                                                             <a class="btn btn-info"
                                                                 href="{{ route('orders.show', $order->id) }}"><i
@@ -115,4 +124,33 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+<script>
+    $(document).ready(function () {
+    $('select.status-select').on('change', function () {
+        var statusId = $(this).val(); // القيمة الجديدة للحالة
+        var orderId = $(this).data('order-id'); // رقم الطلب
+        var statusName = $(this).find('option:selected').text(); // اسم الحالة
+
+        // أرسل طلب AJAX
+        $.ajax({
+            url: `/orders/${orderId}/update-status`,
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'), // التحقق من CSRF
+                status_id: statusId
+            },
+            success: function (response) {
+                toastr.success(`تم تحديث حالة الطلب إلى ${statusName}`);
+            },
+            error: function () {
+                toastr.error('حدث خطأ أثناء تحديث الحالة');
+            }
+        });
+    });
+});
+
+</script>
+    
 @endsection
