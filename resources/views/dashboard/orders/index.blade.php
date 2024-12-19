@@ -73,7 +73,7 @@
                                                         <th>{{ $order->created_at->format('d-m-Y') }}</th>
                                                         <th><select name="" id="">
                                                             @foreach (App\Models\Status::get() as $item)
-                                                            <option value="{{$item->id}}" @if($order->status_id == $item->id) selected>{{$item->name}}</option>
+                                                            <option value="{{$item->id}}" @if($order->status_id == $item->id) selected @endif>{{$item->name}}</option>
 
                                                             @endforeach
                                                         </select></th>
