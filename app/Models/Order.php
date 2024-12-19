@@ -23,7 +23,7 @@ class Order extends Model
         'shipping',
         'phone'
     ];
-    public function shipping()
+    public function shipping_info()
     {
         return $this->hasOne(Shipping::class);
     }
@@ -38,4 +38,5 @@ class Order extends Model
     {
         return $this->belongsTo(Client::class, 'client_id');
     }
+    
 }

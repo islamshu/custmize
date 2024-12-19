@@ -10,8 +10,10 @@ use App\Http\Resources\ProductShortDataResourse;
 use App\Http\Resources\ProductResourse;
 use App\Models\Banner;
 use App\Models\DiscountCode;
+use App\Models\Order;
 use App\Models\Product;
 use App\Services\UnsplashService;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends BaseController
 {
@@ -80,6 +82,10 @@ class HomeController extends BaseController
         $products = DiscountCode::get();
         $products = DiscountCodeResourse::collection($products);
         return $this->sendResponse($products, "SUCCESS");
+    }
+    public function all_orders(){
+        $clinet = auth('api')->user();
+        $orders = Order::where('clinet_id',$clinet->id)->where('status','completed')->get();
     }
     
     public function single_product($slug)

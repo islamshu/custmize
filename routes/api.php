@@ -42,6 +42,7 @@ Route::middleware(['auth:api', 'is_login'])->group(function () {
 
     Route::post('check_promocode',[UserController::class,'check_promocode'])->name('check_promocode');
     Route::get('all_promocods',[HomeController::class,'all_promocods']);
+    Route::get('all_orders',[HomeController::class,'all_orders']);
 
     
 });
