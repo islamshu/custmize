@@ -20,7 +20,7 @@ class OrderResourse extends JsonResource
             'name'=>$this->name,
             'email'=>$this->email,
             'phone'=>$this->phone,
-            'status'=>$this->status,
+            'order_status'=>$this->OrderStatus->name,
             'total_amount'=>$this->total_amount,
             'subtotal'=>$this->subtotal,
             'discount_amount'=>$this->discount_amount,
