@@ -39,6 +39,8 @@
                                             <p><strong>{{ __('Order Number:') }}</strong> {{ $order->code }}</p>
                                             <p><strong>{{ __('Customer Name:') }}</strong> {{ $order->client->name }}</p>
                                             <p><strong>{{ __('Email:') }}</strong> {{ $order->email }}</p>
+                                            <p><strong>{{ __('Phone:') }}</strong> {{ $order->phone }}</p>
+
                                         </div>
                                         <div class="col-md-6">
                                             <p><strong>{{ __('Order Date:') }}</strong> {{ $order->created_at->format('d-m-Y') }}</p>
