@@ -126,35 +126,56 @@
     </div>
 @endsection
 @section('script')
-<script>
-        var updateStatusRoute = "{{ route('orders.update-status', ':orderId') }}";
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        $(document).ready(function () {
+<script>
+
+$(document).ready(function () {
     $('select.status-select').on('change', function () {
         var statusId = $(this).val(); // القيمة الجديدة للحالة
         var orderId = $(this).data('order-id'); // رقم الطلب
         var statusName = $(this).find('option:selected').text(); // اسم الحالة
 
-        // تحديث الرابط باستخدام orderId
-        var url = updateStatusRoute.replace(':orderId', orderId);
+        // إظهار نافذة التأكيد
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: `هل تريد تغيير حالة الطلب إلى "${statusName}"؟`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، قم بالتغيير',
+            cancelButtonText: 'إلغاء'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // إذا وافق المستخدم، قم بإرسال الطلب
+                var url = updateStatusRoute.replace(':orderId', orderId); // استبدال orderId في الرابط
 
-        // أرسل طلب AJAX
-        $.ajax({
-            url: url,
-            method: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'), // التحقق من CSRF
-                status_id: statusId
-            },
-            success: function (response) {
-                toastr.success(`تم تحديث حالة الطلب إلى ${statusName}`);
-            },
-            error: function () {
-                toastr.error('حدث خطأ أثناء تحديث الحالة');
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'), // التحقق من CSRF
+                        status_id: statusId
+                    },
+                    success: function (response) {
+                        toastr.success(`تم تحديث حالة الطلب إلى ${statusName}`);
+                    },
+                    error: function () {
+                        toastr.error('حدث خطأ أثناء تحديث الحالة');
+                    }
+                });
+            } else {
+                // إذا اختار المستخدم إلغاء، قم بإعادة الخيار السابق في القائمة المنسدلة
+                $(this).val($(this).data('previous-value')); // إعادة القيمة السابقة
             }
         });
+
+        // احفظ القيمة الحالية للحالة في خاصية data
+        $(this).data('previous-value', statusId);
     });
 });
+
 
 
 </script>
