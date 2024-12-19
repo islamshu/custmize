@@ -127,15 +127,20 @@
 @endsection
 @section('script')
 <script>
-    $(document).ready(function () {
+        var updateStatusRoute = "{{ route('orders.update-status', ':orderId') }}";
+
+        $(document).ready(function () {
     $('select.status-select').on('change', function () {
         var statusId = $(this).val(); // القيمة الجديدة للحالة
         var orderId = $(this).data('order-id'); // رقم الطلب
         var statusName = $(this).find('option:selected').text(); // اسم الحالة
 
+        // تحديث الرابط باستخدام orderId
+        var url = updateStatusRoute.replace(':orderId', orderId);
+
         // أرسل طلب AJAX
         $.ajax({
-            url: `/orders/${orderId}/update-status`,
+            url: url,
             method: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'), // التحقق من CSRF
@@ -150,6 +155,7 @@
         });
     });
 });
+
 
 </script>
     
