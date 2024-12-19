@@ -67,7 +67,7 @@
                                                     <tr>
                                                         <th>{{ $key + 1 }}</th>
                                                         <th>{{ $order->code }}</th>
-                                                        <th>{{ @$order->client->name == null ? 'Guest Order : '$order->name : @$order->client->name }}</th>
+                                                        <th>{{ @$order->client->name == null ? 'Guest Order : ' .$order->name : @$order->client->name }}</th>
                                                         <th>{{ number_format($order->total_amount, 2) }}</th>
                                                         <th>{{ $order->created_at->format('d-m-Y') }}</th>
                                                         <th>
