@@ -33,6 +33,7 @@ Route::get('size_calculate_new',[HomeController::class,'size_calculate_new'])->n
 
 
 Route::get('libraray', [HomeController::class,'images'])->name('images');
+Route::post('checkout_guest',[CheckoutController::class,'initiatePayment_guest'])->name('checkout');
 
 Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);

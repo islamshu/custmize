@@ -20,7 +20,8 @@ class Order extends Model
         'email',
         'code',
         'client_id',
-        'shipping'
+        'shipping',
+        'phone'
     ];
     public function shipping()
     {
