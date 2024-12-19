@@ -2,8 +2,22 @@
 @section('style')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<style>
+    select.status-select {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-@show
+select.status-select option {
+    font-weight: bold;
+}
+
+</style>
+@endsection
 @section('content')
     <div class="app-content content">
         <div class="content-wrapper">
@@ -129,14 +143,33 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-
 $(document).ready(function () {
-    $('select.status-select').on('change', function () {
-        var statusId = $(this).val(); // القيمة الجديدة للحالة
-        var orderId = $(this).data('order-id'); // رقم الطلب
-        var statusName = $(this).find('option:selected').text(); // اسم الحالة
+    // إعداد قائمة الألوان لكل حالة
+    var colors = {
+        1: '#ADD8E6', // أزرق فاتح للحالة "تم استلام الطلب"
+        2: '#FFA500', // برتقالي للحالة "الطلب قيد التجهيز"
+        3: '#90EE90', // أخضر للحالة "الطلب جاهز"
+        4: '#A9A9A9'  // رمادي للحالة "تم تسليم الطلب"
+    };
 
-        // إظهار نافذة التأكيد
+    // تطبيق الألوان عند تحميل الصفحة
+    $('select.status-select').each(function () {
+        var statusId = $(this).val(); // الحصول على ID الحالة الحالية
+        applyStatusColor($(this), statusId); // تطبيق اللون بناءً على الحالة
+
+        // حفظ القيمة السابقة للحالة
+        $(this).data('previous-value', statusId);
+    });
+
+    // عند تغيير الحالة
+    $('select.status-select').on('change', function () {
+        var $this = $(this);
+        var newStatusId = $this.val(); // القيمة الجديدة
+        var orderId = $this.data('order-id'); // رقم الطلب
+        var statusName = $this.find('option:selected').text(); // اسم الحالة
+        var previousValue = $this.data('previous-value'); // القيمة السابقة
+
+        // نافذة التأكيد
         Swal.fire({
             title: 'هل أنت متأكد؟',
             text: `هل تريد تغيير حالة الطلب إلى "${statusName}"؟`,
@@ -148,32 +181,40 @@ $(document).ready(function () {
             cancelButtonText: 'إلغاء'
         }).then((result) => {
             if (result.isConfirmed) {
-                // إذا وافق المستخدم، قم بإرسال الطلب
-                var url = updateStatusRoute.replace(':orderId', orderId); // استبدال orderId في الرابط
+                // إذا تم التأكيد، أرسل طلب AJAX
+                var url = updateStatusRoute.replace(':orderId', orderId); // استبدال :orderId برقم الطلب
 
                 $.ajax({
                     url: url,
                     method: 'POST',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'), // التحقق من CSRF
-                        status_id: statusId
+                        status_id: newStatusId
                     },
                     success: function (response) {
                         toastr.success(`تم تحديث حالة الطلب إلى ${statusName}`);
+                        applyStatusColor($this, newStatusId); // تطبيق اللون الجديد
+                        $this.data('previous-value', newStatusId); // تحديث القيمة السابقة
                     },
                     error: function () {
                         toastr.error('حدث خطأ أثناء تحديث الحالة');
+                        $this.val(previousValue); // إعادة القيمة السابقة
+                        applyStatusColor($this, previousValue); // إعادة اللون السابق
                     }
                 });
             } else {
-                // إذا اختار المستخدم إلغاء، قم بإعادة الخيار السابق في القائمة المنسدلة
-                $(this).val($(this).data('previous-value')); // إعادة القيمة السابقة
+                // إذا تم الإلغاء، إعادة القيمة السابقة
+                $this.val(previousValue); // إعادة القيمة السابقة
+                applyStatusColor($this, previousValue); // إعادة اللون السابق
             }
         });
-
-        // احفظ القيمة الحالية للحالة في خاصية data
-        $(this).data('previous-value', statusId);
     });
+
+    // دالة لتطبيق الألوان بناءً على الحالة
+    function applyStatusColor(element, statusId) {
+        element.css('background-color', colors[statusId]); // تغيير لون الخلفية
+        element.css('color', '#fff'); // تغيير لون النص
+    }
 });
 
 
