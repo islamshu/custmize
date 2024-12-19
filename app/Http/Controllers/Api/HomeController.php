@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerRessours;
 use App\Http\Resources\DiscountCodeResourse;
+use App\Http\Resources\OrderResourse;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProductShortDataResourse;
 use App\Http\Resources\ProductResourse;
@@ -85,7 +86,11 @@ class HomeController extends BaseController
     }
     public function all_orders(){
         $clinet = auth('api')->user();
-        $orders = Order::where('clinet_id',$clinet->id)->where('status','completed')->get();
+        $orders = Order::where('client_id',$clinet->id)->where('status','completed')->get();
+        $orders = OrderResourse::collection($orders);
+        return $this->sendResponse($orders, "all orders");
+
+
     }
     
     public function single_product($slug)
