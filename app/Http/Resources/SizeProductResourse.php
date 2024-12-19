@@ -19,7 +19,6 @@ class SizeProductResourse extends JsonResource
         return [
             'size_id'=>$this->id,
             'size_name'=>$this->size_name,
-            'price'=>$this->pivot->price,
         ];
     }
 }

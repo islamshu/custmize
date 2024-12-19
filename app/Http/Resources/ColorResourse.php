@@ -15,11 +15,11 @@ class ColorResourse extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        
         return [
             "id" => $this->id, // ID اللون
             "name" => $this->name, // اسم اللون
             "color_code" => $this->code, // كود اللون
-            'price' => (floatval($this->pivot->price)) ? floatval($this->pivot->price) : 0, // السعر من الجدول الوسيط
         ];
     }
 }
