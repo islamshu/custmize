@@ -16,7 +16,7 @@ class OrderDetilesResourse extends JsonResource
     {
         return [
             'id'=>$this->id,
-            'product'=>new ProductResourse($this->product),
+            'product'=>new ProducOrderResourse($this->product),
             'color'=>new ColorResourse($this->color),
             'size'=>new SizeProductResourse($this->size),
             'postal_code'=>$this->postal_code,
