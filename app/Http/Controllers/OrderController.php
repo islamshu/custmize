@@ -9,9 +9,25 @@ class OrderController extends Controller
     {
         // Fetch all orders with their details
         $orders = Order::with('details')->get();
-
-        return view('dashboard.orders.index', compact('orders'));
+        $title = __('Orders');
+        return view('dashboard.orders.index', compact('orders','title'));
     }
+    public function guest_orders()
+    {
+        // Fetch all orders with their details
+        $orders = Order::with('details')->where('client_id',null)->get();
+
+        $title = __('Guest Orders');
+        return view('dashboard.orders.index', compact('orders','title'));    }
+    public function clinet_orders()
+    {
+        // Fetch all orders with their details
+        $orders = Order::with('details')->where('client_id','!=',null)->get();
+
+        $title = __('Clinet Orders');
+        return view('dashboard.orders.index', compact('orders','title'));    }
+
+    
 
     public function show(Order $order)
     {

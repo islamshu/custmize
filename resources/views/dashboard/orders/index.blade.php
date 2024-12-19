@@ -4,14 +4,14 @@
         <div class="content-wrapper">
             <div class="content-header row">
                 <div class="content-header-left col-md-6 col-12 mb-2">
-                    <h3 class="content-header-title">{{ __('Orders') }}</h3>
+                    <h3 class="content-header-title">{{ $title }}</h3>
                     <div class="row breadcrumbs-top">
                         <div class="breadcrumb-wrapper col-12">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('Home') }}</a>
                                 </li>
 
-                                <li class="breadcrumb-item active">{{ __('Orders') }}
+                                <li class="breadcrumb-item active">{{ $title }}
                                 </li>
                             </ol>
                         </div>
@@ -29,7 +29,7 @@
                             <div class="card">
                                 <div class="card-header row">
                                     <div class="col-md-">
-                                        <h4 class="card-title">{{ __('Orders') }}</h4>
+                                        <h4 class="card-title">{{ $title }}</h4>
                                     </div>
 
                                     <div class="col-md-" style="margin-right:2%">

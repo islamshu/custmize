@@ -117,6 +117,9 @@ Route::group(['prefix' => 'client'], function () {
 Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard'], function () {
 Route::get('/', action: [HomeController::class,'home'])->name('dashboard');
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::get('/clinet_orders', [OrderController::class, 'clinet_orders'])->name('orders.clinet_orders');
+Route::get('/guest_orders', [OrderController::class, 'guest_orders'])->name('orders.guest_orders');
+
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 

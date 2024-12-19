@@ -139,6 +139,26 @@
                                
                             </ul>
                 </li>
+                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
+                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Orders') }}</span></a>
+                        <ul class="dropdown-menu">
+                                <li class="dropdown " data-menu=""><a
+                                        class="dropdown-item " href="{{ route('orders.index') }}"
+                                        >{{ __('Orders') }}</a>
+                                 
+                                </li>
+                                <li class="dropdown " data-menu=""><a
+                                        class="dropdown-item " href="{{ route('orders.clinet_orders') }}"
+                                        >{{ __('Clinet Orders') }}</a>
+                                </li>
+                                <li class="dropdown " data-menu=""><a
+                                        class="dropdown-item " href="{{ route('orders.guest_orders') }}"
+                                        >{{ __('Guest Orders') }}</a>
+                                </li>
+                                
+                               
+                            </ul>
+                </li>
                 {{-- <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
                         href="#" data-toggle="dropdown"><i
                             class="la la-folder-open"></i><span>General</span></a>
