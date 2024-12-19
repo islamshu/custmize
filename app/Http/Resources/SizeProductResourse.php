@@ -18,7 +18,7 @@ class SizeProductResourse extends JsonResource
     {
         return [
             'size_id'=>$this->id,
-            'size_name'=>$this->size_name,
+            'size_name'=>$this->name,
         ];
     }
 }
