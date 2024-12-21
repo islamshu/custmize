@@ -141,7 +141,10 @@ select.status-select option {
 @endsection
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+        var updateStatusRoute = "{{ route('orders.update-status', ':orderId') }}";
 
+</script>
 <script>
 $(document).ready(function () {
     // إعداد قائمة الألوان لكل حالة
