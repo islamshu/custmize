@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware(['cors'])->group(function () {
+
 Route::get('products',[HomeController::class,'products']);
 Route::get('home',[HomeController::class,'home']);
 
@@ -46,4 +48,5 @@ Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('all_orders',[HomeController::class,'all_orders']);
 
     
+});
 });
