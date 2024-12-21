@@ -1,38 +1,18 @@
 <?php
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Cross-Origin Resource Sharing (CORS) Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may define the configuration options for CORS requests.
-    |
-    */
+    'paths' => ['api/*'],
 
-    'allowed_origins' => [
-        '*', // Allow all origins (for development) - Replace with specific origins in production
-        'http://front.custmize.digitalgo.net',
-        'http://printlogo.custmize.digitalgo.net/',
-        'https://printlogo.custmize.digitalgo.net/' // Allow specific origin,
-        
-    ],
+    'allowed_methods' => ['*'],
 
-    'allowed_methods' => [
-        'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'
-    ],
+    'allowed_origins' => ['http://printlogo.custmize.digitalgo.net'],
 
-    'allowed_headers' => [
-        'Content-Type',
-        'X-Auth-Token',
-        'X-Requested-With',
-        'Authorization'
-    ],
+    'allowed_origins_patterns' => [],
 
-    'exposed_headers' => [
-         // ... any headers you want to expose to the client
-    ],
+    'allowed_headers' => ['*'],
 
-    'max_age' => 60 * 60 * 24, // Allow caching for a day
+    'exposed_headers' => [],
 
-    'supports_credentials' => false, // Set to true if cookies are passed in cross-origin requests
+    'max_age' => 0,
+
+    'supports_credentials' => false,
 ];
