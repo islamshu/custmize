@@ -156,17 +156,15 @@ $(document).ready(function () {
     $('select.status-select').each(function () {
         var statusId = $(this).val(); // الحصول على ID الحالة الحالية
         applyStatusColor($(this), statusId); // تطبيق اللون بناءً على الحالة
-
-        // حفظ القيمة السابقة للحالة
-        $(this).data('previous-value', statusId);
+        $(this).data('previous-value', statusId); // حفظ القيمة السابقة للحالة
     });
 
     // عند تغيير الحالة
     $('select.status-select').on('change', function () {
-        var $this = $(this);
+        var $this = $(this); // العنصر الحالي
         var newStatusId = $this.val(); // القيمة الجديدة
         var orderId = $this.data('order-id'); // رقم الطلب
-        var statusName = $this.find('option:selected').text(); // اسم الحالة
+        var statusName = $this.find('option:selected').text(); // اسم الحالة الجديدة
         var previousValue = $this.data('previous-value'); // القيمة السابقة
 
         // نافذة التأكيد
@@ -181,14 +179,14 @@ $(document).ready(function () {
             cancelButtonText: 'إلغاء'
         }).then((result) => {
             if (result.isConfirmed) {
-                // إذا تم التأكيد، أرسل طلب AJAX
-                var url = updateStatusRoute.replace(':orderId', orderId); // استبدال :orderId برقم الطلب
+                // إذا وافق المستخدم، أرسل طلب AJAX
+                var url = updateStatusRoute.replace(':orderId', orderId);
 
                 $.ajax({
                     url: url,
                     method: 'POST',
                     data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'), // التحقق من CSRF
+                        _token: $('meta[name="csrf-token"]').attr('content'),
                         status_id: newStatusId
                     },
                     success: function (response) {
@@ -204,8 +202,8 @@ $(document).ready(function () {
                 });
             } else {
                 // إذا تم الإلغاء، إعادة القيمة السابقة
-                $this.val(previousValue); // إعادة القيمة السابقة
-                applyStatusColor($this, previousValue); // إعادة اللون السابق
+                $this.val(previousValue);
+                applyStatusColor($this, previousValue);
             }
         });
     });
