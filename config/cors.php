@@ -11,7 +11,9 @@ return [
 
     'allowed_origins' => [
         '*', // Allow all origins (for development) - Replace with specific origins in production
-        'http://front.custmize.digitalgo.net' // Allow specific origin,
+        'http://front.custmize.digitalgo.net',
+        'http://printlogo.custmize.digitalgo.net/',
+        'https://printlogo.custmize.digitalgo.net/' // Allow specific origin,
         
     ],
 
