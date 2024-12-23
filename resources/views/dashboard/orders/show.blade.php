@@ -2,8 +2,8 @@
 @section('style')
 <style>
     .bg-light-dark {
-    background-color: #bfbfbf !important; /* لون غامق خفيف */
-}
+        background-color: #bfbfbf !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -35,18 +35,37 @@
                                 <div class="card-body">
                                     <!-- General Order Details -->
                                     <div class="row">
+                                        <!-- Order Information -->
                                         <div class="col-md-6">
+                                            <h4>{{ __('Order Information') }}</h4>
                                             <p><strong>{{ __('Order Number:') }}</strong> {{ $order->code }}</p>
                                             <p><strong>{{ __('Customer Name:') }}</strong> {{ $order->name }}</p>
                                             <p><strong>{{ __('Email:') }}</strong> {{ $order->email }}</p>
                                             <p><strong>{{ __('Phone:') }}</strong> {{ $order->phone }}</p>
-
-                                        </div>
-                                        <div class="col-md-6">
                                             <p><strong>{{ __('Order Date:') }}</strong> {{ $order->created_at->format('d-m-Y') }}</p>
                                             <p><strong>{{ __('Total Amount:') }}</strong> {{ number_format($order->total_amount, 2) }} {{ __('SAR') }}</p>
                                             <p><strong>{{ __('Status:') }}</strong> {{ get_order_status($order->status_id) }}</p>
                                         </div>
+                                        
+                                        <!-- Shipping Information -->
+                                        @if ($order->shipping == 1)
+                                            <div class="col-md-6">
+                                                <h4>{{ __('Shipping Information') }}</h4>
+                                                @php
+                                                    $shipping = \App\Models\Shipping::where('order_id', $order->id)->first();
+                                                @endphp
+                                                @if ($shipping)
+                                                    <p><strong>{{ __('Receiver Name:') }}</strong> {{ $shipping->receiver_name }}</p>
+                                                    <p><strong>{{ __('Address:') }}</strong> {{ $shipping->address }}</p>
+                                                    <p><strong>{{ __('City:') }}</strong> {{ $shipping->city }}</p>
+                                                    <p><strong>{{ __('Postal Code:') }}</strong> {{ $shipping->postal_code }}</p>
+                                                    <p><strong>{{ __('Country:') }}</strong> {{ $shipping->country }}</p>
+                                                    <p><strong>{{ __('Shipping Status:') }}</strong> {{ $shipping->status }}</p>
+                                                @else
+                                                    <p>{{ __('No shipping information available for this order.') }}</p>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
                                     <hr>
                                     <!-- Order Items Table -->
@@ -78,7 +97,8 @@
                                                             </span>
                                                             {{ get_color($item->color_id)->name}} 
                                                         </div>
-                                                    </td>                                                    <td>{{ get_size($item->size_id) }}</td>
+                                                    </td>
+                                                    <td>{{ get_size($item->size_id) }}</td>
                                                     <td>{{ number_format($item->price_without_size_color, 2) }} {{ __('SAR') }}</td>
                                                     <td>{{ number_format($item->price_for_size_color, 2) }} {{ __('SAR') }}</td>
                                                     <td>{{ number_format($item->full_price, 2) }} {{ __('SAR') }}</td>
