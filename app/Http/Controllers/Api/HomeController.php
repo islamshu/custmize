@@ -160,6 +160,7 @@ class HomeController extends BaseController
             }, $response->json());
             return $this->sendResponse($icons,'success');
         }
+        return $this->sendError('Failed to fetch data');
 
         return response()->json([
             'error' => 'Failed to fetch data'
