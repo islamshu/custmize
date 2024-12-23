@@ -24,6 +24,9 @@ class OrderDetail extends Model
         'full_price',
         'front_image',
         'back_image',
+        'right_side_image',
+        'left_side_image',
+
         'logos',
     ];
 
