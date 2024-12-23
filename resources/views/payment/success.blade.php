@@ -13,12 +13,17 @@
             text-align: right;
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: auto;
+            display: flex;
+            justify-content: space-between;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background-color: #f9f9f9;
+        }
+        .section {
+            width: 48%;
         }
         .header {
             text-align: center;
@@ -27,7 +32,7 @@
         .header h1 {
             color: green;
         }
-        .order-info, .order-details {
+        .order-info, .shipping-info, .order-details {
             margin-bottom: 20px;
         }
         .order-details table {
@@ -45,12 +50,14 @@
 </head>
 <body>
 
-    <div class="container">
+<div class="container">
+    <!-- بيانات الطلب في الجهة اليمنى -->
+    <div class="section">
         <div class="header">
             <h1>نجاح العملية</h1>
             <p>تمت العملية بنجاح. شكراً لتعاملكم معنا!</p>
         </div>
-    
+
         <div class="order-info">
             <h2>معلومات الطلب</h2>
             <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
@@ -60,26 +67,7 @@
             <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
             <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
         </div>
-    
-        @if ($order->shipping == 1)
-            <div class="shipping-info">
-                <h2>بيانات الشحن</h2>
-                @php
-                    $shipping = \App\Models\Shipping::where('order_id', $order->id)->first();
-                @endphp
-                @if ($shipping)
-                    <p><strong>إسم المستلم:</strong> {{ $shipping->receiver_name }}</p>
-                    <p><strong>العنوان:</strong> {{ $shipping->address }}</p>
-                    <p><strong>المدينة:</strong> {{ $shipping->city }}</p>
-                    <p><strong>الرمز البريدي:</strong> {{ $shipping->postal_code }}</p>
-                    <p><strong>الدولة:</strong> {{ $shipping->country }}</p>
-                    <p><strong>الحالة:</strong> {{ $shipping->status }}</p>
-                @else
-                    <p>لا توجد بيانات شحن لهذا الطلب.</p>
-                @endif
-            </div>
-        @endif
-    
+
         <div class="order-details">
             <h2>تفاصيل الطلب</h2>
             <table>
@@ -140,11 +128,28 @@
                 </tbody>
             </table>
         </div>
-    
-        <div class="footer">
-            <p>إذا كان لديك أي استفسارات، لا تتردد في الاتصال بنا.</p>
-        </div>
     </div>
-    
+
+    <!-- بيانات الشحن في الجهة اليسرى -->
+    @if ($order->shipping == 1)
+        <div class="section">
+            <h2>بيانات الشحن</h2>
+            @php
+                $shipping = \App\Models\Shipping::where('order_id', $order->id)->first();
+            @endphp
+            @if ($shipping)
+                <p><strong>إسم المستلم:</strong> {{ $shipping->receiver_name }}</p>
+                <p><strong>العنوان:</strong> {{ $shipping->address }}</p>
+                <p><strong>المدينة:</strong> {{ $shipping->city }}</p>
+                <p><strong>الرمز البريدي:</strong> {{ $shipping->postal_code }}</p>
+                <p><strong>الدولة:</strong> {{ $shipping->country }}</p>
+                <p><strong>الحالة:</strong> {{ $shipping->status }}</p>
+            @else
+                <p>لا توجد بيانات شحن لهذا الطلب.</p>
+            @endif
+        </div>
+    @endif
+</div>
+
 </body>
 </html>
