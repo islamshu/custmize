@@ -85,6 +85,9 @@
             @endphp
             @if ($shipping)
                 <p><strong>إسم المستلم:</strong> {{ $shipping->receiver_name }}</p>
+                <p><strong>البريد اللاكتروني المستلم:</strong> {{ $shipping->receiver_email }}</p>
+                <p><strong>هاتف المستلم:</strong> {{ $shipping->receiver_phone }}</p>
+
                 <p><strong>العنوان:</strong> {{ $shipping->address }}</p>
                 <p><strong>المدينة:</strong> {{ $shipping->city }}</p>
                 <p><strong>الرمز البريدي:</strong> {{ $shipping->postal_code }}</p>

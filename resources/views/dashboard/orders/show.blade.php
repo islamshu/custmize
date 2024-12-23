@@ -56,6 +56,9 @@
                                                 @endphp
                                                 @if ($shipping)
                                                     <p><strong>{{ __('Receiver Name:') }}</strong> {{ $shipping->receiver_name }}</p>
+                                                    <p><strong>{{ __('Receiver Email:') }}</strong> {{ $shipping->receiver_email }}</p>
+                                                    <p><strong>{{ __('Receiver Phone:') }}</strong> {{ $shipping->receiver_phone }}</p>
+
                                                     <p><strong>{{ __('Address:') }}</strong> {{ $shipping->address }}</p>
                                                     <p><strong>{{ __('City:') }}</strong> {{ $shipping->city }}</p>
                                                     <p><strong>{{ __('Postal Code:') }}</strong> {{ $shipping->postal_code }}</p>
