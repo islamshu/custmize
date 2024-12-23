@@ -115,8 +115,8 @@
                                                                 @foreach (json_decode($item->logos) as $logo)
                                                                     @if($logo)
                                                                         <div class="p-2">
-                                                                            <img src="{{ asset('storage/' . $logo) }}" alt="{{ __('Logo') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
-                                                                            <p class="text-center">{{ __('Logo') }}</p>
+                                                                            <img src="{{ asset('storage/' . $logo) }}" alt="{{ __('Logos') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
+                                                                            <p class="text-center">{{ __('Logos') }}</p>
                                                                         </div>
                                                                     @endif
                                                                 @endforeach
