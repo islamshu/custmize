@@ -45,7 +45,7 @@
                                         <div class="col-md-6">
                                             <p><strong>{{ __('Order Date:') }}</strong> {{ $order->created_at->format('d-m-Y') }}</p>
                                             <p><strong>{{ __('Total Amount:') }}</strong> {{ number_format($order->total_amount, 2) }} {{ __('SAR') }}</p>
-                                            <p><strong>{{ __('Status:') }}</strong> {{ $order->status }}</p>
+                                            <p><strong>{{ __('Status:') }}</strong> {{ get_order_status($order->status_id) }}</p>
                                         </div>
                                     </div>
                                     <hr>

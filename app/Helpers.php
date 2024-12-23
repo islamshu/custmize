@@ -4,8 +4,10 @@ use App\Models\Color;
 use App\Models\GeneralInfo;
 use App\Models\Product;
 use App\Models\Size;
+use App\Models\Status;
 use Illuminate\Support\Facades\File;
 use Stichoza\GoogleTranslate\GoogleTranslate;
+use Illuminate\Support\Facades\App;
 
 function openJSONFile($code){
     $jsonString = [];
@@ -38,7 +40,18 @@ $pro = Product::find($id);
 return @$pro->colors()->first()->front_image; 
 
 }
+function get_order_status($id)  {
+  $status=  Status::find($id);
+  $locale = App::getLocale();
 
+  if($locale == 'ar'){
+    return $status->name_ar;
+  }else{
+    return $status->name;
+
+  }
+    
+}
 function get_color_code($id){
     $color = Color::find($id);
     return $color->code;
