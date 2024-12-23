@@ -77,16 +77,6 @@
     </div>
 
     <div class="info-container">
-        <div class="order-info">
-            <h2>معلومات الطلب</h2>
-            <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
-            <p><strong>الإسم:</strong> {{ $order->name }}</p>
-            <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
-            <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
-            <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
-            <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
-        </div>
-
         @if ($order->shipping == 1)
         <div class="shipping-info">
             <h2>بيانات الشحن</h2>
@@ -105,6 +95,17 @@
             @endif
         </div>
         @endif
+
+        <div class="order-info">
+            <h2>معلومات الطلب</h2>
+            <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
+            <p><strong>الإسم:</strong> {{ $order->name }}</p>
+            <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
+            <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
+            <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
+            <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
+        </div>
+
     </div>
 
     <div class="order-details">
