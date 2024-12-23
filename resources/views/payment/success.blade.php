@@ -15,15 +15,10 @@
         .container {
             max-width: 1200px;
             margin: auto;
-            display: flex;
-            justify-content: space-between;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background-color: #f9f9f9;
-        }
-        .section {
-            width: 48%;
         }
         .header {
             text-align: center;
@@ -32,7 +27,27 @@
         .header h1 {
             color: green;
         }
-        .order-info, .shipping-info, .order-details {
+        .info-container {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .order-info {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .shipping-info {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .order-details {
             margin-bottom: 20px;
         }
         .order-details table {
@@ -46,18 +61,22 @@
         .order-details table th {
             background-color: #f0f0f0;
         }
+        @media (max-width: 768px) {
+            .info-container {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- بيانات الطلب في الجهة اليمنى -->
-    <div class="section">
-        <div class="header">
-            <h1>نجاح العملية</h1>
-            <p>تمت العملية بنجاح. شكراً لتعاملكم معنا!</p>
-        </div>
+    <div class="header">
+        <h1>نجاح العملية</h1>
+        <p>تمت العملية بنجاح. شكراً لتعاملكم معنا!</p>
+    </div>
 
+    <div class="info-container">
         <div class="order-info">
             <h2>معلومات الطلب</h2>
             <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
@@ -68,71 +87,8 @@
             <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
         </div>
 
-        <div class="order-details">
-            <h2>تفاصيل الطلب</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>المنتج</th>
-                        <th>الكمية</th>
-                        <th>السعر</th>
-                        <th>الصورة الأمامية</th>
-                        <th>الصورة الخلفية</th>
-                        <th>الصورة من الجانب اليمين</th>
-                        <th>الصورة من الجانب اليسار</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        if(env('APP_ENV') == 'production'){
-                            $url = 'http://custmize.digitalgo.net/storage/';
-                        }else{
-                            $url = 'http://127.0.0.1:8000/storage/';
-                        }
-                    @endphp
-                    @foreach ($order->details as $detail)
-                        <tr>
-                            <td>{{ $detail->product_id }}</td>
-                            <td>{{ $detail->quantity }}</td>
-                            <td>{{ number_format($detail->full_price, 2) }} ريال</td>
-                            <td>
-                                <img 
-                                    src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" 
-                                    alt="الصورة الأمامية" 
-                                    style="width: 100px; height: auto;"
-                                >
-                            </td>
-                            <td>
-                                @if($detail->back_image == null) 
-                                    {{'_'}} 
-                                @else
-                                    <img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
-                                @endif
-                            </td>
-                            <td>
-                                @if($detail->right_side_image == null) 
-                                    {{'_'}} 
-                                @else
-                                    <img src=" {{ $url.$detail->right_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
-                                @endif
-                            </td>
-                            <td>
-                                @if($detail->left_side_image == null) 
-                                    {{'_'}} 
-                                @else
-                                    <img src=" {{ $url.$detail->left_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- بيانات الشحن في الجهة اليسرى -->
-    @if ($order->shipping == 1)
-        <div class="section">
+        @if ($order->shipping == 1)
+        <div class="shipping-info">
             <h2>بيانات الشحن</h2>
             @php
                 $shipping = \App\Models\Shipping::where('order_id', $order->id)->first();
@@ -148,7 +104,73 @@
                 <p>لا توجد بيانات شحن لهذا الطلب.</p>
             @endif
         </div>
-    @endif
+        @endif
+    </div>
+
+    <div class="order-details">
+        <h2>تفاصيل الطلب</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>المنتج</th>
+                    <th>الكمية</th>
+                    <th>السعر</th>
+                    <th>الصورة الأمامية</th>
+                    <th>الصورة الخلفية</th>
+                    <th>الصورة من الجانب اليمين</th>
+                    <th>الصورة من الجانب اليسار</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    if(env('APP_ENV') == 'production'){
+                        $url = 'http://custmize.digitalgo.net/storage/';
+                    }else{
+                        $url = 'http://127.0.0.1:8000/storage/';
+                    }
+                @endphp
+                @foreach ($order->details as $detail)
+                    <tr>
+                        <td>{{ $detail->product_id }}</td>
+                        <td>{{ $detail->quantity }}</td>
+                        <td>{{ number_format($detail->full_price, 2) }} ريال</td>
+                        <td>
+                            <img 
+                                src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" 
+                                alt="الصورة الأمامية" 
+                                style="width: 100px; height: auto;"
+                            >
+                        </td>
+                        <td>
+                            @if($detail->back_image == null) 
+                                {{'_'}} 
+                            @else
+                                <img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
+                            @endif
+                        </td>
+                        <td>
+                            @if($detail->right_side_image == null) 
+                                {{'_'}} 
+                            @else
+                                <img src=" {{ $url.$detail->right_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
+                            @endif
+                        </td>
+                        <td>
+                            @if($detail->left_side_image == null) 
+                                {{'_'}} 
+                            @else
+                                <img src=" {{ $url.$detail->left_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>إذا كان لديك أي استفسارات، لا تتردد في الاتصال بنا.</p>
+    </div>
 </div>
 
 </body>
