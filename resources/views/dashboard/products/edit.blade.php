@@ -141,7 +141,7 @@
                                                         @foreach (json_decode($product->guidness_pic) as $item)
                                                             <div class="image-container"
                                                                 style="position: relative; width: 100px; height: 100px;">
-                                                                <img src="{{ asset('uploads/' . $item) }}"
+                                                                <img src="{{ asset('storage/' . $item) }}"
                                                                     alt="Uploaded Image"
                                                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
                                                                 <span class="delete-existing"
