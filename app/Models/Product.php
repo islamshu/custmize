@@ -33,7 +33,7 @@ class Product extends Model
 public function colors()
 {
     return $this->belongsToMany(Color::class, 'product_colors', 'product_id', 'product_color_id')
-                ->withPivot(['front_image', 'back_image', 'price']);
+                ->withPivot(['front_image', 'back_image','right_side_image','left_side_image', 'price']);
 }
 
     public function pen()

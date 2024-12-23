@@ -97,17 +97,20 @@ class CheckoutController extends BaseController
             }
             // $shipping = Shipping::create($request->all());
 
-
+//auth
             foreach ($cart['orders'] as $orderData) {
                 $frontImage = $orderData['front_image'] ?? null;
                 $backImage = $orderData['back_image'] ?? null;
+                $rightSideImage = $orderData['right_side_image'] ?? null;
+                $leftSideImage = $orderData['left_side_image'] ?? null;
+
                 $logos = $orderData['logos'] ?? [];
 
                 if (!$frontImage) {
                     $this->sendError(__('Front image is missing'));
                 }
 
-                $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage]);
+                $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
 
                 OrderDetail::create([
@@ -122,6 +125,9 @@ class CheckoutController extends BaseController
                     'full_price' => $orderData['full_price'],
                     'front_image' => $savedImages[0] ?? null,
                     'back_image' => $savedImages[1] ?? null,
+                    'right_side_image' => $savedImages[2] ?? null,
+                    'left_side_image' => $savedImages[3] ?? null,
+
                     'logos' => json_encode($savedLogos),
                 ]);
             }
@@ -232,10 +238,12 @@ class CheckoutController extends BaseController
             }
             // $shipping = Shipping::create($request->all());
 
-
+//guest
             foreach ($cart['orders'] as $orderData) {
                 $frontImage = $orderData['front_image'] ?? null;
                 $backImage = $orderData['back_image'] ?? null;
+                $rightSideImage = $orderData['right_side_image'] ?? null;
+                $leftSideImage = $orderData['left_side_image'] ?? null;
                 $logos = $orderData['logos'] ?? [];
 
                 if (!$frontImage) {
@@ -257,6 +265,8 @@ class CheckoutController extends BaseController
                     'full_price' => $orderData['full_price'],
                     'front_image' => $savedImages[0] ?? null,
                     'back_image' => $savedImages[1] ?? null,
+                    'right_side_image' => $savedImages[2] ?? null,
+                    'left_side_image' => $savedImages[3] ?? null,
                     'logos' => json_encode($savedLogos),
                 ]);
             }

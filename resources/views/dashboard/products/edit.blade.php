@@ -206,7 +206,7 @@
                                                 $attributes = json_decode($product->subcategory->attributs);
                                             @endphp
 
-                                            <div id="colors-section" class="form-group col-8"
+                                            <div id="colors-section" class="form-group col-12"
                                                 style="border: 1px solid #ddd; padding: 15px;">
                                                 <label>{{ __('Colors') }}</label>
                                                 <select id="colors" name="color_ids[]" class="form-control select2"
@@ -227,7 +227,7 @@
                                                             <h5>{{ $color->name }}</h5>
                                                             <div class="form-row">
                                                                 <!-- Front Image -->
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-3">
                                                                     <label>{{ __('Front Image') }}</label>
                                                                     <input type="file"
                                                                         name="colors_data[{{ $color->id }}][front_image]"
@@ -239,7 +239,7 @@
                                                                 </div>
 
                                                                 <!-- Back Image -->
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-3">
                                                                     <label>{{ __('Back Image') }}</label>
                                                                     <input type="file"
                                                                         name="colors_data[{{ $color->id }}][back_image]"
@@ -251,9 +251,33 @@
                                                                             style="margin-top:10px; width:100px; height:100px; object-fit:cover;">
                                                                     @endif
                                                                 </div>
+                                                                <div class="col-md-3">
+                                                                    <label>{{ __('Right Side Image') }}</label>
+                                                                    <input type="file"
+                                                                        name="colors_data[{{ $color->id }}][right_side_image]"
+                                                                        class="form-control"
+                                                                        onchange="previewImage(this, 'right_side_image-preview-{{ $color->id }}')">
+                                                                    @if ($color->pivot->back_image)
+                                                                        <img id="right_side_image-preview-{{ $color->id }}"
+                                                                            src="{{ asset('storage/' . $color->pivot->right_side_image) }}"
+                                                                            style="margin-top:10px; width:100px; height:100px; object-fit:cover;">
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label>{{ __('Left Side Image') }}</label>
+                                                                    <input type="file"
+                                                                        name="colors_data[{{ $color->id }}][left_side_image]"
+                                                                        class="form-control"
+                                                                        onchange="previewImage(this, 'left_side_image-preview-{{ $color->id }}')">
+                                                                    @if ($color->pivot->back_image)
+                                                                        <img id="left_side_image-preview-{{ $color->id }}"
+                                                                            src="{{ asset('storage/' . $color->pivot->left_side_image) }}"
+                                                                            style="margin-top:10px; width:100px; height:100px; object-fit:cover;">
+                                                                    @endif
+                                                                </div>
 
                                                                 <!-- Price -->
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-3">
                                                                     <label>{{ __('Price') }}</label>
                                                                     <input type="number"
                                                                         name="colors_data[{{ $color->id }}][price]"
@@ -643,7 +667,7 @@
                             <h5>${colorName}</h5>
                             <div class="form-row">
                                 <!-- Front Image -->
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label>{{ __('Front Image') }}</label>
                                     <input type="file" name="colors_data[${colorId}][front_image]" class="form-control" 
                                            onchange="previewImage(this, 'front-preview-${colorId}')">
@@ -651,15 +675,29 @@
                                 </div>
 
                                 <!-- Back Image -->
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label>{{ __('Back Image') }}</label>
                                     <input type="file" name="colors_data[${colorId}][back_image]" class="form-control" 
                                            onchange="previewImage(this, 'back-preview-${colorId}')">
                                     <img id="back-preview-${colorId}" style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover;">
                                 </div>
+                                <div class="col-md-3">
+                                <label>{{ __('Right Side Image') }}</label>
+                                <input type="file" name="colors_data[${colorId}][right_side_image]" 
+                                    class="form-control" onchange="previewImage(this, 'right_side_image-preview-${colorId}')">
+                                <img id="right_side_image-preview-${colorId}" src="#" 
+                                    style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover; border:1px solid #ddd; border-radius:8px;" />
+                            </div>
+                            <div class="col-md-3">
+                                <label>{{ __('Left Side Image') }}</label>
+                                <input type="file" name="colors_data[${colorId}][left_side_image]" 
+                                    class="form-control" onchange="previewImage(this, 'left_side_image-preview-${colorId}')">
+                                <img id="left_side_image-preview-${colorId}" src="#" 
+                                    style="display:none; margin-top:10px; width:100px; height:100px; object-fit:cover; border:1px solid #ddd; border-radius:8px;" />
+                            </div>
 
                                 <!-- Price -->
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label>{{ __('Price') }}</label>
                                     <input type="number" name="colors_data[${colorId}][price]" class="form-control">
                                 </div>

@@ -56,7 +56,7 @@ class ProductResourse extends JsonResource
     public function guidness_image($data){
         $images =[];
         foreach (json_decode($data->guidness_pic) as $image){
-            array_push( $images, asset('uploads/'.$image));
+            array_push( $images, asset('storage/'.$image));
         }
         return ($images);
     }

@@ -125,18 +125,30 @@ class ProductController extends Controller
                     } else {
                         $frontImagePath = null;
                     }
-        
-                    // التحقق من وجود صورة الواجهة الخلفية وتخزينها
                     if ($request->hasFile('colors_data.' . $colorId . '.back_image')) {
                         $backImagePath = $request->file('colors_data.' . $colorId . '.back_image')->store('colors', 'public');
                     } else {
                         $backImagePath = null;
                     }
         
+                    // التحقق من وجود صورة الواجهة الخلفية وتخزينها
+                    if ($request->hasFile('colors_data.' . $colorId . '.right_side_image')) {
+                        $rightSideImagePath = $request->file('colors_data.' . $colorId . '.right_side_image')->store('colors', 'public');
+                    } else {
+                        $rightSideImagePath = null;
+                    }
+                    if ($request->hasFile('colors_data.' . $colorId . '.left_side_image')) {
+                        $ledtSideSideImagePath = $request->file('colors_data.' . $colorId . '.left_side_image')->store('colors', 'public');
+                    } else {
+                        $ledtSideSideImagePath = null;
+                    }
+        
                     // حفظ اللون مع الصور
                     $product->colors()->attach($colorId, [
                         'front_image' => $frontImagePath,
                         'back_image' => $backImagePath,
+                        'right_side_image'=>$rightSideImagePath,
+                        'left_side_image'=>$ledtSideSideImagePath,
                         'price' => $colorData['price'] ?? 0,
                     ]);
         
@@ -305,7 +317,9 @@ class ProductController extends Controller
                     // تحديد مسار الصور (استخدام الصورة القديمة إن لم يتم رفع صورة جديدة)
                     $frontImagePath = $existingColor ? $existingColor->front_image : null;
                     $backImagePath = $existingColor ? $existingColor->back_image : null;
-            
+                    $rightSideImagePath = $existingColor ? $existingColor->right_side_image : null;
+                    $leftSideImagePath = $existingColor ? $existingColor->left_side_image : null;
+
                     if ($request->hasFile("colors_data.$colorId.front_image")) {
                         // رفع الصورة الأمامية الجديدة
                         $frontImagePath = $request->file("colors_data.$colorId.front_image")->store('colors', 'public');
@@ -315,12 +329,22 @@ class ProductController extends Controller
                         // رفع الصورة الخلفية الجديدة
                         $backImagePath = $request->file("colors_data.$colorId.back_image")->store('colors', 'public');
                     }
+                    if ($request->hasFile("colors_data.$colorId.right_side_image")) {
+                        // رفع الصورة الخلفية الجديدة
+                        $rightSideImagePath = $request->file("colors_data.$colorId.right_side_image")->store('colors', 'public');
+                    }
+                    if ($request->hasFile("colors_data.$colorId.left_side_image")) {
+                        // رفع الصورة الخلفية الجديدة
+                        $leftSideImagePath = $request->file("colors_data.$colorId.left_side_image")->store('colors', 'public');
+                    }
             
                     // إذا كان السجل موجودًا يتم التحديث، وإلا يتم الإضافة
                     if ($existingColor) {
                         $existingColor->update([
                             'front_image' => $frontImagePath,
                             'back_image' => $backImagePath,
+                            'right_side_image' => $rightSideImagePath,
+                            'left_side_image' => $leftSideImagePath,
                             'price' => $colorData['price'] ?? $existingColor->price,
                         ]);
                     } else {
@@ -328,6 +352,8 @@ class ProductController extends Controller
                         $product->colors()->attach($colorId, [
                             'front_image' => $frontImagePath,
                             'back_image' => $backImagePath,
+                            'right_side_image' => $rightSideImagePath,
+                            'left_side_image' => $leftSideImagePath,
                             'price' => $colorData['price'] ?? 0,
                         ]);
                     }
