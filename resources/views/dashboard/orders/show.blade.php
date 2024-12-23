@@ -99,6 +99,18 @@
                                                                     <p class="text-center">{{ __('Back View') }}</p>
                                                                 </div>
                                                             @endif
+                                                            @if($item->right_side_image)
+                                                                <div class="p-2">
+                                                                    <img src="{{ asset('storage/' . $item->right_side_image) }}" alt="{{ __('Right Side View') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
+                                                                    <p class="text-center">{{ __('Right Side View') }}</p>
+                                                                </div>
+                                                            @endif
+                                                            @if($item->left_side_image)
+                                                                <div class="p-2">
+                                                                    <img src="{{ asset('storage/' . $item->left_side_image) }}" alt="{{ __('Left Side View') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
+                                                                    <p class="text-center">{{ __('Left Side View') }}</p>
+                                                                </div>
+                                                            @endif
                                                             @if($item->logos)
                                                                 @foreach (json_decode($item->logos) as $logo)
                                                                     @if($logo)
