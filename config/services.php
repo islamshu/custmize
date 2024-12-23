@@ -30,5 +30,10 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+'brandfetch' => [
+    'key' => env('BRANDFETCH_API_KEY'),
+    'client_id' => env('BRANDFETCH_CLIENT_ID'),
+],
+
 
 ];

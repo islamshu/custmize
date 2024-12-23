@@ -14,7 +14,9 @@ use App\Models\DiscountCode;
 use App\Models\Order;
 use App\Models\Product;
 use App\Services\UnsplashService;
+use App\Services\BrandfetchService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends BaseController
 {
@@ -59,7 +61,7 @@ class HomeController extends BaseController
     //       "
     //     }
     // }
-    
+
     public function home()
     {
         $banners = BannerRessours::collection(Banner::get());
@@ -84,19 +86,21 @@ class HomeController extends BaseController
         $products = DiscountCodeResourse::collection($products);
         return $this->sendResponse($products, "SUCCESS");
     }
-    public function all_orders(){
+    public function all_orders()
+    {
         $clinet = auth('api')->user();
-        $orders = Order::where('client_id',$clinet->id)->where('status','completed')->get();
+        $orders = Order::where('client_id', $clinet->id)->where('status', 'completed')->get();
         $orders = OrderResourse::collection($orders);
         return $this->sendResponse($orders, "all orders");
     }
-    public function track_order(Request $request){
+    public function track_order(Request $request)
+    {
         $clinet = auth('api')->user();
-        $order= Order::where('code',$request->code)->first();
+        $order = Order::where('code', $request->code)->first();
         $order = new OrderResourse($order);
         return $this->sendResponse($order, "my order");
     }
-    
+
     public function single_product($slug)
     {
         $product = Product::where("slug", $slug)->first();
@@ -137,71 +141,101 @@ class HomeController extends BaseController
         }
         return $this->sendResponse($price, 'success');
     }
-    public function images(Request $request,UnsplashService $unsplashService )
-    {
-        $query = request('query',$request->search); // Default keyword: "addidas logo"
-        $images = $unsplashService->searchImages($query);
+    public function images(Request $request, BrandfetchService $brandfetch)
+{
+    // Get name from request or set default
+    $name = $request->search.'.com';
     
+    // Get clientId from config or env
+    $clientId = config('services.brandfetch.client_id');
+
+    try {
+        $response = Http::get("https://api.brandfetch.io/v2/search/{$name}", [
+            'c' => $clientId
+        ]);
+
+        if ($response->successful()) {
+            $icons = array_map(function($brand) {
+                return $brand['icon'];
+            }, $response->json());
+            return $this->sendResponse($icons,'success');
+        }
+
+        return response()->json([
+            'error' => 'Failed to fetch data'
+        ], 400);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+    public function images_old(Request $request, UnsplashService $unsplashService)
+    {
+
+        $query = request('query', $request->search); // Default keyword: "addidas logo"
+        $images = $unsplashService->searchImages($query);
+
         // Extract only the 'urls' field from each image
-        $imageUrls = array_map(function($image) {
+        $imageUrls = array_map(function ($image) {
             return $image['urls']['thumb'];
         }, $images['results']);
-        
-        return $this->sendResponse($imageUrls,'all brands');
+
+        return $this->sendResponse($imageUrls, 'all brands');
     }
-    
-    
+
+
     public function example_size_calculate(Request $request)
-{
-    // الحصول على القيم من الطلب
-    $hight = $request->hight;
-    $width = $request->width;
+    {
+        // الحصول على القيم من الطلب
+        $hight = $request->hight;
+        $width = $request->width;
 
-    // التحقق من صحة المدخلات
-    if (!$hight || !$width) {
-        return $this->sendError('Invalid input. Please provide hight and width.');
+        // التحقق من صحة المدخلات
+        if (!$hight || !$width) {
+            return $this->sendError('Invalid input. Please provide hight and width.');
+        }
+
+
+        // الحصول على القيم العامة (النسبة والعوامل والأسعار)
+        $percentage =  get_general_value('percentage');
+        $threshold = get_general_value('threshold');
+        $priceLess = get_general_value('price_less');
+        $priceEqual = get_general_value('price_equal');
+        // $priceGreater = get_general_value('price_greater');
+
+        // حساب الناتج
+        $result = $hight * $width * $percentage;
+
+        // تطبيق الشرط بناءً على الناتج
+        $comparison = '';
+        $price = 0;
+
+        if ($result < $threshold) {
+            $comparison = "Result is less than the threshold.";
+            $price = $priceLess;
+        } elseif ($result == $threshold) {
+            $comparison = "Result is equal to the threshold.";
+            $price = $priceEqual;
+        } else {
+            $comparison = "Result is greater than the threshold.";
+            $price = $result;
+        }
+
+        // إعداد الاستجابة
+        $response = [
+            'input' => [
+                'hight' => $hight,
+                'width' => $width,
+                'percentage' => $percentage,
+            ],
+            'result' => $result,
+            'comparison' => $comparison,
+            'price' => $price,
+        ];
+
+        // إرجاع الاستجابة
+        return $this->sendResponse($response, 'Calculation successful');
     }
-
-
-    // الحصول على القيم العامة (النسبة والعوامل والأسعار)
-    $percentage =  get_general_value('percentage');
-    $threshold = get_general_value('threshold');
-    $priceLess = get_general_value('price_less');
-    $priceEqual = get_general_value('price_equal');
-    // $priceGreater = get_general_value('price_greater');
-
-    // حساب الناتج
-    $result = $hight * $width * $percentage;
-
-    // تطبيق الشرط بناءً على الناتج
-    $comparison = '';
-    $price = 0;
-
-    if ($result < $threshold) {
-        $comparison = "Result is less than the threshold.";
-        $price = $priceLess;
-    } elseif ($result == $threshold) {
-        $comparison = "Result is equal to the threshold.";
-        $price = $priceEqual;
-    } else {
-        $comparison = "Result is greater than the threshold.";
-        $price = $result;
-    }
-
-    // إعداد الاستجابة
-    $response = [
-        'input' => [
-            'hight' => $hight,
-            'width' => $width,
-            'percentage' => $percentage,
-        ],
-        'result' => $result,
-        'comparison' => $comparison,
-        'price' => $price,
-    ];
-
-    // إرجاع الاستجابة
-    return $this->sendResponse($response, 'Calculation successful');
-}
-
 }
