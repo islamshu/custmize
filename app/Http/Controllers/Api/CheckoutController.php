@@ -250,7 +250,7 @@ class CheckoutController extends BaseController
                     $this->sendError(__('Front image is missing'));
                 }
 
-                $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage]);
+                $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
 
                 OrderDetail::create([
