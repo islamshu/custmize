@@ -203,14 +203,14 @@
     "Orders with shipping": "Orders with shipping",
     "Orders without shipping": "Orders without shipping",
     "Shipping Information": "Shipping Information",
-    "Receiver Name": "Receiver Name",
-    "Receiver Phone": "Receiver Phone",
-    "Receiver Email": "Receiver Email",
-    "Address": "Address",
-    "City": "City",
-    "Postal Code": "Postal Code",
-    "Country": "Country",
-    "Shipping Status": "Shipping Status",
+    "Receiver Name:": "Receiver Name",
+    "Receiver Phone:": "Receiver Phone",
+    "Receiver Email:": "Receiver Email",
+    "Address:": "Address",
+    "City:": "City",
+    "Postal Code:": "Postal Code",
+    "Country:": "Country",
+    "Shipping Status:": "Shipping Status",
     "No shipping information available for this order": "No shipping information available for this order"
 
 
