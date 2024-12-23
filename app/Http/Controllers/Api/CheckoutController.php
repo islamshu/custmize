@@ -43,6 +43,8 @@ class CheckoutController extends BaseController
             'promocode' => 'nullable|string',
             'shipping' => 'required|boolean',
             'receiver_name' => $request->shipping == 1 ? 'required' : 'nullable',
+            'receiver_email' => $request->shipping == 1 ? 'required|email' : 'nullable',
+            'receiver_phone' => $request->shipping == 1 ? 'required' : 'nullable',  
             'address' => $request->shipping == 1 ? 'required' : 'nullable',
             'city' => $request->shipping == 1 ? 'required' : 'nullable',
             'postal_code' => $request->shipping == 1 ? 'required' : 'nullable',
@@ -89,6 +91,9 @@ class CheckoutController extends BaseController
                 $shipping = Shipping::create([
                     'order_id' => $order->id,
                     'receiver_name' => $request->receiver_name,
+                    'receiver_email' => $request->receiver_email,
+                    'receiver_phone' => $request->receiver_phone,
+
                     'address' => $request->address,
                     'city' => $request->city,
                     'postal_code' => $request->postal_code,
@@ -191,6 +196,8 @@ class CheckoutController extends BaseController
             'promocode' => 'nullable|string',
             'shipping' => 'required|boolean',
             'receiver_name' => $request->shipping == 1 ? 'required' : 'nullable',
+            'receiver_email' => $request->shipping == 1 ? 'required|email' : 'nullable',
+            'receiver_phone' => $request->shipping == 1 ? 'required' : 'nullable',
             'address' => $request->shipping == 1 ? 'required' : 'nullable',
             'city' => $request->shipping == 1 ? 'required' : 'nullable',
             'postal_code' => $request->shipping == 1 ? 'required' : 'nullable',
@@ -230,6 +237,9 @@ class CheckoutController extends BaseController
                 $shipping = Shipping::create([
                     'order_id' => $order->id,
                     'receiver_name' => $request->receiver_name,
+                    'receiver_email' => $request->receiver_email,
+                    'receiver_phone' => $request->receiver_phone,
+
                     'address' => $request->address,
                     'city' => $request->city,
                     'postal_code' => $request->postal_code,

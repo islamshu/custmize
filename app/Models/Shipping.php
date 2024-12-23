@@ -9,7 +9,7 @@ class Shipping extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'order_id', 'receiver_name', 'address', 'city', 'postal_code', 'country', 'status'
+        'order_id', 'receiver_name','receiver_phone','receiver_email', 'address', 'city', 'postal_code', 'country', 'status'
     ];
 
     public function order()
