@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,39 +10,72 @@ class OrderController extends Controller
     public function index()
     {
         // Fetch all orders with their details
-        $orders = Order::with('details')->get();
+        $orders = Order::with('details')->where('shipping',0)->get();
         $title = __('Orders');
-        return view('dashboard.orders.index', compact('orders','title'));
+        return view('dashboard.orders.index', compact('orders', 'title'));
     }
     public function guest_orders()
     {
         // Fetch all orders with their details
-        $orders = Order::with('details')->where('client_id',null)->get();
+        $orders = Order::with('details')->where('client_id', null)->where('shipping',0)->get();
 
         $title = __('Guest Orders');
-        return view('dashboard.orders.index', compact('orders','title'));  
+        return view('dashboard.orders.index', compact('orders', 'title'));
     }
-    public function updateStatus(Request $request, Order $order)
-{
-    $validated = $request->validate([
-        'status_id' => 'required|exists:statuses,id',
-    ]);
-
-    $order->status_id = $validated['status_id'];
-    $order->save();
-
-    return response()->json(['success' => true]);
-}
-
     public function clinet_orders()
     {
         // Fetch all orders with their details
-        $orders = Order::with('details')->where('client_id','!=',null)->get();
+        $orders = Order::with('details')->where('client_id', '!=', null)->where('shipping',0)->get();
 
         $title = __('Clinet Orders');
-        return view('dashboard.orders.index', compact('orders','title'));    }
+        return view('dashboard.orders.index', compact('orders', 'title'));
+    }
+
+
+
+
+    public function index_shipping()
+    {
+        // Fetch all orders with their details
+        $orders = Order::with('details')->where('shipping',0)->get();
+        $title = __('Orders');
+        return view('dashboard.orders.index', compact('orders', 'title'));
+    }
+    public function guest_orders_shipping()
+    {
+        // Fetch all orders with their details
+        $orders = Order::with('details')->where('client_id', null)->where('shipping',0)->get();
+
+        $title = __('Guest Orders');
+        return view('dashboard.orders.index', compact('orders', 'title'));
+    }
+    public function clinet_orders_shipping()
+    {
+        // Fetch all orders with their details
+        $orders = Order::with('details')->where('client_id', '!=', null)->where('shipping',0)->get();
+
+        $title = __('Clinet Orders');
+        return view('dashboard.orders.index', compact('orders', 'title'));
+    }
+
+
 
     
+    public function updateStatus(Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'status_id' => 'required|exists:statuses,id',
+        ]);
+
+        $order->status_id = $validated['status_id'];
+        $order->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    
+
+
 
     public function show(Order $order)
     {
@@ -54,6 +88,6 @@ class OrderController extends Controller
     {
         // Load order details for a specific order
         $orders = Order::find($id)->delete();
-       return redirect()->route('orders.index')->with(['success'=>__('Deleted Successfuly')]);
+        return redirect()->route('orders.index')->with(['success' => __('Deleted Successfuly')]);
     }
 }

@@ -199,5 +199,7 @@
     "Back View": "Back View",
     "Right Side View": "Right Side View",
     "Left Side View": "Left Side View",
-    "Logos": "Logos"
+    "Logos": "Logos",
+    "Orders with shipping": "Orders with shipping",
+    "Orders without shipping": "Orders without shipping"
 }

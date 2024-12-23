@@ -212,5 +212,7 @@
     "Back View": "المنظر الخلفي",
     "Right Side View": "منظر الجانب الأيمن",
     "Left Side View": "منظر الجانب الأيسر",
-    "Logo": "الشعارات"
+    "Logo": "الشعارات",
+    "Orders with shipping": "الطلبات التي تحتوي على شحن",
+    "Orders without shipping": "الطلبات ليس بها شحن"
 }
