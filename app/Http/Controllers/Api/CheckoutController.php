@@ -239,7 +239,6 @@ class CheckoutController extends BaseController
                     'receiver_name' => $request->receiver_name,
                     'receiver_email' => $request->receiver_email,
                     'receiver_phone' => $request->receiver_phone,
-
                     'address' => $request->address,
                     'city' => $request->city,
                     'postal_code' => $request->postal_code,
