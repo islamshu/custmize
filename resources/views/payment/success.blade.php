@@ -71,6 +71,9 @@
                     <th>السعر</th>
                     <th>الصورة الأمامية</th>
                     <th>الصورة الخلفية</th>
+                    <th>الصورة من الجانب اليمين</th>
+                    <th>الصورة من الجانب اليسار</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -83,6 +86,7 @@
                     }
                 @endphp
                 @foreach ($order->details as $detail)
+                
                     <tr>
                         <td>{{ $detail->product_id }}</td>
                         <td>{{ $detail->quantity }}</td>
@@ -94,6 +98,9 @@
                         >
                         </td>
                         <td>@if($detail->back_image == null) {{'_'}} @else<img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
+                        <td>@if($detail->right_side_image == null) {{'_'}} @else<img src=" {{ $url.$detail->right_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
+                        <td>@if($detail->left_side_image == null) {{'_'}} @else<img src=" {{ $url.$detail->left_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
+
                     </tr>
                 @endforeach
             </tbody>
