@@ -28,6 +28,8 @@ class OrderDetilesResourse extends JsonResource
             'full_price'=>$this->full_price,
             'front_image'=>asset('storage/'.$this->front_image),
             'back_image'=>$this->back_image != null ? asset('storage/'.$this->back_image) : null,
+            'right_side_image'=>$this->right_side_image != null ? asset('storage/'.$this->right_side_image) : null,
+            'left_side_image'=>$this->left_side_image != null ? asset('storage/'.$this->left_side_image) : null,
 
         ];
     }

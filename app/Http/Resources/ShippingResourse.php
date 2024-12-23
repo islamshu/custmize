@@ -17,6 +17,9 @@ class ShippingResourse extends JsonResource
         return [
             'id'=>$this->id,
             'receiver_name'=>$this->receiver_name,
+            'receiver_email'=>$this->receiver_email,
+            'receiver_phone'=>$this->receiver_phone,
+
             'address'=>$this->address,
             'city'=>$this->city,
             'postal_code'=>$this->postal_code,
