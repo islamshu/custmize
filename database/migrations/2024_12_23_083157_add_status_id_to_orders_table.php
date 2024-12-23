@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->integer('shipping');
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->text('right_side_image')->nullable();
+            $table->text('left_side_image')->nullable();
+
         });
     }
 
