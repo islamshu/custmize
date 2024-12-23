@@ -45,72 +45,106 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>نجاح العملية</h1>
-        <p>تمت العملية بنجاح. شكراً لتعاملكم معنا!</p>
-    </div>
-
-    <div class="order-info">
-        <h2>معلومات الطلب</h2>
-        <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
-        <p><strong>الإسم:</strong> {{ $order->name }}</p>
-        <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
-        <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
-        <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
-        <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
-    </div>
-
-    <div class="order-details">
-        <h2>تفاصيل الطلب</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>المنتج</th>
-                    <th>الكمية</th>
-                    <th>السعر</th>
-                    <th>الصورة الأمامية</th>
-                    <th>الصورة الخلفية</th>
-                    <th>الصورة من الجانب اليمين</th>
-                    <th>الصورة من الجانب اليسار</th>
-
-                </tr>
-            </thead>
-            <tbody>
+    <div class="container">
+        <div class="header">
+            <h1>نجاح العملية</h1>
+            <p>تمت العملية بنجاح. شكراً لتعاملكم معنا!</p>
+        </div>
+    
+        <div class="order-info">
+            <h2>معلومات الطلب</h2>
+            <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
+            <p><strong>الإسم:</strong> {{ $order->name }}</p>
+            <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
+            <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
+            <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
+            <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
+        </div>
+    
+        @if ($order->shipping == 1)
+            <div class="shipping-info">
+                <h2>بيانات الشحن</h2>
                 @php
-                    if(env('APP_ENV') == 'production'){
-                        $url = 'http://custmize.digitalgo.net/storage/';
-                    }else{
-                        $url = 'http://127.0.0.1:8000/storage/';
-
-                    }
+                    $shipping = \App\Models\Shipping::where('order_id', $order->id)->first();
                 @endphp
-                @foreach ($order->details as $detail)
-                
+                @if ($shipping)
+                    <p><strong>إسم المستلم:</strong> {{ $shipping->receiver_name }}</p>
+                    <p><strong>العنوان:</strong> {{ $shipping->address }}</p>
+                    <p><strong>المدينة:</strong> {{ $shipping->city }}</p>
+                    <p><strong>الرمز البريدي:</strong> {{ $shipping->postal_code }}</p>
+                    <p><strong>الدولة:</strong> {{ $shipping->country }}</p>
+                    <p><strong>الحالة:</strong> {{ $shipping->status }}</p>
+                @else
+                    <p>لا توجد بيانات شحن لهذا الطلب.</p>
+                @endif
+            </div>
+        @endif
+    
+        <div class="order-details">
+            <h2>تفاصيل الطلب</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $detail->product_id }}</td>
-                        <td>{{ $detail->quantity }}</td>
-                        <td>{{ number_format($detail->full_price, 2) }} ريال</td>
-                        <td>   <img 
-                            src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" 
-                            alt="الصورة الأمامية" 
-                            style="width: 100px; height: auto;"
-                        >
-                        </td>
-                        <td>@if($detail->back_image == null) {{'_'}} @else<img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
-                        <td>@if($detail->right_side_image == null) {{'_'}} @else<img src=" {{ $url.$detail->right_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
-                        <td>@if($detail->left_side_image == null) {{'_'}} @else<img src=" {{ $url.$detail->left_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">@endif</td>
-
+                        <th>المنتج</th>
+                        <th>الكمية</th>
+                        <th>السعر</th>
+                        <th>الصورة الأمامية</th>
+                        <th>الصورة الخلفية</th>
+                        <th>الصورة من الجانب اليمين</th>
+                        <th>الصورة من الجانب اليسار</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @php
+                        if(env('APP_ENV') == 'production'){
+                            $url = 'http://custmize.digitalgo.net/storage/';
+                        }else{
+                            $url = 'http://127.0.0.1:8000/storage/';
+                        }
+                    @endphp
+                    @foreach ($order->details as $detail)
+                        <tr>
+                            <td>{{ $detail->product_id }}</td>
+                            <td>{{ $detail->quantity }}</td>
+                            <td>{{ number_format($detail->full_price, 2) }} ريال</td>
+                            <td>
+                                <img 
+                                    src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" 
+                                    alt="الصورة الأمامية" 
+                                    style="width: 100px; height: auto;"
+                                >
+                            </td>
+                            <td>
+                                @if($detail->back_image == null) 
+                                    {{'_'}} 
+                                @else
+                                    <img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
+                                @endif
+                            </td>
+                            <td>
+                                @if($detail->right_side_image == null) 
+                                    {{'_'}} 
+                                @else
+                                    <img src=" {{ $url.$detail->right_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
+                                @endif
+                            </td>
+                            <td>
+                                @if($detail->left_side_image == null) 
+                                    {{'_'}} 
+                                @else
+                                    <img src=" {{ $url.$detail->left_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    
+        <div class="footer">
+            <p>إذا كان لديك أي استفسارات، لا تتردد في الاتصال بنا.</p>
+        </div>
     </div>
-
-    <div class="footer">
-        <p>إذا كان لديك أي استفسارات، لا تتردد في الاتصال بنا.</p>
-    </div>
-</div>
-
+    
 </body>
 </html>
