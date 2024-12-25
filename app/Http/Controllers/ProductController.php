@@ -307,7 +307,7 @@ class ProductController extends Controller
             }
     
             $product->save();
-            dd($product);
+            // dd($product);
 
     
             // تحديث الألوان
