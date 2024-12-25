@@ -307,7 +307,7 @@ class ProductController extends Controller
             }
     
             $product->save();
-            dd($product . $request->type_product);
+            // dd($product . $request->type_product);
 
     
             // تحديث الألوان
