@@ -280,6 +280,7 @@ class ProductController extends Controller
             $product->price = $request->price;
             $product->min_sale = $request->min_sale;
             if ($request->type_product != null) {
+                dd($request->type_product);
                 $product->type_id = $request->type_product;
             }
             // تحديث الملف (3D model) إذا تم رفعه
