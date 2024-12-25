@@ -351,7 +351,7 @@
                                                     </option>
 
                                                     @foreach ($typess as $item)
-                                                        <option value="{{ $item->id }}">
+                                                        <option value="{{ $item->id }}" @if($product->type_id == $item->id) selected @endif>
                                                             {{ $item->name }}</option>
                                                     @endforeach
                                                 </select>
