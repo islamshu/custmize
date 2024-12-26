@@ -94,7 +94,7 @@ select.status-select option {
                                                             <select class="status-select form-control" data-order-id="{{ $order->id }}">
                                                                 @foreach (App\Models\Status::get() as $item)
                                                                     <option value="{{ $item->id }}" @if ($order->status_id == $item->id) selected @endif>
-                                                                        {{ $item->name }}
+                                                                        {{ $item->name_ar }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
