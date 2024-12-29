@@ -32,6 +32,7 @@ Route::post('password_reset',[UserController::class,'resetPassword'])->name('pas
 Route::get('size_calculate',[HomeController::class,'size_calculate'])->name('size_calculate');
 Route::get('example_size_calculate',[HomeController::class,'example_size_calculate'])->name('size_calculate');
 Route::get('size_calculate_new',[HomeController::class,'size_calculate_new'])->name('size_calculate_new');
+Route::get('size_calculate_new_factor',[HomeController::class,'size_calculate_new_factor'])->name('size_calculate_new_factor');
 
 
 Route::get('libraray', [HomeController::class,'images'])->name('images');

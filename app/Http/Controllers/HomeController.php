@@ -69,7 +69,9 @@ class HomeController extends Controller
     public function factor(){
         return view('dashboard.factor');
     }
-    
+    public function factor2(){
+        return view('dashboard.factor2');
+    }
     public function update_my_fatoorah(Request $request)
     {
         // تحديد المتغيرات التي ترغب في تحديثها

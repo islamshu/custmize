@@ -118,6 +118,54 @@ class HomeController extends BaseController
         ];
         return $this->sendResponse($res, 'success');
     }
+    public function size_calculate_new_factor()
+{
+    // Get general values (you can customize these based on your need)
+    $priceLessEqual3 = get_general_value('price_less_equal_3');
+    $price3To8 = get_general_value('price_3_to_8');
+    $price8To15 = get_general_value('price_8_to_15');
+    $price15To21 = get_general_value('price_15_to_21');
+    $price21To30 = get_general_value('price_21_to_30');
+    $priceGreater30 = get_general_value('price_greater_30');
+
+    // You can calculate the area from length and width here as well
+    $length = request('length', 0);  // You can also validate this input
+    $width = request('width', 0);    // Same for width
+    $area = $length * $width;
+
+    // Determine the appropriate price based on the area
+    if ($area <= 3) {
+        $price = $priceLessEqual3;
+    } elseif ($area > 3 && $area <= 8) {
+        $price = $price3To8;
+    } elseif ($area > 8 && $area <= 15) {
+        $price = $price8To15;
+    } elseif ($area > 15 && $area <= 21) {
+        $price = $price15To21;
+    } elseif ($area > 21 && $area <= 30) {
+        $price = $price21To30;
+    } else {
+        // For area > 30, use the calculated area for price
+        $price = $area; // This can be adjusted if needed
+    }
+
+    // Prepare response
+    $res = [
+        // 'area' => $area,
+        // 'price' => $price,
+        // 'length' => $length,
+        // 'width' => $width,
+        'price_less_equal_3' => $priceLessEqual3,
+        'price_3_to_8' => $price3To8,
+        'price_8_to_15' => $price8To15,
+        'price_15_to_21' => $price15To21,
+        'price_21_to_30' => $price21To30,
+        'price_greater_30' => 'width * length',
+    ];
+
+    return $this->sendResponse($res, 'success');
+}
+
     public function size_calculate_new(Request $request)
     {
         $width = $request->query('width');
