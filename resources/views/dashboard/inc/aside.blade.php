@@ -31,7 +31,7 @@
                          
                         </li>
                         <li class="dropdown " data-menu=""><a
-                                class="dropdown-item " href="{{ route('factor') }}"
+                                class="dropdown-item " href="{{ route('factor2') }}"
                                 >{{ __('calculate setting') }}</a>
                          
                         </li>
