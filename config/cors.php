@@ -1,11 +1,22 @@
 <?php
+
 return [
     'paths' => ['api/*', 'storage/uploads/*'], // Specify the paths you want to allow
-    'allowed_methods' => ['*'], // Allow all HTTP methods (GET, POST, etc.)
-    'allowed_origins' => ['*'], // Allow requests from all origins
-    'allowed_origins_patterns' => [], // Keep this empty
-    'allowed_headers' => ['*'], // Allow all headers
-    'exposed_headers' => [], // No specific headers to expose
-    'max_age' => 0, // No caching for preflight requests
-    'supports_credentials' => false, // Set to true if cookies are needed for cross-origin requests
+
+    'allowed_methods' => ['*'],
+
+    'allowed_origins' => [
+        'https://printlogo.custmize.digitalgo.net',
+        'http://printlogo.custmize.digitalgo.net'
+    ],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => true,
 ];
