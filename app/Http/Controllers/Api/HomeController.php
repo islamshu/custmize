@@ -95,8 +95,11 @@ class HomeController extends BaseController
     }
     public function track_order(Request $request)
     {
-        $clinet = auth('api')->user();
+        // $clinet = auth('api')->user();
         $order = Order::where('code', $request->code)->first();
+        if(!$order){
+            return $this->sendError('order not found');
+        }
         $order = new OrderResourse($order);
         return $this->sendResponse($order, "my order");
     }
