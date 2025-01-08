@@ -283,12 +283,16 @@ class ProductController extends Controller
                 $product->type_id = $request->type_product;
             }
             // تحديث الملف (3D model) إذا تم رفعه
-            if ($request->hasFile('file')) {
+            if ($request->file != null) {
+               
                 $file = $request->file('file');
-                $filePath = $file->store('uploads', 'public');
+                $fileName = $file->getClientOriginalName();
+        
+                // Save file to 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public');
                 $product->image = url('/storage/' . $filePath);
+
             }
-    
             // تحديث صور الإرشادات (guidness images)
             if ($request->guidness || $request->deleted_images) {
                 $deletedImages = json_decode($request->deleted_images, true) ?? [];
