@@ -263,7 +263,7 @@ class ProductController extends Controller
             'description_ar' => 'nullable|string',
             'price' => 'required|numeric',
             'min_sale' => 'required|numeric',
-            'file' => 'nullable|file|mimes:glb,gltf',
+            'file' => 'nullable|file',
         ]);
     
         try {
