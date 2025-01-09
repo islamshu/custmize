@@ -1,10 +1,16 @@
 <?php
 
 return [
-    'paths' => ['*'],
+    'paths' => ['api/*', 'storage/uploads/*'], // Specify the paths you want to allow
 
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['*'],
+
+    'allowed_origins' => [
+        'https://printlogo.custmize.digitalgo.net',
+        'http://printlogo.custmize.digitalgo.net',
+        'https://custmize.digitalgo.net',
+        'http://custmize.digitalgo.net'
+    ],
 
     'allowed_origins_patterns' => [],
 
