@@ -7,7 +7,8 @@ return [
 
     'allowed_origins' => [
         'https://printlogo.custmize.digitalgo.net',
-        'http://printlogo.custmize.digitalgo.net'
+        'http://printlogo.custmize.digitalgo.net',
+        '*'
     ],
 
     'allowed_origins_patterns' => [],
