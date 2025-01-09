@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'paths' => ['api/*', 'storage/uploads/*'], // Specify the paths you want to allow
+    'paths' => ['*'],
 
     'allowed_methods' => ['*'],
     'allowed_origins' => ['*'],
