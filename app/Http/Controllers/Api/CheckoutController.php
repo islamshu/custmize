@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
+
 class CheckoutController extends BaseController
 {
 
@@ -344,33 +345,78 @@ class CheckoutController extends BaseController
         dd('error');
     }
     public function saveImagesFromUrls($imageUrls, $folder = 'images/products')
-    {
-        $savedImages = [];
+{
+    $savedImages = [];
 
-        foreach ($imageUrls as $imageUrl) {
-            try {
-                // Fetch the image using Guzzle
-                $client = new Client();
-                $response = $client->get($imageUrl);
-
-                // Get the original filename or create a unique one
-                $originalFilename = basename($imageUrl);
-                $filename = Str::random(10) . '_' . $originalFilename;
-
-                // Determine storage path
-                $filePath = $folder . '/' . $filename;
-
-                // Save the image in the specified directory
-                Storage::disk('public')->put($filePath, $response->getBody());
-
-                // Add the saved path to the result
-                $savedImages[] = $filePath;
-            } catch (\Exception $e) {
-                // Handle the error (e.g., log it or continue)
-                continue;
+    foreach ($imageUrls as $imageUrl) {
+        try {
+            // Check if the URL is a Base64 string
+            if (Str::startsWith($imageUrl, 'data:image')) {
+                // Handle Base64 image
+                $filePath = $this->saveBase64Image($imageUrl, $folder);
+            } else {
+                // Handle regular image URL
+                $filePath = $this->saveImageFromUrl($imageUrl, $folder);
             }
-        }
 
-        return $savedImages;
+            // Add the saved path to the result
+            if ($filePath) {
+                $savedImages[] = $filePath;
+            }
+        } catch (\Exception $e) {
+            // Handle the error (e.g., log it or continue)
+            continue;
+        }
     }
+
+    return $savedImages;
+}
+
+/**
+ * Save an image from a Base64 string.
+ */
+private function saveBase64Image($base64String, $folder)
+{
+    // Extract the Base64 data from the string
+    $imageData = explode(',', $base64String);
+    $imageData = end($imageData);
+
+    // Decode the Base64 data
+    $decodedImage = base64_decode($imageData);
+
+    if (!$decodedImage) {
+        throw new \Exception('Invalid Base64 image data.');
+    }
+
+    // Generate a unique filename
+    $filename = Str::random(10) . '.png'; // Default to PNG, or extract from the Base64 string
+    $filePath = $folder . '/' . $filename;
+
+    // Save the image in the specified directory
+    Storage::disk('public')->put($filePath, $decodedImage);
+
+    return $filePath;
+}
+
+/**
+ * Save an image from a regular URL.
+ */
+private function saveImageFromUrl($imageUrl, $folder)
+{
+    // Fetch the image using Guzzle
+    $client = new Client();
+    $response = $client->get($imageUrl);
+
+    // Get the original filename or create a unique one
+    $originalFilename = basename($imageUrl);
+    $filename = Str::random(10) . '_' . $originalFilename;
+
+    // Determine storage path
+    $filePath = $folder . '/' . $filename;
+
+    // Save the image in the specified directory
+    Storage::disk('public')->put($filePath, $response->getBody());
+
+    return $filePath;
+}
 }
