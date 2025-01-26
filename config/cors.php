@@ -1,7 +1,7 @@
 <?php
 
 return [
-'paths' => ['api/*', 'viwer/*', 'storage/uploads/*', '*'],
+'paths' => ['api/*', 'viwer/*', 'storage/uploads/*','storage/*', '*'],
 
     'allowed_methods' => ['*'],
 
