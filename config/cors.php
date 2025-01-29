@@ -1,23 +1,10 @@
 <?php
-
 return [
-'paths' => ['api/*', 'viwer/*', 'storage/uploads/*','storage/*', '*'],
-
-    'allowed_methods' => ['*'],
-
-    'allowed_origins' => [
-        'https://printlogo.custmize.digitalgo.net',
-        'http://printlogo.custmize.digitalgo.net',
-        '*'
-    ],
-
-    'allowed_origins_patterns' => [],
-
-    'allowed_headers' => ['*'],
-
-    'exposed_headers' => [],
-
-    'max_age' => 0,
-
-    'supports_credentials' => true,
+    'paths' => ['api/*', 'storage/*'], // Paths to apply CORS
+    'allowed_methods' => ['*'], // Allowed HTTP methods
+    'allowed_origins' => ['https://printlogo.custmize.digitalgo.net'], // Allowed origins
+    'allowed_headers' => ['*'], // Allowed headers
+    'exposed_headers' => [], // Exposed headers
+    'max_age' => 0, // Max age
+    'supports_credentials' => false, // Allow credentials
 ];
