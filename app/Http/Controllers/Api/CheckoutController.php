@@ -343,7 +343,7 @@ private function storeImage($imageUrl, $folder)
 {
     $imageContent = file_get_contents($imageUrl); // تحميل الصورة من الرابط
     $imageName = basename($imageUrl); // استخراج اسم الصورة من الرابط
-    $path = "public/{$folder}/{$imageName}".'.png'; // المسار النهائي
+    $path = "public/{$folder}/{$imageName}"; // المسار النهائي
 
     Storage::put($path, $imageContent); // حفظ الصورة في النظام
 
@@ -604,7 +604,7 @@ private function saveImageFromUrl($imageUrl, $folder)
 
     // Get the original filename or create a unique one
     $originalFilename = basename($imageUrl);
-    $filename = Str::random(10) . '_' . $originalFilename;
+    $filename = Str::random(10) . '_' . $originalFilename . '.png';
 
     // Determine storage path
     $filePath = $folder . '/' . $filename;
