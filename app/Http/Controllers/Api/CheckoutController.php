@@ -277,6 +277,7 @@ class CheckoutController extends BaseController
                     // 'logos' => json_encode($savedLogos),
                 ]);
                 $images_order = new ProductImage();
+                dd( $order->front_image['logos']);
                 $images_order->order_detail_id = $detiels->id;
                 $images_order->front_images = $order->front_image['logos']; 
                 $images_order->back_images = $order->back_images['logos']; 
