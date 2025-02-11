@@ -343,7 +343,7 @@ private function storeImage($imageUrl, $folder)
 {
     $imageContent = file_get_contents($imageUrl); // تحميل الصورة من الرابط
     $imageName = basename($imageUrl); // استخراج اسم الصورة من الرابط
-    $path = "public/{$folder}/{$imageName}"; // المسار النهائي
+    $path = "public/{$folder}/{$imageName}".'.png'; // المسار النهائي
 
     Storage::put($path, $imageContent); // حفظ الصورة في النظام
 
