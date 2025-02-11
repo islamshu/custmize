@@ -259,7 +259,6 @@ class CheckoutController extends BaseController
 
                 // $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
-                dd($this->saveImagesFromUrls_single($frontImage['url'])[0]);
               $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
                     'product_name' => Product::find($orderData['product_id'])->name,
@@ -270,10 +269,10 @@ class CheckoutController extends BaseController
                     'price_without_size_color' => $orderData['price_without_size_color_price'],
                     'price_for_size_color' => $orderData['price_for_size_color_price'],
                     'full_price' => $orderData['full_price'],
-                    'front_image' => $this->saveImagesFromUrls_single($frontImage['url']) ?? null,
-                    'back_image' => $this->saveImagesFromUrls_single($backImage['url']) ?? null,
-                    'right_side_image' => $this->saveImagesFromUrls_single($rightSideImage['url']) ?? null,
-                    'left_side_image' => $this->saveImagesFromUrls_single($leftSideImage['url']) ?? null,
+                    'front_image' => $this->saveImagesFromUrls_single($frontImage['url'])[0] ?? null,
+                    'back_image' => $this->saveImagesFromUrls_single($backImage['url'])[0] ?? null,
+                    'right_side_image' => $this->saveImagesFromUrls_single($rightSideImage['url'])[0] ?? null,
+                    'left_side_image' => $this->saveImagesFromUrls_single($leftSideImage['url'])[0] ?? null,
                     // 'logos' => json_encode($savedLogos),
                 ]);
                 $images_order = new ProductImage();
