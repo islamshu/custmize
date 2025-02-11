@@ -251,7 +251,7 @@ class CheckoutController extends BaseController
                 $backImage = $orderData['back_image'] ?? null;
                 $rightSideImage = $orderData['right_side_image'] ?? null;
                 $leftSideImage = $orderData['left_side_image'] ?? null;
-
+                dd($frontImage['url']);
                 $logos = $orderData['logos'] ?? [];
 
                 if (!$frontImage) {
@@ -260,7 +260,6 @@ class CheckoutController extends BaseController
 
                 // $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
-dd($this->saveImagesFromUrls_single($frontImage['url']));
               $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
                     'product_name' => Product::find($orderData['product_id'])->name,
