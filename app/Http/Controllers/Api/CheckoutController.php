@@ -279,12 +279,11 @@ class CheckoutController extends BaseController
                 ]);
                 $images_order = new ProductImage();
                 $images_order->order_detail_id = $detiels->id;
-                $images_order->front_images = $orderData['front_image']['logos']; 
-                $images_order->back_images = $orderData['back_image']['logos']; 
-                $images_order->right_side = $orderData['right_side_image']['logos']; 
-                $images_order->left_side = $orderData['left_side_image']['logos']; 
+                $images_order->front_images = $this->saveLogos($frontImage['logos'] ?? []);
+                $images_order->back_images = $this->saveLogos($backImage['logos'] ?? []);
+                $images_order->right_side = $this->saveLogos($rightSideImage['logos'] ?? []);
+                $images_order->left_side = $this->saveLogos($leftSideImage['logos'] ?? []);
                 $images_order->save();
-
             }
 
 
@@ -326,6 +325,30 @@ class CheckoutController extends BaseController
         }
     }
 
+    private function saveLogos($logos)
+{
+    $savedLogos = [];
+    foreach ($logos as $logo) {
+        $logoPath = $this->storeImage($logo['url'], 'logos');
+        $savedLogos[] = [
+            'url' => $logoPath,
+            'size' => $logo['size'],
+        ];
+    }
+    return $savedLogos;
+}
+
+// دالة مساعدة لحفظ الصور في النظام
+private function storeImage($imageUrl, $folder)
+{
+    $imageContent = file_get_contents($imageUrl); // تحميل الصورة من الرابط
+    $imageName = basename($imageUrl); // استخراج اسم الصورة من الرابط
+    $path = "public/{$folder}/{$imageName}"; // المسار النهائي
+
+    Storage::put($path, $imageContent); // حفظ الصورة في النظام
+
+    return Storage::url($path); // إرجاع رابط الصورة
+}
     public function initiatePayment_guest(Request $request)
     {
         $validation = Validator::make($request->all(), [
