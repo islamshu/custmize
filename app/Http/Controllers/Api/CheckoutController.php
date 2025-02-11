@@ -251,7 +251,6 @@ class CheckoutController extends BaseController
                 $backImage = $orderData['back_image'] ?? null;
                 $rightSideImage = $orderData['right_side_image'] ?? null;
                 $leftSideImage = $orderData['left_side_image'] ?? null;
-                dd($frontImage['url']);
                 $logos = $orderData['logos'] ?? [];
 
                 if (!$frontImage) {
