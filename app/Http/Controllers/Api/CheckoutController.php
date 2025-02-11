@@ -280,7 +280,7 @@ class CheckoutController extends BaseController
                 $images_order = new ProductImage();
                 $images_order->order_detail_id = $detiels->id;
                 $images_order->front_images = $orderData['front_image']['logos']; 
-                $images_order->back_images = $orderData['back_images']['logos']; 
+                $images_order->back_images = $orderData['back_image']['logos']; 
                 $images_order->right_side_image = $orderData['right_side_image']['logos']; 
                 $images_order->left_side_image = $orderData['left_side_image']['logos']; 
                 $images_order->save();
