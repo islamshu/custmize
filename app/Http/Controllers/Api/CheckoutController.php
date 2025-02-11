@@ -246,7 +246,7 @@ class CheckoutController extends BaseController
             }
       
             foreach ($cart['orders'] as $orderData) {
-                dd( $orderData->front_image['logos']);
+                dd( $orderData['front_image']['logos']);
 
                 $frontImage = $orderData['front_image'] ?? null;
                 $backImage = $orderData['back_image'] ?? null;
