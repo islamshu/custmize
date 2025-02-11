@@ -246,7 +246,6 @@ class CheckoutController extends BaseController
             }
       
             foreach ($cart['orders'] as $orderData) {
-                dd( $orderData['front_image']['logos']);
 
                 $frontImage = $orderData['front_image'] ?? null;
                 $backImage = $orderData['back_image'] ?? null;
@@ -280,10 +279,10 @@ class CheckoutController extends BaseController
                 ]);
                 $images_order = new ProductImage();
                 $images_order->order_detail_id = $detiels->id;
-                $images_order->front_images = $order->front_image['logos']; 
-                $images_order->back_images = $order->back_images['logos']; 
-                $images_order->right_side_image = $order->right_side_image['logos']; 
-                $images_order->left_side_image = $order->left_side_image['logos']; 
+                $images_order->front_images = $orderData['front_image']['logos']; 
+                $images_order->back_images = $orderData['back_images']['logos']; 
+                $images_order->right_side_image = $orderData['right_side_image']['logos']; 
+                $images_order->left_side_image = $orderData['left_side_image']['logos']; 
                 $images_order->save();
 
             }
