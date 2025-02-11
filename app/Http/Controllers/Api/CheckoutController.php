@@ -329,7 +329,7 @@ class CheckoutController extends BaseController
 {
     $savedLogos = [];
     foreach ($logos as $logo) {
-        $logoPath = $this->storeImage($logo['url'], 'logos');
+        $logoPath = $this->saveImagesFromUrls_single($logo['url']);
         $savedLogos[] = [
             'url' => $logoPath,
             'size' => $logo['size'],
@@ -539,6 +539,30 @@ private function storeImage($imageUrl, $folder)
             continue;
         }
     }
+
+    return $savedImages;
+}
+
+
+   public function saveImagesFromUrls_single($imageUrl, $folder = 'images/products')
+{
+    $savedImages = [];
+
+            // Check if the URL is a Base64 string
+            if (Str::startsWith($imageUrl, 'data:image')) {
+                // Handle Base64 image
+                $filePath = $this->saveBase64Image($imageUrl, $folder);
+            } else {
+                // Handle regular image URL
+                $filePath = $this->saveImageFromUrl($imageUrl, $folder);
+            }
+
+            // Add the saved path to the result
+            if ($filePath) {
+                $savedImages[] = $filePath;
+            }
+        
+    
 
     return $savedImages;
 }
