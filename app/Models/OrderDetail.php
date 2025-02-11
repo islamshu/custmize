@@ -47,4 +47,8 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(Size::class);
     }
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class, 'order_detail_id');
+    }
 }

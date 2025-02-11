@@ -43,6 +43,7 @@ Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);
     Route::post('update_profile',[UserController::class,'update_profile'])->name('update_profile');
     Route::post('checkout',[CheckoutController::class,'initiatePayment'])->name('checkout');
+    Route::post('/v2/checkout',[CheckoutController::class,'initiatePayment_v2'])->name('checkout_v2');
 
     Route::post('check_promocode',[UserController::class,'check_promocode'])->name('check_promocode');
     Route::get('all_promocods',[HomeController::class,'all_promocods']);
