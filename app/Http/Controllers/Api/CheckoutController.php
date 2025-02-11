@@ -271,10 +271,10 @@ class CheckoutController extends BaseController
                     'price_without_size_color' => $orderData['price_without_size_color_price'],
                     'price_for_size_color' => $orderData['price_for_size_color_price'],
                     'full_price' => $orderData['full_price'],
-                    // 'front_image' => $savedImages[0] ?? null,
-                    // 'back_image' => $savedImages[1] ?? null,
-                    // 'right_side_image' => $savedImages[2] ?? null,
-                    // 'left_side_image' => $savedImages[3] ?? null,
+                    'front_image' => $this->saveImagesFromUrls_single($frontImage['url']) ?? null,
+                    'back_image' => $this->saveImagesFromUrls_single($backImage['url']) ?? null,
+                    'right_side_image' => $this->saveImagesFromUrls_single($rightSideImage['url']) ?? null,
+                    'left_side_image' => $this->saveImagesFromUrls_single($leftSideImage['url']) ?? null,
                     // 'logos' => json_encode($savedLogos),
                 ]);
                 $images_order = new ProductImage();
