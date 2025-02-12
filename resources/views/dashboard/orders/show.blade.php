@@ -104,6 +104,7 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($order->details as $key => $item)
+                                            {{dd($item->productImages)}}
                                                     <!-- Main Row -->
                                                     <tr class="{{ $key % 2 == 1 ? '' : 'bg-light-dark' }}">
                                                         <td>{{ $key + 1 }}</td>
