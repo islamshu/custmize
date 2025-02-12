@@ -87,7 +87,7 @@
                                         </div>
                                         <hr>
                                         <!-- Order Items Table -->
-                                        <!-- Order Items Table -->
+
                                         <h4>{{ __('Order Items') }}</h4>
                                         <table class="table table-striped table-bordered">
                                             <thead class="thead-dark">
@@ -125,37 +125,50 @@
                                                         <td>{{ number_format($item->full_price, 2) }} {{ __('SAR') }}
                                                         </td>
                                                     </tr>
+
                                                     <!-- Row for Images -->
                                                     <tr class="{{ $key % 2 == 1 ? '' : 'bg-light-dark' }}">
                                                         <td colspan="8">
                                                             <div class="d-flex flex-wrap">
                                                                 @php
+                                                                    $dummy_image = asset('images/dummy.png');
                                                                     $images = [
-                                                                        [
+                                                                        'front' => [
                                                                             'src' => $item->front_image,
                                                                             'alt' => __('Front View'),
+                                                                            'all' =>
+                                                                                $item->productImages->front_images ??
+                                                                                [],
                                                                         ],
-                                                                        [
+                                                                        'back' => [
                                                                             'src' => $item->back_image,
                                                                             'alt' => __('Back View'),
+                                                                            'all' =>
+                                                                                $item->productImages->back_images ?? [],
                                                                         ],
-                                                                        [
+                                                                        'right' => [
                                                                             'src' => $item->right_side_image,
                                                                             'alt' => __('Right Side View'),
+                                                                            'all' =>
+                                                                                $item->productImages
+                                                                                    ->right_side_images ?? [],
                                                                         ],
-                                                                        [
+                                                                        'left' => [
                                                                             'src' => $item->left_side_image,
                                                                             'alt' => __('Left Side View'),
+                                                                            'all' =>
+                                                                                $item->productImages
+                                                                                    ->left_side_images ?? [],
                                                                         ],
                                                                     ];
-                                                                    $dummy_image = asset('images/dummy.png');
                                                                 @endphp
-                                                                @foreach ($images as $index => $img)
+
+                                                                @foreach ($images as $type => $img)
                                                                     @php
                                                                         $img_src = $img['src']
                                                                             ? asset('storage/' . $img['src'])
                                                                             : $dummy_image;
-                                                                        $modal_id = "imageModal{$key}_{$index}";
+                                                                        $modal_id = "imageModal{$key}_{$type}";
                                                                     @endphp
                                                                     <div class="p-2">
                                                                         <a href="#" data-toggle="modal"
@@ -186,30 +199,23 @@
                                                                                     </button>
                                                                                 </div>
                                                                                 <div class="modal-body text-center">
-                                                                                    <img id="mainImage{{ $key }}_{{ $index }}"
+                                                                                    <img id="mainImage{{ $key }}_{{ $type }}"
                                                                                         src="{{ $img_src }}"
                                                                                         class="img-fluid"
                                                                                         style="max-width: 100%;">
                                                                                     <hr>
                                                                                     <div
                                                                                         class="d-flex justify-content-center">
-                                                                                        @foreach ($images as $thumb_index => $thumb)
+                                                                                        @foreach ($img['all'] as $thumb_index => $thumb)
                                                                                             @php
-                                                                                                $thumb_src = $thumb[
-                                                                                                    'src'
-                                                                                                ]
-                                                                                                    ? asset(
-                                                                                                        'storage/' .
-                                                                                                            $thumb[
-                                                                                                                'src'
-                                                                                                            ],
-                                                                                                    )
-                                                                                                    : $dummy_image;
+                                                                                                $thumb_src = asset(
+                                                                                                    'storage/' . $thumb,
+                                                                                                );
                                                                                             @endphp
                                                                                             <img src="{{ $thumb_src }}"
                                                                                                 class="img-thumbnail mx-2"
                                                                                                 style="width: 75px; cursor: pointer;"
-                                                                                                onclick="document.getElementById('mainImage{{ $key }}_{{ $index }}').src='{{ $thumb_src }}'">
+                                                                                                onclick="document.getElementById('mainImage{{ $key }}_{{ $type }}').src='{{ $thumb_src }}'">
                                                                                         @endforeach
                                                                                     </div>
                                                                                 </div>
@@ -223,6 +229,7 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
+
 
                                     </div>
                                 </div>
