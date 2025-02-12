@@ -93,7 +93,7 @@
                                                                 href="{{ route('clients.edit', $item->id) }}"><i
                                                                     class="ft-edit-3"></i></a>
                                                                     <a class="btn btn-info"
-                                                                href="{{ route('clients.edit', $item->id) }}">{{__('Orders')}}</a>
+                                                                href="{{ route('all_orders_for_client', $item->id) }}">{{__('Orders')}}</a>
                                                             <form style="display: inline-block"
                                                                 action="{{ route('clients.destroy', $item->id) }}"
                                                                 method="post">
