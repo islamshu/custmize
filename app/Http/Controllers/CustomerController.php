@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -12,6 +13,13 @@ class CustomerController extends Controller
     }
     public function create(){
         return view('dashboard.customers.create')->with('clients',Client::orderby('id','desc')->get());
+    }
+    public function order_client($id){
+        $client = Client::find($id);
+        $orders = Order::with('details')->where('client_id', $id)->where('shipping',0)->orderby('id','desc')->get();
+
+        $title = __('All Order for ').$client->name;
+        return view('dashboard.orders.index', compact('orders', 'title'));
     }
     public function store(Request $request){
         $request->validate([

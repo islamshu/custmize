@@ -92,6 +92,8 @@
                                                             <a class="btn btn-info"
                                                                 href="{{ route('customers.edit', $item->id) }}"><i
                                                                     class="ft-edit-3"></i></a>
+                                                                    <a class="btn btn-info"
+                                                                href="{{ route('all_orders_for_client', $item->id) }}">{{__('Orders')}}</a>
                                                             <form style="display: inline-block"
                                                                 action="{{ route('customers.destroy', $item->id) }}"
                                                                 method="post">
