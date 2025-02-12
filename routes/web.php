@@ -152,7 +152,7 @@ Route::resource('banners',BannerController::class);
 
 Route::resource('colors',ColorController::class);
 Route::resource('clients',NewClientController::class);
-Route::get('order_client/{id}',[NewClientController::class,'order_client']);
+Route::get('order_client/{id}',[NewClientController::class,'order_client'])->name('all_orders_for_client');
 
 Route::resource('sizes',SizeController::class);
 Route::resource('categories',controller: CategoryController::class);
