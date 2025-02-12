@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class NewClientController extends Controller
@@ -13,6 +14,13 @@ class NewClientController extends Controller
     public function index()
     {
         return view('dashboard.clients.index')->with('clients',Client::orderby('id','desc')->get());
+    }
+    public function order_client($id){
+        $client = Client::find($id);
+        $orders = Order::with('details')->where('client_id', $id)->where('shipping',0)->orderby('id','desc')->get();
+
+        $title = __('All Order for ').$client->name;
+        return view('dashboard.orders.index', compact('orders', 'title'));
     }
 
     /**
