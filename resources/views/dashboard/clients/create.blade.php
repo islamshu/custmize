@@ -55,16 +55,19 @@
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('First name') }} <span class="danger">*</span></label>
                                                         <input type="text" required class="form-control border-primary" name="first_name">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                         
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('Last name') }} <span class="danger">*</span></label>
                                                         <input type="text" required class="form-control border-primary" name="last_name">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                         
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('DOB') }}</label>
                                                         <input type="date" class="form-control border-primary" name="DOB">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                         
                                                     <div class="form-group col-md-6 mb-2">
@@ -74,6 +77,7 @@
                                                             <option value="female">{{ __('Female') }}</option>
                                                             <option value="other">{{ __('Other') }}</option>
                                                         </select>
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                                 </div>
                                         
@@ -82,10 +86,12 @@
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('Password') }} <span class="danger">*</span></label>
                                                         <input type="password" required class="form-control border-primary" name="password">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('Confirm Password') }} <span class="danger">*</span></label>
                                                         <input type="password" required class="form-control border-primary" name="confirm_password">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                                 </div>
                                         
@@ -94,21 +100,25 @@
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('Email') }} <span class="danger">*</span></label>
                                                         <input type="email" required class="form-control border-primary" name="email">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                         
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('Phone') }} <span class="danger">*</span></label>
                                                         <input type="text" required class="form-control border-primary" name="phone">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                         
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('State') }}</label>
                                                         <input type="text" class="form-control border-primary" name="state">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                         
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label>{{ __('Country') }}</label>
                                                         <input type="text" class="form-control border-primary" name="country">
+                                                        <span class="invalid-feedback"></span>
                                                     </div>
                                                 </div>
                                         
@@ -119,6 +129,7 @@
                                                 </div>
                                             </div>
                                         </form>
+                                        
                                         
                                         
                                     </div>
