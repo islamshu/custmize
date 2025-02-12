@@ -65,8 +65,8 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>{{ __('Image') }}</th>
-                                                    <th>{{ __('First name') }}</th>
-                                                    <th>{{ __('Last name') }}</th>
+                                                    <th>{{ __('Name') }}</th>
+                                                 
                                                     <th>{{ __('Email') }}</th>
                                                     <th>{{ __('Phone') }}</th>
                                                     <th>{{ __('Created at') }}</th>
@@ -79,8 +79,7 @@
                                                         <th>{{ $key + 1 }}</th>
                                                         <th> <img src="{{ asset('uploads/users/defult.png') }}" width="70"
                                                                 height="70"></th>
-                                                        <th>{{ $item->first_name }}</th>
-                                                        <th>{{ $item->last_name }}</th>
+                                                        <th>{{ $item->name }}</th>
                                                         <th>{{ $item->email }}</th>
                                                         <th>{{ $item->phone }}</th>
                                                         <th>{{ $item->created_at->format('d-m-Y H:i:s') }}</th>
@@ -110,8 +109,8 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>{{ __('Image') }}</th>
-                                                    <th>{{ __('First name') }}</th>
-                                                    <th>{{ __('Last name') }}</th>
+                                                    <th>{{ __('Name') }}</th>
+                                                   
                                                     <th>{{ __('Email') }}</th>
                                                     <th>{{ __('Phone') }}</th>
                                                     <th>{{ __('Created at') }}</th>
