@@ -5,6 +5,16 @@
             background-color: #bfbfbf !important;
         }
     </style>
+    <style>
+        .thumb-hover-effect {
+            transition: transform 0.3s ease-in-out;
+        }
+        .thumb-hover-effect:hover {
+            transform: scale(2); /* Zoom effect */
+            z-index: 9999; /* Ensure it appears above other elements */
+            position: relative;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="app-content content">
@@ -185,8 +195,16 @@
                                                                                         @foreach ($img['all'] as $thumb)
                                                                                             @php
                                                                                                 $thumb_src = !empty($thumb['url'][0]) ? asset('storage/' . $thumb['url'][0]) : $dummy_image;
+                                                                                                $thumb_size = $thumb['size'] ?? 'N/A';
                                                                                             @endphp
-                                                                                            <img src="{{ $thumb_src }}" class="img-thumbnail mx-2" style="width: 75px; cursor: pointer;" onclick="document.getElementById('mainImage{{ $key }}_{{ $type }}').src='{{ $thumb_src }}'">
+                                                                                            <div class="position-relative mx-2">
+                                                                                                <img src="{{ $thumb_src }}" 
+                                                                                                     class="img-thumbnail thumb-hover-effect" 
+                                                                                                     style="width: 75px; cursor: pointer;" 
+                                                                                                     data-toggle="tooltip" 
+                                                                                                     data-placement="top" 
+                                                                                                     title="Size: {{ $thumb_size }}">
+                                                                                            </div>
                                                                                         @endforeach
                                                                                     </div>
                                                                                 </div>
@@ -212,4 +230,12 @@
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+    
+<script>
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 @endsection
