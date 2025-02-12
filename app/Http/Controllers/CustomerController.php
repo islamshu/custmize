@@ -54,7 +54,7 @@ class CustomerController extends Controller
             'Email' => 'required|email|unique:clients,email,'.$id,
            
             'DOB'=>'required',
-            'Phone'=>'required'
+            'Phone'=>'required|unique:clients,phone,'.$id
         ]);
         if($request->password  != null){
             $request->validate([
@@ -64,6 +64,7 @@ class CustomerController extends Controller
         }
         // dd($request->all());
         $client = Client::find($id);
+        $client->name = $request->first_name;
         $client->first_name = $request->first_name;
         $client->last_name = $request->last_name;
         $client->email = $request->Email;
