@@ -53,12 +53,7 @@
                                             <li><a data-action="close"><i class="ft-x"></i></a></li>
                                         </ul>
                                     </div>
-                                    <div class="margin-right">
-                                        <button type="button" class="btn btn-success  " data-toggle="modal"
-                                        data-target="#extra_modal_emp">
-                                        {{ __('Add extra feed') }}
-                                    </button>
-                                    </div>
+                                    
                                 </div>
                                 <div class="card-content collapse show">
                                     <div class="card-body card-dashboard">
@@ -134,5 +129,4 @@
             </div>
         </div>
     </div>
-    @include('dashboard.employee._extra')
 @endsection
