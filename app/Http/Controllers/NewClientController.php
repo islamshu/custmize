@@ -46,7 +46,8 @@ class NewClientController extends Controller
         'phone' => 'required|string|max:20',
         'state' => 'nullable|string|max:255',
         'country' => 'nullable|string|max:255',
-        'password' => 'required|string|min:6|confirmed',
+        'password' => 'required|string|min:6',
+        'confirm_password'=>'required|same:password'
     ]);
 
     Client::create([
