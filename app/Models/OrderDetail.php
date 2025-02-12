@@ -49,6 +49,6 @@ class OrderDetail extends Model
     }
     public function productImages()
     {
-        return $this->hasMany(ProductImage::class, 'order_detail_id');
+        return $this->hasOne(ProductImage::class, 'order_detail_id');
     }
 }
