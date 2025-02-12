@@ -89,7 +89,7 @@ select.status-select option {
                                                         <th>{{ $order->code }}</th>
                                                         <th>{{ @$order->client->name == null ? 'Guest Order : ' .$order->name : @$order->client->name }}</th>
                                                         <th>{{ number_format($order->total_amount, 2) }}</th>
-                                                        <th>{{ $order->created_at->format('d-m-Y') }}</th>
+                                                        <th>{{ $order->created_at->format('d-m-Y H-m') }}</th>
                                                         <th>
                                                             <select class="status-select form-control" data-order-id="{{ $order->id }}">
                                                                 @foreach (App\Models\Status::get() as $item)
