@@ -37,6 +37,8 @@ Route::get('size_calculate_new_factor',[HomeController::class,'size_calculate_ne
 
 Route::get('libraray', [HomeController::class,'images'])->name('images');
 Route::post('checkout_guest',[CheckoutController::class,'initiatePayment_guest'])->name('checkout');
+Route::post('v2/checkout_guest',[CheckoutController::class,'initiatePayment_guest_v2'])->name('checkout_v2');
+
 Route::get('track_order',[HomeController::class,'track_order']);
 
 Route::middleware(['auth:api', 'is_login'])->group(function () {
