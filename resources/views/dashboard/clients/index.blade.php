@@ -79,10 +79,10 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($emps as $key => $item)
+                                                @foreach ($clients  as $key => $item)
                                                     <tr>
                                                         <th>{{ $key + 1 }}</th>
-                                                        <th> <img src="{{ asset('uploads/' . $item->image) }}" width="70"
+                                                        <th> <img src="{{ asset('uploads/users/defult.png') }}" width="70"
                                                                 height="70"></th>
                                                         <th>{{ $item->first_name }}</th>
                                                         <th>{{ $item->last_name }}</th>
