@@ -132,7 +132,7 @@
                                                             <div class="d-flex flex-wrap">
                                                                 @php
                                                                     $dummy_image = asset('images/dummy.png');
-                                                                    dd( $item->productImages['front_images']->url);
+                                                                    dd( $item->productImages['front_images']);
                                                                     $images = [
                                                                         'front' => [
                                                                             'src' => $item->front_image,
