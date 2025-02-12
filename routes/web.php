@@ -10,6 +10,7 @@ use App\Http\Controllers\ColorController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DiscountCodeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NewClientController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SizeController;
@@ -150,6 +151,8 @@ Route::get('factor2',[HomeController::class,'factor2'])->name('factor2');
 Route::resource('banners',BannerController::class);
 
 Route::resource('colors',ColorController::class);
+Route::resource('clients',NewClientController::class);
+
 Route::resource('sizes',SizeController::class);
 Route::resource('categories',controller: CategoryController::class);
 Route::resource('subcategories',controller: SubCategoryController::class);
