@@ -43,7 +43,7 @@ class NewClientController extends Controller
         'dob' => 'nullable|date',
         'gender' => 'nullable|string',
         'email' => 'required|email|unique:clients,email',
-        'phone' => 'required|string|max:20',
+        'phone' => 'required|string|max:20|unique:clients,phone',
         'state' => 'nullable|string|max:255',
         'country' => 'nullable|string|max:255',
         'password' => 'required|string|min:6',
