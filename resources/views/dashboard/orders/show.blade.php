@@ -189,7 +189,7 @@
                                                                                     </button>
                                                                                 </div>
                                                                                 <div class="modal-body text-center">
-                                                                                    <img id="mainImage{{ $key }}_{{ $type }}" src="{{ $img_src }}" class="img-fluid" style="width: 100%;">
+                                                                                    <img id="mainImage{{ $key }}_{{ $type }}" src="{{ $img_src }}" class="img-fluid" style="max-width: 100%;">
                                                                                     <hr>
                                                                                     <div class="d-flex justify-content-center">
                                                                                         @foreach ($img['all'] as $thumb)
