@@ -136,7 +136,7 @@
                                                                     </div>
                                                                 </div>
                                                             @endif
-                                                    
+
                                                             @if($item->back_image)
                                                                 <div class="p-2">
                                                                     <!-- Image with modal trigger -->
@@ -163,8 +163,8 @@
                                                                     </div>
                                                                 </div>
                                                             @endif
-                                                    
-                                                            <!-- Repeat the same structure for other images (right_side_image, left_side_image, logos) -->
+
+                                                            <!-- Repeat the same structure for right_side_image, left_side_image, and logos -->
                                                         </div>
                                                     </td>
                                                 </tr>
