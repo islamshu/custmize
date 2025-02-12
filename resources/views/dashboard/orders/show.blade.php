@@ -112,38 +112,59 @@
                                                         <div class="d-flex flex-wrap">
                                                             @if($item->front_image)
                                                                 <div class="p-2">
-                                                                    <img src="{{ asset('storage/' . $item->front_image) }}" alt="{{ __('Front View') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
+                                                                    <!-- Image with modal trigger -->
+                                                                    <img src="{{ asset('storage/' . $item->front_image) }}" alt="{{ __('Front View') }}" class="img-fluid img-thumbnail" style="max-width: 150px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal{{ $item->id }}Front">
                                                                     <p class="text-center">{{ __('Front View') }}</p>
+                                                                    <!-- Dummy images -->
+                                                                    <div class="d-flex justify-content-center mt-2">
+                                                                        <img src="https://via.placeholder.com/50" alt="Dummy 1" class="img-thumbnail mx-1" style="max-width: 50px;">
+                                                                        <img src="https://via.placeholder.com/50" alt="Dummy 2" class="img-thumbnail mx-1" style="max-width: 50px;">
+                                                                    </div>
+                                                                </div>
+                                                                <!-- Modal for front image -->
+                                                                <div class="modal fade" id="imageModal{{ $item->id }}Front" tabindex="-1" aria-labelledby="imageModalLabel{{ $item->id }}Front" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-lg">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="imageModalLabel{{ $item->id }}Front">{{ __('Front View') }}</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body text-center">
+                                                                                <img src="{{ asset('storage/' . $item->front_image) }}" alt="{{ __('Front View') }}" class="img-fluid">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             @endif
+                                                    
                                                             @if($item->back_image)
                                                                 <div class="p-2">
-                                                                    <img src="{{ asset('storage/' . $item->back_image) }}" alt="{{ __('Back View') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
+                                                                    <!-- Image with modal trigger -->
+                                                                    <img src="{{ asset('storage/' . $item->back_image) }}" alt="{{ __('Back View') }}" class="img-fluid img-thumbnail" style="max-width: 150px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal{{ $item->id }}Back">
                                                                     <p class="text-center">{{ __('Back View') }}</p>
+                                                                    <!-- Dummy images -->
+                                                                    <div class="d-flex justify-content-center mt-2">
+                                                                        <img src="https://via.placeholder.com/50" alt="Dummy 1" class="img-thumbnail mx-1" style="max-width: 50px;">
+                                                                        <img src="https://via.placeholder.com/50" alt="Dummy 2" class="img-thumbnail mx-1" style="max-width: 50px;">
+                                                                    </div>
                                                                 </div>
-                                                            @endif
-                                                            @if($item->right_side_image)
-                                                                <div class="p-2">
-                                                                    <img src="{{ asset('storage/' . $item->right_side_image) }}" alt="{{ __('Right Side View') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
-                                                                    <p class="text-center">{{ __('Right Side View') }}</p>
-                                                                </div>
-                                                            @endif
-                                                            @if($item->left_side_image)
-                                                                <div class="p-2">
-                                                                    <img src="{{ asset('storage/' . $item->left_side_image) }}" alt="{{ __('Left Side View') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
-                                                                    <p class="text-center">{{ __('Left Side View') }}</p>
-                                                                </div>
-                                                            @endif
-                                                            @if($item->logos)
-                                                                @foreach (json_decode($item->logos) as $logo)
-                                                                    @if($logo)
-                                                                        <div class="p-2">
-                                                                            <img src="{{ asset('storage/' . $logo) }}" alt="{{ __('Logos') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
-                                                                            <p class="text-center">{{ __('Logos') }}</p>
+                                                                <!-- Modal for back image -->
+                                                                <div class="modal fade" id="imageModal{{ $item->id }}Back" tabindex="-1" aria-labelledby="imageModalLabel{{ $item->id }}Back" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-lg">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="imageModalLabel{{ $item->id }}Back">{{ __('Back View') }}</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body text-center">
+                                                                                <img src="{{ asset('storage/' . $item->back_image) }}" alt="{{ __('Back View') }}" class="img-fluid">
+                                                                            </div>
                                                                         </div>
-                                                                    @endif
-                                                                @endforeach
+                                                                    </div>
+                                                                </div>
                                                             @endif
+                                                    
+                                                            <!-- Repeat the same structure for other images (right_side_image, left_side_image, logos) -->
                                                         </div>
                                                     </td>
                                                 </tr>
