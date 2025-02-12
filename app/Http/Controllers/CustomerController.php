@@ -29,10 +29,12 @@ class CustomerController extends Controller
             'password' => 'required|min:6',
             'confirm_password' => 'required|same:password',
             'DOB'=>'required',
-            'Phone'=>'required'
+            'Phone'=>'required|unique:clients,phone'
         ]);
         // dd($request->all());
         $client = new Client();
+        $client->name = $request->first_name;
+
         $client->first_name = $request->first_name;
         $client->last_name = $request->last_name;
         $client->email = $request->Email;
