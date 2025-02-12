@@ -104,124 +104,63 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($order->details as $key => $item)
-                                            {{dd($item->productImages)}}
-                                                    <!-- Main Row -->
-                                                    <tr class="{{ $key % 2 == 1 ? '' : 'bg-light-dark' }}">
-                                                        <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $item->product_name }}</td>
-                                                        <td>{{ $item->quantity }}</td>
-                                                        <td>
-                                                            <div class="d-flex align-items-center">
-                                                                <span
-                                                                    style="display: inline-block; width: 20px; height: 20px; background-color: {{ get_color($item->color_id)->code }}; border: 1px solid #ccc; margin-right: 10px;">
-                                                                </span>
-                                                                {{ get_color($item->color_id)->name }}
-                                                            </div>
-                                                        </td>
-                                                        <td>{{ get_size($item->size_id) }}</td>
-                                                        <td>{{ number_format($item->price_without_size_color, 2) }}
-                                                            {{ __('SAR') }}</td>
-                                                        <td>{{ number_format($item->price_for_size_color, 2) }}
-                                                            {{ __('SAR') }}</td>
-                                                        <td>{{ number_format($item->full_price, 2) }} {{ __('SAR') }}
-                                                        </td>
-                                                    </tr>
-                                                    <!-- Row for Images -->
-                                                    <tr class="{{ $key % 2 == 1 ? '' : 'bg-light-dark' }}">
-                                                        <td colspan="8">
-                                                            <div class="d-flex flex-wrap">
-                                                                @php
-                                                                    $images = [
-                                                                        [
-                                                                            'src' => $item->front_image,
-                                                                            'alt' => __('Front View'),
-                                                                        ],
-                                                                        [
-                                                                            'src' => $item->back_image,
-                                                                            'alt' => __('Back View'),
-                                                                        ],
-                                                                        [
-                                                                            'src' => $item->right_side_image,
-                                                                            'alt' => __('Right Side View'),
-                                                                        ],
-                                                                        [
-                                                                            'src' => $item->left_side_image,
-                                                                            'alt' => __('Left Side View'),
-                                                                        ],
-                                                                    ];
-                                                                    $dummy_image = asset('images/dummy.png');
-                                                                @endphp
-                                                                @foreach ($images as $index => $img)
-                                                                    @php
-                                                                        $img_src = $img['src']
-                                                                            ? asset('storage/' . $img['src'])
-                                                                            : $dummy_image;
-                                                                        $modal_id = "imageModal{$key}_{$index}";
-                                                                    @endphp
-                                                                    <div class="p-2">
-                                                                        <a href="#" data-toggle="modal"
-                                                                            data-target="#{{ $modal_id }}">
-                                                                            <img src="{{ $img_src }}"
-                                                                                alt="{{ $img['alt'] }}"
-                                                                                class="img-fluid img-thumbnail"
-                                                                                style="max-width: 150px;">
-                                                                        </a>
-                                                                        <p class="text-center">{{ $img['alt'] }}</p>
-                                                                    </div>
-
-                                                                    <!-- Modal -->
-                                                                    <div class="modal fade" id="{{ $modal_id }}"
-                                                                        tabindex="-1" role="dialog"
-                                                                        aria-labelledby="{{ $modal_id }}Label"
-                                                                        aria-hidden="true">
-                                                                        <div class="modal-dialog modal-lg" role="document">
-                                                                            <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title">
-                                                                                        {{ $img['alt'] }}</h5>
-                                                                                    <button type="button" class="close"
-                                                                                        data-dismiss="modal"
-                                                                                        aria-label="Close">
-                                                                                        <span
-                                                                                            aria-hidden="true">&times;</span>
-                                                                                    </button>
-                                                                                </div>
-                                                                                <div class="modal-body text-center">
-                                                                                    <img id="mainImage{{ $key }}_{{ $index }}"
-                                                                                        src="{{ $img_src }}"
-                                                                                        class="img-fluid"
-                                                                                        style="max-width: 100%;">
-                                                                                    <hr>
-                                                                                    <div
-                                                                                        class="d-flex justify-content-center">
-                                                                                        @foreach ($images as $thumb_index => $thumb)
-                                                                                            @php
-                                                                                                $thumb_src = $thumb[
-                                                                                                    'src'
-                                                                                                ]
-                                                                                                    ? asset(
-                                                                                                        'storage/' .
-                                                                                                            $thumb[
-                                                                                                                'src'
-                                                                                                            ],
-                                                                                                    )
-                                                                                                    : $dummy_image;
-                                                                                            @endphp
-                                                                                            <img src="{{ $thumb_src }}"
-                                                                                                class="img-thumbnail mx-2"
-                                                                                                style="width: 75px; cursor: pointer;"
-                                                                                                onclick="document.getElementById('mainImage{{ $key }}_{{ $index }}').src='{{ $thumb_src }}'">
-                                                                                        @endforeach
+                                                @php
+                                                    $productImages = $item->productImages;
+                                                    $frontImages = isset($productImages) ? json_decode($productImages->front_images, true) : [];
+                                                    $backImages = isset($productImages) ? json_decode($productImages->back_images, true) : [];
+                                                    $rightImages = isset($productImages) ? json_decode($productImages->right_side, true) : [];
+                                                    $leftImages = isset($productImages) ? json_decode($productImages->left_side, true) : [];
+                                                @endphp
+                                            
+                                                <!-- Order Item Row -->
+                                                <tr>
+                                                    <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $item->product_name }}</td>
+                                                    <td>{{ $item->quantity }}</td>
+                                                    <td>{{ get_color($item->color_id)->name }}</td>
+                                                    <td>{{ get_size($item->size_id) }}</td>
+                                                    <td>{{ number_format($item->price_without_size_color, 2) }} {{ __('SAR') }}</td>
+                                                    <td>{{ number_format($item->price_for_size_color, 2) }} {{ __('SAR') }}</td>
+                                                    <td>{{ number_format($item->full_price, 2) }} {{ __('SAR') }}</td>
+                                                </tr>
+                                            
+                                                <!-- Image Row with Modal -->
+                                                <tr>
+                                                    <td colspan="8">
+                                                        <div class="d-flex flex-wrap">
+                                                            @foreach (['frontImages' => 'Front', 'backImages' => 'Back', 'rightImages' => 'Right Side', 'leftImages' => 'Left Side'] as $var => $label)
+                                                                @foreach ($$var as $imageData)
+                                                                    @foreach ($imageData['url'] as $imageUrl)
+                                                                        <div class="p-2">
+                                                                            <a href="#" data-toggle="modal" data-target="#imageModal-{{ $key }}-{{ $var }}">
+                                                                                <img src="{{ asset('storage/' . $imageUrl) }}" alt="{{ __($label . ' View') }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
+                                                                            </a>
+                                                                            <p class="text-center">{{ __($label . ' View') }}</p>
+                                                                        </div>
+                                            
+                                                                        <!-- Image Modal -->
+                                                                        <div class="modal fade" id="imageModal-{{ $key }}-{{ $var }}" tabindex="-1" aria-hidden="true">
+                                                                            <div class="modal-dialog modal-lg">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h5 class="modal-title">{{ __($label . ' View') }}</h5>
+                                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                    </div>
+                                                                                    <div class="modal-body text-center">
+                                                                                        <img src="{{ asset('storage/' . $imageUrl) }}" class="img-fluid" style="max-width: 100%;">
+                                                                                        <p class="mt-2"><strong>Size:</strong> {{ $imageData['size'] }}</p>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
+                                                                    @endforeach
                                                                 @endforeach
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
+                                                            @endforeach
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            
                                             </tbody>
                                         </table>
 
