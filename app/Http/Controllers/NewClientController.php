@@ -28,16 +28,43 @@ class NewClientController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.clients.create')->with('clients',Client::orderby('id','desc')->get());
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
-    }
+{
+    $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'dob' => 'nullable|date',
+        'gender' => 'nullable|string',
+        'email' => 'required|email|unique:clients,email',
+        'phone' => 'required|string|max:20',
+        'state' => 'nullable|string|max:255',
+        'country' => 'nullable|string|max:255',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
+
+    Client::create([
+        'name'=>$request->first_name,
+        'first_name' => $request->first_name,
+        'last_name' => $request->last_name,
+        'dob' => $request->DOB, 
+        'gender' => $request->gender,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'state' => $request->state,
+        'country' => $request->country,
+        'password' =>bcrypt($request->password),
+    ]);
+
+    return response()->json(['message' => 'Client created successfully!']);
+}
+
 
     /**
      * Display the specified resource.
