@@ -44,6 +44,19 @@
                     </ul>
                 </li>
                 <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
+                        href="#" data-toggle="dropdown"><i
+                            class="la la-users"></i><span>{{ __('Clients') }}</span></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown " data-menu=""><a
+                                class="dropdown-item " href="{{ route('customers.index') }}"
+                                >{{ __('Clients') }}</a>
+                         
+                        </li>
+                    
+                       
+                    </ul>
+                </li>
+                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
                         href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Categories') }}</span></a>
                         <ul class="dropdown-menu">
                                 <li class="dropdown " data-menu=""><a

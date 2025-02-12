@@ -4,7 +4,7 @@
         <div class="content-wrapper">
             <div class="content-header row">
                 <div class="content-header-left col-md-6 col-12 mb-2">
-                    <h3 class="content-header-title">{{ __('Customers') }}</h3>
+                    <h3 class="content-header-title">{{ __('Clients') }}</h3>
                     <div class="row breadcrumbs-top">
                         <div class="breadcrumb-wrapper col-12">
                             <ol class="breadcrumb">
@@ -12,7 +12,7 @@
                                 </li>
 
                                 <li class="breadcrumb-item "><a
-                                        href="{{ route('customers.index') }}">{{ __('Customers') }}</a>
+                                        href="{{ route('customers.index') }}">{{ __('Clients') }}</a>
                                 </li>
                                 <li class="breadcrumb-item active">{{ __('Add New') }}
                                 </li>
