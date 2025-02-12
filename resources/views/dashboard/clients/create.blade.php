@@ -150,6 +150,9 @@
             $('#range_value').text(range);
         });
         $("#send_full_customer").submit(function(event) {
+            $(".invalid-feedback").text("");
+            $(".is-invalid").removeClass("is-invalid");
+
     event.preventDefault();
 
     $.ajax({
