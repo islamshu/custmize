@@ -106,7 +106,6 @@
                                                 @foreach ($order->details as $key => $item)
                                                 @php
                                                     $productImages = $item->productImages;
-                                                    dd($productImages);
                                                     $frontImages = isset($productImages) ? json_decode($productImages->front_images, true) : [];
                                                     $backImages = isset($productImages) ? json_decode($productImages->back_images, true) : [];
                                                     $rightImages = isset($productImages) ? json_decode($productImages->right_side, true) : [];
