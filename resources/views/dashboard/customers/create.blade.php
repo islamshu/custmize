@@ -59,8 +59,8 @@
                                                         <input type="text" required id="userinput1"
                                                             class="form-control border-primary"
                                                             placeholder="{{ __('First name') }}" name="first_name">
-                                                        <div class="invalid-feedback">
-                                                        </div>
+                                                            <span class="invalid-feedback">@error('first_name') {{ $message }} @enderror</span>
+
                                                     </div>
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label for="userinput2">{{ __('Last name') }}</label>
@@ -69,8 +69,8 @@
                                                         <input type="text" id="userinput2" required
                                                             class="form-control border-primary"
                                                             placeholder="{{ __('Last name') }}" name="last_name">
-                                                        <div class="invalid-feedback">
-                                                        </div>
+                                                            <span class="invalid-feedback">@error('last_name') {{ $message }} @enderror</span>
+
                                                     </div>
                                                     <div class="form-group col-md-6 mb-2">
                                                         <label for="userinput2">{{ __('DOB') }}</label>
@@ -90,8 +90,8 @@
                                                     <input type="password" id="userinput4" required
                                                         class="form-control border-primary"
                                                         placeholder="{{ __('Password') }}" name="password">
-                                                    <div class="invalid-feedback">
-                                                    </div>
+                                                        <span class="invalid-feedback">@error('last_name') {{ $message }} @enderror</span>
+
 
                                                 </div>
                                                 <div class="form-group col-md-6 mb-2">
@@ -101,8 +101,8 @@
                                                     <input type="password" id="userinput4" required
                                                         class="form-control border-primary"
                                                         placeholder="{{ __('Confirm Password') }}" name="confirm_password">
-                                                    <div class="invalid-feedback">
-                                                    </div>
+                                                        <span class="invalid-feedback">@error('last_name') {{ $message }} @enderror</span>
+
                                                 </div>
                                             </div>
 
@@ -115,8 +115,8 @@
                                                     <input type="text" id="userinput3" required
                                                         class="form-control border-primary"
                                                         placeholder="{{ __('Email') }}" name="Email">
-                                                    <div class="invalid-feedback">
-                                                    </div>
+                                                        <span class="invalid-feedback">@error('last_name') {{ $message }} @enderror</span>
+
                                                 </div>
                                                 <div class="form-group col-md-6 mb-2">
                                                     <label for="userinput4">{{ __('Phone') }}</label>
@@ -125,8 +125,8 @@
                                                     <input type="text" id="userinput4" required
                                                         class="form-control border-primary"
                                                         placeholder="{{ __('Phone') }}" name="Phone">
-                                                    <div class="invalid-feedback">
-                                                    </div>
+                                                        <span class="invalid-feedback">@error('Phone') {{ $message }} @enderror</span>
+
                                                 </div>
                                             </div>
                                            

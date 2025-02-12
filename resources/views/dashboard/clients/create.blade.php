@@ -156,14 +156,17 @@
             });
         },
         error: function(response) {
-            $('.invalid-feedback').empty();
-            $('form').find('.is-invalid').removeClass('is-invalid');
-            var errors = response.responseJSON.errors;
-            $.each(errors, function(field, messages) {
-                var input = $('[name="' + field + '"]');
-                input.addClass('is-invalid');
-                input.next('.invalid-feedback').html(messages[0]);
-            });
+            $(".invalid-feedback").text("");
+            $(".is-invalid").removeClass("is-invalid");
+
+            if (response.status === 422) {
+                var errors = response.responseJSON.errors;
+                $.each(errors, function(field, messages) {
+                    var input = $('[name="' + field + '"]');
+                    input.addClass('is-invalid');
+                    input.next('.invalid-feedback').text(messages[0]);
+                });
+            }
         }
     });
 });
