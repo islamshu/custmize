@@ -52,7 +52,6 @@ class CustomerController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'Email' => 'required|email|unique:clients,email,'.$id,
-           
             'DOB'=>'required',
             'Phone'=>'required|unique:clients,phone,'.$id
         ]);
