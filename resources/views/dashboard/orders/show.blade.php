@@ -93,10 +93,10 @@
                                             @foreach ($order->details as $key => $item)
                                                 @php
                                                     $productImages = $item->productImages;
-                                                    $frontImages = isset($productImages) ? json_decode($productImages->front_images, true) : [];
-                                                    $backImages = isset($productImages) ? json_decode($productImages->back_images, true) : [];
-                                                    $rightImages = isset($productImages) ? json_decode($productImages->right_side, true) : [];
-                                                    $leftImages = isset($productImages) ? json_decode($productImages->left_side, true) : [];
+                                                    $frontImages = isset($productImages) ? ($productImages->front_images) : [];
+                                                    $backImages = isset($productImages) ? ($productImages->back_images) : [];
+                                                    $rightImages = isset($productImages) ? ($productImages->right_side) : [];
+                                                    $leftImages = isset($productImages) ? ($productImages->left_side) : [];
                                                 @endphp
 
                                                 <!-- Main Row -->
