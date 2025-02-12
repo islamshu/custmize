@@ -132,91 +132,61 @@
                                                             <div class="d-flex flex-wrap">
                                                                 @php
                                                                     $dummy_image = asset('images/dummy.png');
-                                                                    dd( $item->productImages['front_images']);
                                                                     $images = [
                                                                         'front' => [
                                                                             'src' => $item->front_image,
                                                                             'alt' => __('Front View'),
-                                                                            'all' =>
-                                                                                $item->productImages->front_images ??
-                                                                                [],
+                                                                            'all' => $item->productImages['front_images'] ?? [],
                                                                         ],
                                                                         'back' => [
                                                                             'src' => $item->back_image,
                                                                             'alt' => __('Back View'),
-                                                                            'all' =>
-                                                                                $item->productImages->back_images ?? [],
+                                                                            'all' => $item->productImages['back_images'] ?? [],
                                                                         ],
                                                                         'right' => [
                                                                             'src' => $item->right_side_image,
                                                                             'alt' => __('Right Side View'),
-                                                                            'all' =>
-                                                                                $item->productImages
-                                                                                    ->right_side_images ?? [],
+                                                                            'all' => $item->productImages['right_side_images'] ?? [],
                                                                         ],
                                                                         'left' => [
                                                                             'src' => $item->left_side_image,
                                                                             'alt' => __('Left Side View'),
-                                                                            'all' =>
-                                                                                $item->productImages
-                                                                                    ->left_side_images ?? [],
+                                                                            'all' => $item->productImages['left_side_images'] ?? [],
                                                                         ],
                                                                     ];
                                                                 @endphp
-
+                                                    
                                                                 @foreach ($images as $type => $img)
                                                                     @php
-                                                                        $img_src = $img['src']
-                                                                            ? asset('storage/' . $img['src'])
-                                                                            : $dummy_image;
+                                                                        $img_src = $img['src'] ? asset('storage/' . $img['src']) : $dummy_image;
                                                                         $modal_id = "imageModal{$key}_{$type}";
                                                                     @endphp
                                                                     <div class="p-2">
-                                                                        <a href="#" data-toggle="modal"
-                                                                            data-target="#{{ $modal_id }}">
-                                                                            <img src="{{ $img_src }}"
-                                                                                alt="{{ $img['alt'] }}"
-                                                                                class="img-fluid img-thumbnail"
-                                                                                style="max-width: 150px;">
+                                                                        <a href="#" data-toggle="modal" data-target="#{{ $modal_id }}">
+                                                                            <img src="{{ $img_src }}" alt="{{ $img['alt'] }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
                                                                         </a>
                                                                         <p class="text-center">{{ $img['alt'] }}</p>
                                                                     </div>
-
+                                                    
                                                                     <!-- Modal -->
-                                                                    <div class="modal fade" id="{{ $modal_id }}"
-                                                                        tabindex="-1" role="dialog"
-                                                                        aria-labelledby="{{ $modal_id }}Label"
-                                                                        aria-hidden="true">
+                                                                    <div class="modal fade" id="{{ $modal_id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $modal_id }}Label" aria-hidden="true">
                                                                         <div class="modal-dialog modal-lg" role="document">
                                                                             <div class="modal-content">
                                                                                 <div class="modal-header">
-                                                                                    <h5 class="modal-title">
-                                                                                        {{ $img['alt'] }}</h5>
-                                                                                    <button type="button" class="close"
-                                                                                        data-dismiss="modal"
-                                                                                        aria-label="Close">
-                                                                                        <span
-                                                                                            aria-hidden="true">&times;</span>
+                                                                                    <h5 class="modal-title">{{ $img['alt'] }}</h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">&times;</span>
                                                                                     </button>
                                                                                 </div>
                                                                                 <div class="modal-body text-center">
-                                                                                    <img id="mainImage{{ $key }}_{{ $type }}"
-                                                                                        src="{{ $img_src }}"
-                                                                                        class="img-fluid"
-                                                                                        style="max-width: 100%;">
+                                                                                    <img id="mainImage{{ $key }}_{{ $type }}" src="{{ $img_src }}" class="img-fluid" style="max-width: 100%;">
                                                                                     <hr>
-                                                                                    <div
-                                                                                        class="d-flex justify-content-center">
-                                                                                        @foreach ($img['all'] as $thumb_index => $thumb)
+                                                                                    <div class="d-flex justify-content-center">
+                                                                                        @foreach ($img['all'] as $thumb)
                                                                                             @php
-                                                                                                $thumb_src = asset(
-                                                                                                    'storage/' . $thumb,
-                                                                                                );
+                                                                                                $thumb_src = !empty($thumb['url'][0]) ? asset('storage/' . $thumb['url'][0]) : $dummy_image;
                                                                                             @endphp
-                                                                                            <img src="{{ $thumb_src }}"
-                                                                                                class="img-thumbnail mx-2"
-                                                                                                style="width: 75px; cursor: pointer;"
-                                                                                                onclick="document.getElementById('mainImage{{ $key }}_{{ $type }}').src='{{ $thumb_src }}'">
+                                                                                            <img src="{{ $thumb_src }}" class="img-thumbnail mx-2" style="width: 75px; cursor: pointer;" onclick="document.getElementById('mainImage{{ $key }}_{{ $type }}').src='{{ $thumb_src }}'">
                                                                                         @endforeach
                                                                                     </div>
                                                                                 </div>
@@ -227,6 +197,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
+                                                    
                                                 @endforeach
                                             </tbody>
                                         </table>
