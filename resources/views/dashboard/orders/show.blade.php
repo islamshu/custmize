@@ -146,12 +146,12 @@
                                                                         'right' => [
                                                                             'src' => $item->right_side_image,
                                                                             'alt' => __('Right Side View'),
-                                                                            'all' => $item->productImages['right_side_images'] ?? [],
+                                                                            'all' => $item->productImages['right_side'] ?? [],
                                                                         ],
                                                                         'left' => [
                                                                             'src' => $item->left_side_image,
                                                                             'alt' => __('Left Side View'),
-                                                                            'all' => $item->productImages['left_side_images'] ?? [],
+                                                                            'all' => $item->productImages['left_side'] ?? [],
                                                                         ],
                                                                     ];
                                                                 @endphp
