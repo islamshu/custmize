@@ -12,7 +12,7 @@ class NewClientController extends Controller
      */
     public function index()
     {
-        return view('dashboard.clients.index')->with('clients',Client::orderby('id','desc'))->get();
+        return view('dashboard.clients.index')->with('clients',Client::orderby('id','desc')->get());
     }
 
     /**
