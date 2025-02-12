@@ -80,7 +80,7 @@
                                                     <tr>
                                                         <th>{{ $key + 1 }}</th>
                                                         
-                                                        <th>{{ $item->first_name. ' ' .$item->last_name   }}</th>
+                                                        <th>{{ $item->name   }}</th>
                                                         <th>{{ $item->email }}</th>
                                                         <th>{{ $item->phone }}</th>
                                                         <th>{{ 5 }}</th>
