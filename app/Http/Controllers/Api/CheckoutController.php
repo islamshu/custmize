@@ -330,6 +330,7 @@ class CheckoutController extends BaseController
 {
     $savedLogos = [];
     foreach ($logos as $logo) {
+        dd($logo['url']);
         $logoPath = $this->saveImagesFromUrls_single($logo['url']);
         $savedLogos[] = [
             'url' => $logoPath,
