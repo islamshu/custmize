@@ -592,10 +592,10 @@ private function storeImage($imageUrl, $folder)
                 $images_order = new ProductImage();
                 $images_order->order_detail_id = $detiels->id;
                 
-                $images_order->front_images = $this->saveLogos($frontImage['logos'] ?? []);
-                $images_order->back_images = $this->saveLogos($backImage['logos'] ?? []);
-                $images_order->right_side = $this->saveLogos($rightSideImage['logos'] ?? []);
-                $images_order->left_side = $this->saveLogos($leftSideImage['logos'] ?? []);
+                $images_order->front_images = $this->saveLogos($frontImage['logos']['logos'] ?? []);
+                $images_order->back_images = $this->saveLogos($backImage['logos']['logos'] ?? []);
+                $images_order->right_side = $this->saveLogos($rightSideImage['logos']['logos'] ?? []);
+                $images_order->left_side = $this->saveLogos($leftSideImage['logos']['logos'] ?? []);
                 $images_order->save();
             }
 
