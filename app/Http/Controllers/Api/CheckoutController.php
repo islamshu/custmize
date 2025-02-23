@@ -744,22 +744,30 @@ private function saveBase64Image($base64String, $folder)
 /**
  * Save an image from a regular URL.
  */
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+
 private function saveImageFromUrl($imageUrl, $folder)
 {
     // Fetch the image using Guzzle
     $client = new Client();
     $response = $client->get($imageUrl);
 
-    // Get the original filename or create a unique one
-    $originalFilename = basename($imageUrl);
-    $filename = Str::random(10) . '_' . $originalFilename . '.png';
+    // Extract the filename without query parameters
+    $parsedUrl = parse_url($imageUrl);
+    $path = $parsedUrl['path']; // Get the path part of the URL
+    $originalFilename = basename($path); // Extract the filename from the path
+
+    // Generate a unique filename
+    $filename = Str::random(10) . '_' . $originalFilename;
 
     // Determine storage path
     $filePath = $folder . '/' . $filename;
 
     // Save the image in the specified directory
     Storage::disk('public')->put($filePath, $response->getBody());
-    dd($filePath);
+
     return $filePath;
 }
 }
