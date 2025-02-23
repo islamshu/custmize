@@ -763,7 +763,7 @@ private function saveImageFromUrl($imageUrl, $folder)
 
     // Save the image in the specified directory
     Storage::disk('public')->put($filePath, $response->getBody());
-    dd($filePath);
+    // dd($filePath);
     return $filePath;
 }
 }
