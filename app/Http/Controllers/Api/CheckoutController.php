@@ -176,6 +176,7 @@ class CheckoutController extends BaseController
     
     public function initiatePayment_v2(Request $request)
     {
+        dd($request->all());
         $validation = Validator::make($request->all(), [
             'cart.orders' => 'required|array|min:1',
             'cart.orders.*.front_image' => 'required',
