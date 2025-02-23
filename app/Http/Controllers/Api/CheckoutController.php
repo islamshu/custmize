@@ -701,7 +701,6 @@ private function storeImage($imageUrl, $folder)
                 $filePath = $this->saveBase64Image($imageUrl, $folder);
             } else {
                 // Handle regular image URL
-                dd($imageUrl);
                 $filePath = $this->saveImageFromUrl($imageUrl, $folder);
             }
 
@@ -759,7 +758,7 @@ private function saveImageFromUrl($imageUrl, $folder)
 
     // Save the image in the specified directory
     Storage::disk('public')->put($filePath, $response->getBody());
-
+    dd($filePath);
     return $filePath;
 }
 }
