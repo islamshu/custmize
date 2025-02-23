@@ -572,6 +572,8 @@ private function storeImage($imageUrl, $folder)
 
                 // $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
+                dd( $this->saveImagesFromUrls_single($frontImage['url'])[0]);
+
               $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
                     'product_name' => Product::find($orderData['product_id'])->name,
@@ -582,6 +584,7 @@ private function storeImage($imageUrl, $folder)
                     'price_without_size_color' => $orderData['price_without_size_color_price'],
                     'price_for_size_color' => $orderData['price_for_size_color_price'],
                     'full_price' => $orderData['full_price'],
+
                     'front_image' => $this->saveImagesFromUrls_single($frontImage['url'])[0] ?? null,
                     'back_image' => $this->saveImagesFromUrls_single($backImage['url'])[0] ?? null,
                     'right_side_image' => $this->saveImagesFromUrls_single($rightSideImage['url'])[0] ?? null,
@@ -590,7 +593,6 @@ private function storeImage($imageUrl, $folder)
                 ]);
                 $images_order = new ProductImage();
                 $images_order->order_detail_id = $detiels->id;
-                
                 $images_order->front_images = $this->saveLogos($frontImage['logos'] ?? []);
                 $images_order->back_images = $this->saveLogos($backImage['logos'] ?? []);
                 $images_order->right_side = $this->saveLogos($rightSideImage['logos'] ?? []);
