@@ -259,7 +259,7 @@ class CheckoutController extends BaseController
 
                 // $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
-                // dd( $this->saveImagesFromUrls_single($frontImage['url'])[0]);
+                dd( $this->saveImagesFromUrls_single($frontImage['url'])[0]);
 
               $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
