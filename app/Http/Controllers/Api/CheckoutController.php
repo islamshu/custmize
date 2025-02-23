@@ -259,7 +259,6 @@ class CheckoutController extends BaseController
 
                 // $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
-                dd($frontImage['logos'] , $frontImage['logos']['logos']);
 
               $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
@@ -280,10 +279,10 @@ class CheckoutController extends BaseController
                 $images_order = new ProductImage();
                 $images_order->order_detail_id = $detiels->id;
                 
-                $images_order->front_images = $this->saveLogos($frontImage['logos'] ?? []);
-                $images_order->back_images = $this->saveLogos($backImage['logos'] ?? []);
-                $images_order->right_side = $this->saveLogos($rightSideImage['logos'] ?? []);
-                $images_order->left_side = $this->saveLogos($leftSideImage['logos'] ?? []);
+                $images_order->front_images = $this->saveLogos($frontImage['logos']['logos'] ?? []);
+                $images_order->back_images = $this->saveLogos($backImage['logos']['logos'] ?? []);
+                $images_order->right_side = $this->saveLogos($rightSideImage['logos']['logos'] ?? []);
+                $images_order->left_side = $this->saveLogos($leftSideImage['logos']['logos'] ?? []);
                 $images_order->save();
             }
 
