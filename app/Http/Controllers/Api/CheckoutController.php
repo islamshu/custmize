@@ -259,7 +259,7 @@ class CheckoutController extends BaseController
 
                 // $savedImages = $this->saveImagesFromUrls([$frontImage, $backImage,$rightSideImage,$leftSideImage]);
                 $savedLogos = $this->saveImagesFromUrls($logos);
-                dd( $this->saveLogos($frontImage['logos'] ?? []));
+                dd($frontImage['logos'] , $frontImage['logos']['logos']);
 
               $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
@@ -330,7 +330,6 @@ class CheckoutController extends BaseController
 {
     $savedLogos = [];
     foreach ($logos as $logo) {
-        dd($logo['url']);
         $logoPath = $this->saveImagesFromUrls_single($logo['url']);
         $savedLogos[] = [
             'url' => $logoPath,
