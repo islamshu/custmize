@@ -701,7 +701,6 @@ private function storeImage($imageUrl, $folder)
                 $filePath = $this->saveBase64Image($imageUrl, $folder);
             } else {
                 // Handle regular image URL
-                // dd($imageUrl);
                 $filePath = $this->saveImageFromUrl($imageUrl, $folder);
             }
 
@@ -744,13 +743,10 @@ private function saveBase64Image($base64String, $folder)
 /**
  * Save an image from a regular URL.
  */
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use GuzzleHttp\Client;
-
 private function saveImageFromUrl($imageUrl, $folder)
 {
-    // Fetch the image using Guzzle
+
+       // Fetch the image using Guzzle
     $client = new Client();
     $response = $client->get($imageUrl);
 
@@ -767,7 +763,7 @@ private function saveImageFromUrl($imageUrl, $folder)
 
     // Save the image in the specified directory
     Storage::disk('public')->put($filePath, $response->getBody());
-
+    dd($filePath);
     return $filePath;
 }
 }
