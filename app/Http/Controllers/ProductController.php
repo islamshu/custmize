@@ -313,9 +313,27 @@ class ProductController extends Controller
             $product->save();
             // dd($product . $request->type_product);
 
-    
             // تحديث الألوان
             if ($request->has('colors_data')) {
+                // Get all color IDs from the request
+                $submittedColorIds = array_keys($request->colors_data);
+            
+                // Fetch existing color IDs for the product from the database
+                $existingColorIds = ProductColor::where('product_id', $product->id)
+                                                ->pluck('product_color_id')
+                                                ->toArray();
+            
+                // Find color IDs that are in the database but not in the request (to be deleted)
+                $colorsToDelete = array_diff($existingColorIds, $submittedColorIds);
+            
+                // Delete colors that are no longer in the request
+                if (!empty($colorsToDelete)) {
+                    ProductColor::where('product_id', $product->id)
+                                ->whereIn('product_color_id', $colorsToDelete)
+                                ->delete();
+                }
+            
+                // Process the submitted colors_data
                 foreach ($request->colors_data as $colorId => $colorData) {
                     // البحث عن السجل القديم للون المحدد
                     $existingColor = ProductColor::where('product_id', $product->id)
@@ -327,7 +345,7 @@ class ProductController extends Controller
                     $backImagePath = $existingColor ? $existingColor->back_image : null;
                     $rightSideImagePath = $existingColor ? $existingColor->right_side_image : null;
                     $leftSideImagePath = $existingColor ? $existingColor->left_side_image : null;
-
+            
                     if ($request->hasFile("colors_data.$colorId.front_image")) {
                         // رفع الصورة الأمامية الجديدة
                         $frontImagePath = $request->file("colors_data.$colorId.front_image")->store('colors', 'public');
@@ -338,11 +356,11 @@ class ProductController extends Controller
                         $backImagePath = $request->file("colors_data.$colorId.back_image")->store('colors', 'public');
                     }
                     if ($request->hasFile("colors_data.$colorId.right_side_image")) {
-                        // رفع الصورة الخلفية الجديدة
+                        // رفع الصورة الجانبية اليمنى الجديدة
                         $rightSideImagePath = $request->file("colors_data.$colorId.right_side_image")->store('colors', 'public');
                     }
                     if ($request->hasFile("colors_data.$colorId.left_side_image")) {
-                        // رفع الصورة الخلفية الجديدة
+                        // رفع الصورة الجانبية اليسرى الجديدة
                         $leftSideImagePath = $request->file("colors_data.$colorId.left_side_image")->store('colors', 'public');
                     }
             
@@ -368,6 +386,27 @@ class ProductController extends Controller
             
                     // التعامل مع الأحجام المرتبطة باللون
                     if (isset($colorData['sizes'])) {
+                        // Get all size IDs for the current color from the request
+                        $submittedSizeIds = array_column($colorData['sizes'], 'id');
+            
+                        // Fetch existing size IDs for the current color from the database
+                        $existingSizeIds = ProductSize::where('product_id', $product->id)
+                                                      ->where('color_id', $colorId)
+                                                      ->pluck('size_id')
+                                                      ->toArray();
+            
+                        // Find size IDs that are in the database but not in the request (to be deleted)
+                        $sizesToDelete = array_diff($existingSizeIds, $submittedSizeIds);
+            
+                        // Delete sizes that are no longer in the request
+                        if (!empty($sizesToDelete)) {
+                            ProductSize::where('product_id', $product->id)
+                                       ->where('color_id', $colorId)
+                                       ->whereIn('size_id', $sizesToDelete)
+                                       ->delete();
+                        }
+            
+                        // Update or create sizes for the current color
                         foreach ($colorData['sizes'] as $sizeData) {
                             ProductSize::updateOrCreate([
                                 'product_id' => $product->id,
@@ -380,7 +419,6 @@ class ProductController extends Controller
                     }
                 }
             }
-            
     
             return redirect()->route('products.index')->with('success', __('Edit Successfuly'));
         } catch (\Exception $e) {
