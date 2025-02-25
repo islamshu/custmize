@@ -21,7 +21,8 @@ class Order extends Model
         'code',
         'client_id',
         'shipping',
-        'phone'
+        'phone',
+        'full_request'
     ];
     public function shipping_info()
     {

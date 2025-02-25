@@ -544,6 +544,7 @@ private function storeImage($imageUrl, $folder)
                 'status_id' => 0,
                 'shipping' => $request->shipping == null ? 0 : 1,
                 'code' => date('Ymd-His') . rand(10, 99),
+                'full_request'=>json_encode($request->all()),
             ]);
             if ($request->shipping == 1) {
                 $shipping = Shipping::create([
@@ -591,7 +592,6 @@ private function storeImage($imageUrl, $folder)
                 ]);
                 $images_order = new ProductImage();
                 $images_order->order_detail_id = $detiels->id;
-                
                 $images_order->front_images = $this->saveLogos($frontImage['logos']['logos'] ?? []);
                 $images_order->back_images = $this->saveLogos($backImage['logos']['logos'] ?? []);
                 $images_order->right_side = $this->saveLogos($rightSideImage['logos']['logos'] ?? []);
