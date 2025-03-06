@@ -86,6 +86,8 @@ class CheckoutController extends BaseController
                 'status_id' => 0,
                 'shipping' => $request->shipping == null ? 0 : 1,
                 'code' => date('Ymd-His') . rand(10, 99),
+                'full_request'=>json_encode($request->all()),
+
             ]);
             if ($request->shipping == 1) {
                 $shipping = Shipping::create([
@@ -230,6 +232,7 @@ class CheckoutController extends BaseController
                 'status_id' => 0,
                 'shipping' => $request->shipping == null ? 0 : 1,
                 'code' => date('Ymd-His') . rand(10, 99),
+                'full_request'=>json_encode($request->all()),
             ]);
             if ($request->shipping == 1) {
                 $shipping = Shipping::create([
@@ -404,6 +407,8 @@ private function storeImage($imageUrl, $folder)
                 'status_id' => 0,
                 'shipping' => $request->shipping == null ? 0 : 1,
                 'code' => date('Ymd-His') . rand(10, 99),
+                'full_request'=>json_encode($request->all()),
+
             ]);
             if ($request->shipping == 1) {
                 $shipping = Shipping::create([
