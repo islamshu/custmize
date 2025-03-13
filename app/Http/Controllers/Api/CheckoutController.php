@@ -496,6 +496,7 @@ private function storeImage($imageUrl, $folder)
     }
     public function initiatePayment_guest_v2(Request $request)
     {
+        dd($request->all());
         $validation = Validator::make($request->all(), [
             'email' => 'required|email',
             'phone' => 'required',
