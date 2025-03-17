@@ -204,6 +204,10 @@
                                                                                                      data-toggle="tooltip" 
                                                                                                      data-placement="top" 
                                                                                                      title="Size: {{ $thumb_size }}">
+                                                                                                <span style="
+                                                                                                            display: table-footer-group;
+                                                                                                        ">size: {{ $thumb_size }}</span>
+
                                                                                             </div>
                                                                                         @endforeach
                                                                                     </div>
