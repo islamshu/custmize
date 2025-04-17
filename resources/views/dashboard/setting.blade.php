@@ -94,6 +94,16 @@
 
                                             </div>
                                             <div class="row">
+                                                
+                                                <div class="form-group col-md-6 mb-2">
+                                                    <label for="userinput2">{{ __('رابط موقع الفورنت') }}</label>
+
+                                                    <input type="text" value="{{ get_general_value('front_url') }}" id="userinput2"
+                                                        required class="form-control border-primary"
+                                                        placeholder="{{ __('رابط موقع الفورنت') }}" name="general[front_url]">
+                                                    <div class="invalid-feedback">
+                                                    </div>
+                                                </div>
                                                 <div class="form-group col-md-6 mb-2">
                                                     <label for="userinput2">{{ __('whatsapp number') }}</label>
 

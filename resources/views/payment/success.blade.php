@@ -4,175 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نجاح العملية</title>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            margin: 20px;
-            padding: 20px;
-            direction: rtl;
-            text-align: right;
+            background-color: #f3f6f9;
         }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            color: green;
-        }
-        .info-container {
-            display: flex;
-            flex-direction: row-reverse;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .order-info {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
+        .container-box {
             background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-top: 40px;
         }
-        .shipping-info {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid #eee;
+        .success-title {
+            color: #28a745;
+        }
+        .table img {
+            width: 80px;
+            height: auto;
+            border-radius: 5px;
+        }
+        .btn-back {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 25px;
+            font-size: 16px;
             border-radius: 8px;
-            background-color: white;
+            text-decoration: none;
+            display: inline-block;
         }
-        .order-details {
-            margin-bottom: 20px;
-        }
-        .order-details table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .order-details table th, .order-details table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-        }
-        .order-details table th {
-            background-color: #f0f0f0;
-        }
-        @media (max-width: 768px) {
-            .info-container {
-                flex-direction: column;
-            }
+        .btn-back:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>نجاح العملية</h1>
-        <p>تمت العملية بنجاح. شكراً لتعاملكم معنا!</p>
+<div class="container container-box">
+    <div class="text-center mb-4">
+        <h1 class="success-title">نجاح العملية</h1>
+        <p class="text-muted">تمت العملية بنجاح. شكراً لتعاملكم معنا!</p>
     </div>
 
-    <div class="info-container">
+    <div class="row g-4">
         @if ($order->shipping == 1)
-        <div class="shipping-info">
-            <h2>بيانات الشحن</h2>
-            @php
-                $shipping = \App\Models\Shipping::where('order_id', $order->id)->first();
-            @endphp
-            @if ($shipping)
-                <p><strong>إسم المستلم:</strong> {{ $shipping->receiver_name }}</p>
-                <p><strong>البريد اللاكتروني المستلم:</strong> {{ $shipping->receiver_email }}</p>
-                <p><strong>هاتف المستلم:</strong> {{ $shipping->receiver_phone }}</p>
-
-                <p><strong>العنوان:</strong> {{ $shipping->address }}</p>
-                <p><strong>المدينة:</strong> {{ $shipping->city }}</p>
-                <p><strong>الرمز البريدي:</strong> {{ $shipping->postal_code }}</p>
-                <p><strong>الدولة:</strong> {{ $shipping->country }}</p>
-                <p><strong>الحالة:</strong> {{ $shipping->status }}</p>
-            @else
-                <p>لا توجد بيانات شحن لهذا الطلب.</p>
-            @endif
+        <div class="col-md-6">
+            <div class="border rounded p-3 bg-light">
+                <h5 class="mb-3">بيانات الشحن</h5>
+                @php
+                    $shipping = \App\Models\Shipping::where('order_id', $order->id)->first();
+                @endphp
+                @if ($shipping)
+                    <p><strong>اسم المستلم:</strong> {{ $shipping->receiver_name }}</p>
+                    <p><strong>البريد الإلكتروني:</strong> {{ $shipping->receiver_email }}</p>
+                    <p><strong>الهاتف:</strong> {{ $shipping->receiver_phone }}</p>
+                    <p><strong>العنوان:</strong> {{ $shipping->address }}</p>
+                    <p><strong>المدينة:</strong> {{ $shipping->city }}</p>
+                    <p><strong>الرمز البريدي:</strong> {{ $shipping->postal_code }}</p>
+                    <p><strong>الدولة:</strong> {{ $shipping->country }}</p>
+                    <p><strong>الحالة:</strong> {{ $shipping->status }}</p>
+                @else
+                    <p class="text-danger">لا توجد بيانات شحن لهذا الطلب.</p>
+                @endif
+            </div>
         </div>
         @endif
 
-        <div class="order-info">
-            <h2>معلومات الطلب</h2>
-            <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
-            <p><strong>الإسم:</strong> {{ $order->name }}</p>
-            <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
-            <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
-            <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
-            <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
+        <div class="col-md-6">
+            <div class="border rounded p-3 bg-light">
+                <h5 class="mb-3">معلومات الطلب</h5>
+                <p><strong>رقم الطلب:</strong> {{ $order->code }}</p>
+                <p><strong>الاسم:</strong> {{ $order->name }}</p>
+                <p><strong>البريد الإلكتروني:</strong> {{ $order->email }}</p>
+                <p><strong>المبلغ الإجمالي:</strong> {{ number_format($order->total_amount, 2) }} ريال</p>
+                <p><strong>الخصم:</strong> {{ number_format($order->discount_amount, 2) }} ريال</p>
+                <p><strong>المجموع الفرعي:</strong> {{ number_format($order->subtotal, 2) }} ريال</p>
+            </div>
         </div>
-
     </div>
 
-    <div class="order-details">
-        <h2>تفاصيل الطلب</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>المنتج</th>
-                    <th>الكمية</th>
-                    <th>السعر</th>
-                    <th>الصورة الأمامية</th>
-                    <th>الصورة الخلفية</th>
-                    <th>الصورة من الجانب اليمين</th>
-                    <th>الصورة من الجانب اليسار</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    if(env('APP_ENV') == 'production'){
-                        $url = 'http://custmize.digitalgo.net/storage/';
-                    }else{
-                        $url = 'http://127.0.0.1:8000/storage/';
-                    }
-                @endphp
-                @foreach ($order->details as $detail)
+    <div class="mt-5">
+        <h5 class="mb-3">تفاصيل الطلب</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
                     <tr>
-                        <td>{{ $detail->product_id }}</td>
-                        <td>{{ $detail->quantity }}</td>
-                        <td>{{ number_format($detail->full_price, 2) }} ريال</td>
-                        <td>
-                            <img 
-                                src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" 
-                                alt="الصورة الأمامية" 
-                                style="width: 100px; height: auto;"
-                            >
-                        </td>
-                        <td>
-                            @if($detail->back_image == null) 
-                                {{'_'}} 
-                            @else
-                                <img src=" {{ $url.$detail->back_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
-                            @endif
-                        </td>
-                        <td>
-                            @if($detail->right_side_image == null) 
-                                {{'_'}} 
-                            @else
-                                <img src=" {{ $url.$detail->right_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
-                            @endif
-                        </td>
-                        <td>
-                            @if($detail->left_side_image == null) 
-                                {{'_'}} 
-                            @else
-                                <img src=" {{ $url.$detail->left_side_image }}" alt="الصورة الخلفية" style="width: 100px; height: auto;">
-                            @endif
-                        </td>
+                        <th>المنتج</th>
+                        <th>الكمية</th>
+                        <th>السعر</th>
+                        <th>الأمامية</th>
+                        <th>الخلفية</th>
+                        <th>اليمين</th>
+                        <th>اليسار</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @php
+                        $url = env('APP_ENV') == 'production' 
+                            ? 'http://custmize.digitalgo.net/storage/' 
+                            : 'http://127.0.0.1:8000/storage/';
+                    @endphp
+                    @foreach ($order->details as $detail)
+                        <tr>
+                            <td>{{ $detail->product_id }}</td>
+                            <td>{{ $detail->quantity }}</td>
+                            <td>{{ number_format($detail->full_price, 2) }} ريال</td>
+                            <td>
+                                <img src="{{ isset($detail->front_image) ? asset('storage/'.$detail->front_image) : asset('images/placeholder.png') }}" alt="أمامية">
+                            </td>
+                            <td>
+                                @if($detail->back_image)
+                                    <img src="{{ $url.$detail->back_image }}" alt="خلفية">
+                                @else
+                                    _
+                                @endif
+                            </td>
+                            <td>
+                                @if($detail->right_side_image)
+                                    <img src="{{ $url.$detail->right_side_image }}" alt="يمين">
+                                @else
+                                    _
+                                @endif
+                            </td>
+                            <td>
+                                @if($detail->left_side_image)
+                                    <img src="{{ $url.$detail->left_side_image }}" alt="يسار">
+                                @else
+                                    _
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="footer">
+    <div class="text-center mt-5">
+        <a href="{{ get_general_value('front_url') }}" class="btn-back">العودة إلى الموقع</a>
+    </div>
+
+    <div class="text-center mt-3 text-muted">
         <p>إذا كان لديك أي استفسارات، لا تتردد في الاتصال بنا.</p>
     </div>
 </div>

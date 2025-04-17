@@ -9,10 +9,29 @@
         .thumb-hover-effect {
             transition: transform 0.3s ease-in-out;
         }
+
         .thumb-hover-effect:hover {
-            transform: scale(2); /* Zoom effect */
-            z-index: 9999; /* Ensure it appears above other elements */
+            transform: scale(2);
+            /* Zoom effect */
+            z-index: 9999;
+            /* Ensure it appears above other elements */
             position: relative;
+        }
+
+        .bg-light-dark {
+            background-color: #bfbfbf !important;
+        }
+
+        .thumb-hover-effect {
+            transition: transform 0.3s ease-in-out;
+            border: 2px solid transparent;
+        }
+
+        .thumb-hover-effect:hover {
+            transform: scale(2);
+            z-index: 9999;
+            position: relative;
+            border-color: #007bff;
         }
     </style>
 @endsection
@@ -146,68 +165,124 @@
                                                                         'front' => [
                                                                             'src' => $item->front_image,
                                                                             'alt' => __('Front View'),
-                                                                            'all' => $item->productImages['front_images'] ?? [],
+                                                                            'all' =>
+                                                                                $item->productImages['front_images'] ??
+                                                                                [],
                                                                         ],
                                                                         'back' => [
                                                                             'src' => $item->back_image,
                                                                             'alt' => __('Back View'),
-                                                                            'all' => $item->productImages['back_images'] ?? [],
+                                                                            'all' =>
+                                                                                $item->productImages['back_images'] ??
+                                                                                [],
                                                                         ],
                                                                         'right' => [
                                                                             'src' => $item->right_side_image,
                                                                             'alt' => __('Right Side View'),
-                                                                            'all' => $item->productImages['right_side'] ?? [],
+                                                                            'all' =>
+                                                                                $item->productImages['right_side'] ??
+                                                                                [],
                                                                         ],
                                                                         'left' => [
                                                                             'src' => $item->left_side_image,
                                                                             'alt' => __('Left Side View'),
-                                                                            'all' => $item->productImages['left_side'] ?? [],
+                                                                            'all' =>
+                                                                                $item->productImages['left_side'] ?? [],
                                                                         ],
                                                                     ];
                                                                 @endphp
-                                                    
+
                                                                 @foreach ($images as $type => $img)
                                                                     @php
-                                                                        $img_src = $img['src'] ? asset('storage/' . $img['src']) : $dummy_image;
+                                                                        $img_src = $img['src']
+                                                                            ? asset('storage/' . $img['src'])
+                                                                            : $dummy_image;
                                                                         $modal_id = "imageModal{$key}_{$type}";
                                                                     @endphp
                                                                     <div class="p-2">
-                                                                        <a href="#" data-toggle="modal" data-target="#{{ $modal_id }}">
-                                                                            <img src="{{ $img_src }}" alt="{{ $img['alt'] }}" class="img-fluid img-thumbnail" style="max-width: 150px;">
+                                                                        <a href="#" data-toggle="modal"
+                                                                            data-target="#{{ $modal_id }}">
+                                                                            <img src="{{ $img_src }}"
+                                                                                alt="{{ $img['alt'] }}"
+                                                                                class="img-fluid img-thumbnail"
+                                                                                style="max-width: 150px;">
                                                                         </a>
                                                                         <p class="text-center">{{ $img['alt'] }}</p>
                                                                     </div>
-                                                    
+
                                                                     <!-- Modal -->
-                                                                    <div class="modal fade" id="{{ $modal_id }}" tabindex="-1" role="dialog" aria-labelledby="{{ $modal_id }}Label" aria-hidden="true">
+                                                                    <!-- Modal -->
+                                                                    <div class="modal fade" id="{{ $modal_id }}"
+                                                                        tabindex="-1" role="dialog"
+                                                                        aria-labelledby="{{ $modal_id }}Label"
+                                                                        aria-hidden="true">
                                                                         <div class="modal-dialog modal-lg" role="document">
                                                                             <div class="modal-content">
                                                                                 <div class="modal-header">
-                                                                                    <h5 class="modal-title">{{ $img['alt'] }}</h5>
-                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                        <span aria-hidden="true">&times;</span>
+                                                                                    <h5 class="modal-title">
+                                                                                        {{ $img['alt'] }}</h5>
+                                                                                    <button type="button" class="close"
+                                                                                        data-dismiss="modal"
+                                                                                        aria-label="Close">
+                                                                                        <span
+                                                                                            aria-hidden="true">&times;</span>
                                                                                     </button>
                                                                                 </div>
                                                                                 <div class="modal-body text-center">
-                                                                                    <img id="mainImage{{ $key }}_{{ $type }}" src="{{ $img_src }}" class="img-fluid" style="max-width: 100%;">
+                                                                                    <!-- عرض الصورة الكبيرة مع زر التنزيل -->
+                                                                                    <div
+                                                                                        class="position-relative text-center mb-4">
+                                                                                        <img id="mainImage{{ $key }}_{{ $type }}"
+                                                                                            src="{{ $img_src }}"
+                                                                                            class="img-fluid rounded shadow"
+                                                                                            style="max-width: 100%; border: 1px solid #ddd; padding: 5px;">
+                                                                                        <a href="{{ $img_src }}"
+                                                                                            download
+                                                                                            class="btn btn-outline-primary mt-2"
+                                                                                            target="_blank">
+                                                                                            {{ __('Download Image') }}
+                                                                                        </a>
+                                                                                    </div>
+
                                                                                     <hr>
-                                                                                    <div class="d-flex justify-content-center">
+
+                                                                                    <!-- الصور المصغرة مع زر التحميل -->
+                                                                                    <div
+                                                                                        class="d-flex flex-wrap justify-content-center">
                                                                                         @foreach ($img['all'] as $thumb)
                                                                                             @php
-                                                                                                $thumb_src = !empty($thumb['url'][0]) ? asset('storage/' . $thumb['url'][0]) : $dummy_image;
-                                                                                                $thumb_size = $thumb['size'] ?? 'N/A';
+                                                                                                $thumb_src = !empty(
+                                                                                                    $thumb['url'][0]
+                                                                                                )
+                                                                                                    ? asset(
+                                                                                                        'storage/' .
+                                                                                                            $thumb[
+                                                                                                                'url'
+                                                                                                            ][0],
+                                                                                                    )
+                                                                                                    : $dummy_image;
+                                                                                                $thumb_size =
+                                                                                                    $thumb['size'] ??
+                                                                                                    'N/A';
                                                                                             @endphp
-                                                                                            <div class="position-relative mx-2">
-                                                                                                <img src="{{ $thumb_src }}" 
-                                                                                                     class="img-thumbnail thumb-hover-effect" 
-                                                                                                     style="width: 75px; cursor: pointer;" 
-                                                                                                     data-toggle="tooltip" 
-                                                                                                     data-placement="top" 
-                                                                                                     title="Size: {{ $thumb_size }}">
-                                                                                                <span style="
-                                                                                                            display: table-footer-group;
-                                                                                                        ">size: {{ $thumb_size }}</span>
+                                                                                            <div
+                                                                                                class="position-relative mx-2 text-center mb-3">
+                                                                                                <img src="{{ $thumb_src }}"
+                                                                                                    class="img-thumbnail thumb-hover-effect mb-1"
+                                                                                                    style="width: 75px; cursor: pointer;"
+                                                                                                    data-toggle="tooltip"
+                                                                                                    data-placement="top"
+                                                                                                    title="Size: {{ $thumb_size }}">
 
+                                                                                                <span
+                                                                                                    class="d-block text-muted small">Size:
+                                                                                                    {{ $thumb_size }}</span>
+
+                                                                                                <a href="{{ $thumb_src }}"
+                                                                                                    download
+                                                                                                    class="btn btn-sm btn-outline-secondary mt-1">
+                                                                                                    {{ __('Download') }}
+                                                                                                </a>
                                                                                             </div>
                                                                                         @endforeach
                                                                                     </div>
@@ -219,7 +294,6 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -236,10 +310,9 @@
     </div>
 @endsection
 @section('script')
-    
-<script>
-    $(document).ready(function() {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
+    <script>
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 @endsection
