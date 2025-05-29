@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\ExternalProductController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\UserController;
 use App\Services\UnsplashService;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['cors'])->group(function () {
 
-Route::get('products',[HomeController::class,'products']);
+Route::get('products',[HomeController::class,'products'])->name('products.api');
 Route::get('home',[HomeController::class,'home']);
 
 Route::get('get_single_product/{slug}',[HomeController::class,'single_product'])->name('get_single_product');
@@ -40,6 +41,7 @@ Route::post('checkout_guest',[CheckoutController::class,'initiatePayment_guest']
 Route::post('v2/checkout_guest',[CheckoutController::class,'initiatePayment_guest_v2'])->name('checkout_v2');
 
 Route::get('track_order',[HomeController::class,'track_order']);
+Route::get('/external-products/visible', [ExternalProductController::class, 'visibleProducts']);
 
 Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);

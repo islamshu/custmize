@@ -8,6 +8,8 @@ use App\Models\Status;
 use Illuminate\Support\Facades\File;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 function openJSONFile($code){
     $jsonString = [];
@@ -110,5 +112,27 @@ function translatefile($name){
 
     return response()->json(['error' => 'Language file not found!'], 404);
 
+}
+function streamApiResponseToFile(string $apiUrl, string $fileName = 'products_dump.txt'): bool
+{
+    try {
+        // فتح stream محلي للحفظ داخل storage
+        $stream = Storage::writeStream("api_dumps/{$fileName}", '');
+
+        if ($stream === false) {
+            throw new \Exception('فشل في إنشاء ملف للحفظ.');
+        }
+
+        // إرسال طلب HTTP واستقبال المحتوى على شكل stream
+        Http::timeout(120)->sink($stream)->get($apiUrl);
+
+        // إغلاق stream بعد انتهاء القراءة
+        fclose($stream);
+
+        return true;
+    } catch (\Exception $e) {
+        logger()->error('خطأ أثناء الحفظ عبر stream: ' . $e->getMessage());
+        return false;
+    }
 }
 ?>

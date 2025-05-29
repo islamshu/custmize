@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\ApiProductsController;
+use App\Http\Controllers\ApiToXmlController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
@@ -20,6 +22,9 @@ use App\Http\Controllers\TypeCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductXmlController;
+use App\Jobs\ImportExternalProductsJob;
+use App\Jobs\SaveApiToFileJob;
 use App\Models\Banner;
 use App\Services\UnsplashService;
 
@@ -43,7 +48,21 @@ Route::get('/login', [HomeController::class,'login'])->name('login');
 Route::post('/login', [HomeController::class,'post_login'])->name('post_login');
 Route::get('/carts', [HomeController::class,'cart'])->name('cart');
 Route::get('/viwer/{id}', [HomeController::class,'viwer'])->name('viwer');
+Route::get('/queue-save-api', function () {
+    // تعريف مصارد API الثلاثة
+    $apiUrls = [
+        'product' => 'http://www.giftsksa.com/products/all/7efedcf0d9bc4cd1b51d971f2cb4cd46',
+        'price' =>'http://www.giftsksa.com/products/price/7efedcf0d9bc4cd1b51d971f2cb4cd46',
+        'stock' => 'http://www.giftsksa.com/products/stock/7efedcf0d9bc4cd1b51d971f2cb4cd46',
+    ];
 
+    // إرسال كل API إلى الطابور مع العلم أنها جزء من مجموعة
+    foreach ($apiUrls as $type => $url) {
+        SaveApiToFileJob::dispatch($type, $url, true); // true يعني أنها عملية جماعية
+    }
+
+    return "🚀 تم إرسال العمليات إلى الـ Queue لحفظ الملفات (المنتجات، الأسعار، المخزون)";
+});
 Route::post('/client_login', [HomeController::class,'client_login'])->name('client_login');
 
 
@@ -132,6 +151,10 @@ Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('ord
 Route::post('add_general', [HomeController::class, 'add_general'])->name('add_general');
 Route::get('setting', [HomeController::class, 'setting'])->name('setting');
 Route::get('shopping', [HomeController::class, 'shopping'])->name('shopping');
+Route::get('api-products', [ApiProductsController::class, 'index'])->name('external-products.index');
+// routes/web.php
+Route::get('external-products/{id}', [ApiProductsController::class, 'show'])->name('external-products.show');
+Route::post('/external-products/toggle/{id}', [ApiProductsController::class, 'toggle'])->name('external-products.toggle');
 
 Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('edit_profile', [HomeController::class, 'edit_profile'])->name('edit_profile');

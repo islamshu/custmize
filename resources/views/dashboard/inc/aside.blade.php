@@ -96,6 +96,10 @@
                                
                             </ul>
                 </li>
+                  <li class=" nav-item"><a class=" nav-link"
+                        href="{{ route('external-products.index') }}"><i class="la la-columns"></i><span>{{ __('المنتجات الخارجية') }}</span></a>
+                     
+                </li>
                 <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
                         href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Promo Codes') }}</span></a>
                         <ul class="dropdown-menu">
