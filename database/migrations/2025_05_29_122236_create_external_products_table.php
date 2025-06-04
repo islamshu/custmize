@@ -13,7 +13,7 @@ return new class extends Migration
     {
       Schema::create('external_products', function (Blueprint $table) {
     $table->id();
-    $table->integer('external_id')->unique();
+    $table->integer('external_id');
     $table->string('name');
     $table->text('description_sale')->nullable();
     $table->string('image_url')->nullable();
