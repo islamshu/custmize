@@ -1,202 +1,188 @@
 <div class="header-navbar navbar-expand-sm navbar navbar-horizontal navbar-fixed navbar-dark navbar-without-dd-arrow navbar-shadow"
-        role="navigation" data-menu="menu-wrapper">
-        <div class="navbar-container main-menu-content" data-menu="menu-container">
-            <ul class="nav navbar-nav" id="main-menu-navigation" data-menu="menu-navigation">
-                <li class="dropdown nav-item" data-menu="dropdown">
-                    <a class=" nav-link" href="{{ route('home') }}" ><i
-                            class="la la-home"></i>
-                        <span>{{ __('Dashboard') }}</span>
-                    </a>
-                 
-                </li>
-                
-                
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i
-                            class="la la-television"></i><span>{{ __('Setting') }}</span></a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown " data-menu=""><a
-                                class="dropdown-item " href="{{ route('setting') }}"
-                                >{{ __('Main setting info') }}</a>
-                         
-                        </li>
-                        <li class="dropdown " data-menu=""><a
-                                class="dropdown-item " href="{{ route('shopping') }}"
-                                >{{ __('shopping setting') }}</a>
-                         
-                        </li>
-                        <li class="dropdown " data-menu=""><a
-                                class="dropdown-item " href="{{ route('setting_my_fatoorah') }}"
-                                >{{ __('myfattorah setting') }}</a>
-                         
-                        </li>
-                        <li class="dropdown " data-menu=""><a
-                                class="dropdown-item " href="{{ route('factor2') }}"
-                                >{{ __('calculate setting') }}</a>
-                         
-                        </li>
-                        <li class="dropdown " data-menu=""><a
-                                class="dropdown-item " href="{{ route('show_translate','ar') }}"
-                                >{{ __('Arabic Translate') }}</a>
-                         
-                        </li>
-                       
-                    </ul>
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i
-                            class="la la-users"></i><span>{{ __('Clients') }}</span></a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown " data-menu=""><a
-                                class="dropdown-item " href="{{ route('customers.index') }}"
-                                >{{ __('Clients') }}</a>
-                         
-                        </li>
-                    
-                       
-                    </ul>
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Categories') }}</span></a>
-                        <ul class="dropdown-menu">
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('main_categories') }}"
-                                        >{{ __('Main Categories') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('index_cat') }}"
-                                        >{{ __('Categories') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('subcategories.index') }}"
-                                        >{{ __('Sub Categories') }}</a>
-                                 
-                                </li>
-                           
-                                
-                               
-                            </ul>
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Products') }}</span></a>
-                        <ul class="dropdown-menu">
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('products.index') }}"
-                                        >{{ __('All Products') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('products.create') }}"
-                                        >{{ __('Add New Product') }}</a>
-                                 
-                                </li>
-                                
-                               
-                            </ul>
-                </li>
-                  <li class=" nav-item"><a class=" nav-link"
-                        href="{{ route('external-products.index') }}"><i class="la la-columns"></i><span>{{ __('المنتجات الخارجية') }}</span></a>
-                     
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Promo Codes') }}</span></a>
-                        <ul class="dropdown-menu">
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('discountcode.index') }}"
-                                        >{{ __('Promo Codes') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('discountcode.create') }}"
-                                        >{{ __('Add New') }}</a>
-                                 
-                                </li>
-                                
-                               
-                            </ul>
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Attributes') }}</span></a>
-                        <ul class="dropdown-menu">
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('colors.index') }}"
-                                        >{{ __('Colors') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('sizes.index') }}"
-                                        >{{ __('Sizes') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('types.index') }}"
-                                        >{{ __('Types') }}</a>
-                                 
-                                </li>
-                                
-                               
-                            </ul>
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Banners') }}</span></a>
-                        <ul class="dropdown-menu">
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('banners.index') }}"
-                                        >{{ __('Banners') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('banners.create') }}"
-                                        >{{ __('Add New Banner') }}</a>
-                                 
-                                </li>
-                                
-                               
-                            </ul>
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Orders without shipping') }}</span></a>
-                        <ul class="dropdown-menu">
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('orders.index') }}"
-                                        >{{ __('Orders without shipping') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('orders.clinet_orders') }}"
-                                        >{{ __('Clinet Orders') }}</a>
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('orders.guest_orders') }}"
-                                        >{{ __('Guest Orders') }}</a>
-                                </li>
-                                
-                               
-                            </ul>
-                </li>
-                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
-                        href="#" data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Orders with shipping') }}</span></a>
-                        <ul class="dropdown-menu">
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('orders_shipping.index') }}"
-                                        >{{ __('Orders with shipping') }}</a>
-                                 
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('orders_shipping.clinet_orders') }}"
-                                        >{{ __('Clinet Orders') }}</a>
-                                </li>
-                                <li class="dropdown " data-menu=""><a
-                                        class="dropdown-item " href="{{ route('orders_shipping.guest_orders') }}"
-                                        >{{ __('Guest Orders') }}</a>
-                                </li>
-                                
-                               
-                            </ul>
-                </li>
-                {{-- <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
+    role="navigation" data-menu="menu-wrapper">
+    <div class="navbar-container main-menu-content" data-menu="menu-container">
+        <ul class="nav navbar-nav" id="main-menu-navigation" data-menu="menu-navigation">
+            <li class="dropdown nav-item" data-menu="dropdown">
+                <a class=" nav-link" href="{{ route('home') }}"><i class="la la-home"></i>
+                    <span>{{ __('Dashboard') }}</span>
+                </a>
+
+            </li>
+
+
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-television"></i><span>{{ __('Setting') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('setting') }}">{{ __('Main setting info') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('shopping') }}">{{ __('shopping setting') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('setting_my_fatoorah') }}">{{ __('myfattorah setting') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('factor2') }}">{{ __('calculate setting') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('show_translate', 'ar') }}">{{ __('Arabic Translate') }}</a>
+
+                    </li>
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-users"></i><span>{{ __('Clients') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('customers.index') }}">{{ __('Clients') }}</a>
+
+                    </li>
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Categories') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('main_categories') }}">{{ __('Main Categories') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('index_cat') }}">{{ __('Categories') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('subcategories.index') }}">{{ __('Sub Categories') }}</a>
+
+                    </li>
+
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Products') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('products.index') }}">{{ __('All Products') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('products.create') }}">{{ __('Add New Product') }}</a>
+
+                    </li>
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('المنتجات الخارجية و warehouse') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('external-products.index') }}">{{ __('منتجات الwarehouse') }}</a>
+
+                    </li>
+                   <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('index_external') }}">{{ __('منتجات التي تم استيرادها') }}</a>
+
+                    </li>
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Promo Codes') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('discountcode.index') }}">{{ __('Promo Codes') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('discountcode.create') }}">{{ __('Add New') }}</a>
+
+                    </li>
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Attributes') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('colors.index') }}">{{ __('Colors') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('sizes.index') }}">{{ __('Sizes') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('types.index') }}">{{ __('Types') }}</a>
+
+                    </li>
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i class="la la-columns"></i><span>{{ __('Banners') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('banners.index') }}">{{ __('Banners') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('banners.create') }}">{{ __('Add New Banner') }}</a>
+
+                    </li>
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i
+                        class="la la-columns"></i><span>{{ __('Orders without shipping') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('orders.index') }}">{{ __('Orders without shipping') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('orders.clinet_orders') }}">{{ __('Clinet Orders') }}</a>
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('orders.guest_orders') }}">{{ __('Guest Orders') }}</a>
+                    </li>
+
+
+                </ul>
+            </li>
+            <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                    data-toggle="dropdown"><i
+                        class="la la-columns"></i><span>{{ __('Orders with shipping') }}</span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('orders_shipping.index') }}">{{ __('Orders with shipping') }}</a>
+
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('orders_shipping.clinet_orders') }}">{{ __('Clinet Orders') }}</a>
+                    </li>
+                    <li class="dropdown " data-menu=""><a class="dropdown-item "
+                            href="{{ route('orders_shipping.guest_orders') }}">{{ __('Guest Orders') }}</a>
+                    </li>
+
+
+                </ul>
+            </li>
+            {{-- <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link"
                         href="#" data-toggle="dropdown"><i
                             class="la la-folder-open"></i><span>General</span></a>
                     <ul class="dropdown-menu">
@@ -1417,6 +1403,6 @@
                         </li>
                     </ul>
                 </li> --}}
-            </ul>
-        </div>
+        </ul>
     </div>
+</div>

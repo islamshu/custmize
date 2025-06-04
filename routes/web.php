@@ -152,7 +152,14 @@ Route::post('add_general', [HomeController::class, 'add_general'])->name('add_ge
 Route::get('setting', [HomeController::class, 'setting'])->name('setting');
 Route::get('shopping', [HomeController::class, 'shopping'])->name('shopping');
 Route::get('api-products', [ApiProductsController::class, 'index'])->name('external-products.index');
-// routes/web.php
+Route::post('/external-products/group-import', [ApiProductsController::class, 'importGroup'])->name('external-products.group.import');
+Route::get('external-products/{externalProduct}/edit', [ApiProductsController::class, 'edit'])->name('external-products.edit');
+Route::put('external-products/{externalProduct}', [ApiProductsController::class, 'update'])->name('external-products.update');
+Route::post('/external-products/toggle-active', [ApiProductsController::class, 'toggleActive'])->name('external-products.toggle-active');
+
+Route::get('external-products', [ApiProductsController::class, 'index_external'])->name('index_external');
+Route::delete('/external-products/{id}', [ApiProductsController::class, 'destroy'])->name('external-products.destroy');
+
 Route::get('external-products/{id}', [ApiProductsController::class, 'show'])->name('external-products.show');
 Route::post('/external-products/toggle/{id}', [ApiProductsController::class, 'toggle'])->name('external-products.toggle');
 

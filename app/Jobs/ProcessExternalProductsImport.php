@@ -1,0 +1,209 @@
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use App\Models\ExternalProduct;
+use App\Models\ExternalProductColor;
+use App\Models\ExternalProductSize;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
+class ProcessExternalProductsImport implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    protected $productIds;
+
+    public function __construct(string $productIds)
+    {
+        $this->productIds = $productIds;
+    }
+
+    public function handle()
+    {
+        $products = $this->loadJsonFile('uploads/api_dumps/product_api.json');
+        if (!$products) return;
+
+        $prices = $this->loadJsonFile('uploads/api_dumps/price_api.json');
+        if (!$prices) return;
+
+        $ids = explode(',', $this->productIds);
+        $mainProduct = $this->findMainProduct($products, $ids);
+        if (!$mainProduct) return;
+
+        $defaultCodes = [];
+        $colors = [];
+        $productPrices = []; // ✅ New array to hold product ID => price
+
+        foreach ($products as $product) {
+            if (!in_array($product['id'], $ids)) continue;
+
+            $defaultCode = $product['default_code'] ?? null;
+            if ($defaultCode) {
+                $defaultCodes[] = $defaultCode;
+            }
+
+            $priceData = $this->findPriceByCode($prices, $defaultCode);
+
+            // ✅ Save the price for each product ID
+            if (isset($product['id'])) {
+                $productPrices[$product['id']] = $priceData['price'] ?? null;
+            }
+
+            $colorName = $this->extractAttribute($product, 'color');
+            $sizeName = $this->extractAttribute($product, 'size');
+
+            if ($colorName) {
+                if (!isset($colors[$colorName])) {
+                    $colors[$colorName] = [
+                        'image' => $product['image_url'] ?? null,
+                        'sizes' => [],
+                    ];
+                }
+
+                if ($sizeName) {
+                    $colors[$colorName]['sizes'][] = [
+                        'name' => $sizeName,
+                        'default_code' => $defaultCode,
+                        'external_id' => $product['id'],
+                        'price' => $priceData['price'] ?? null,
+                    ];
+                }
+            }
+        }
+        $externalProduct = ExternalProduct::create([
+            'external_id' => $mainProduct['id'],
+            'name' => $mainProduct['name'],
+            'description_sale' => $mainProduct['description_sale'] ?? null,
+            'image' => $this->storeImage($mainProduct['image_url'] ?? null),
+            'brand' => $mainProduct['brand_id'][1] ?? null,
+            'default_codes' => array_unique($defaultCodes),
+            'product_ids' => $ids,
+            'product_prices' => $productPrices, // Assuming the column exists
+
+        ]);
+
+        foreach ($colors as $colorName => $data) {
+            $color = ExternalProductColor::create([
+                'external_product_id' => $externalProduct->id,
+                'name' => $colorName,
+                'front_image' => $this->storeImage($data['image']),
+            ]);
+
+            $sizes = $data['sizes'] ?? [['name' => 'واحد', 'default_code' => null, 'external_id' => null]];
+
+            foreach ($sizes as $size) {
+                ExternalProductSize::create([
+                    'color_id' => $color->id,
+                    'name' => $size['name'],
+                    'default_code' => $size['default_code'],
+                    'external_id' => $size['external_id'],
+                    'price' => $size['price'] ?? null,
+                ]);
+            }
+        }
+        $key = env('TOKEN_TELEGRAM');
+        $ids = env('TOKEN_TELEGRAM_CHAT_ID');
+        $url = route('external-products.edit', $externalProduct->id);
+        $message = ":: تنبيه  ::"
+            . "تم بنجاح استيراد مجموعة  المنتجات التي قمت بتحديدها " . PHP_EOL
+            . "يمكنك الدخول للرابط لمراجعة المنتجات المستوردة : " . $url  . PHP_EOL;
+        // Prepare request data
+        $url_new = "https://api.telegram.org/bot" . $key . "/sendMessage";
+        $senderr = [
+            'chat_id' => $ids,
+            'text' => $message,
+        ];
+
+        $curll_new = curl_init($url_new);
+        curl_setopt($curll_new, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curll_new, CURLOPT_POST, true);
+        curl_setopt($curll_new, CURLOPT_POSTFIELDS, $senderr);
+        $response = curl_exec($curll_new);
+        Log::info('تم استيراد المنتج بنجاح', ['external_product_id' => $externalProduct->id]);
+    }
+
+    // ========== الدوال المساعدة ========== //
+
+    private function loadJsonFile(string $path): ?array
+    {
+        $fullPath = base_path($path);
+        if (!file_exists($fullPath)) {
+            Log::error("File not found: {$path}");
+            return null;
+        }
+
+        $data = json_decode(file_get_contents($fullPath), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::error('Invalid JSON: ' . json_last_error_msg());
+            return null;
+        }
+
+        return is_array($data) ? $data : null;
+    }
+
+    private function findMainProduct(array $products, array $ids): ?array
+    {
+        foreach ($products as $product) {
+            if (in_array($product['id'], $ids)) {
+                return $product;
+            }
+        }
+
+        Log::error('Main product not found');
+        return null;
+    }
+
+    private function findPriceByCode(array $prices, ?string $defaultCode): array
+    {
+        if (!$defaultCode) return ['price' => null];
+
+        foreach ($prices as $price) {
+            if ($price['default_code'] === $defaultCode) {
+                return [
+                    'price' => $price['price'] ?? null,
+                ];
+            }
+        }
+
+        return ['price' => null];
+    }
+
+    private function extractAttribute(array $product, string $type): ?string
+    {
+        if (empty($product['product_template_attribute_value_ids'])) return null;
+
+        foreach ($product['product_template_attribute_value_ids'] as $attr) {
+            if (stripos($attr['display_name'], $type) !== false) {
+                return trim(str_replace(ucfirst($type) . ': ', '', $attr['display_name']));
+            }
+        }
+
+        return null;
+    }
+
+    private function storeImage(?string $url): ?string
+    {
+        if (empty($url)) return null;
+
+        try {
+            $image = file_get_contents($url);
+            if ($image !== false) {
+                $ext = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
+                $path = 'external_images/' . Str::uuid() . '.' . $ext;
+                Storage::disk('public')->put($path, $image);
+                return $path;
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to download image: ' . $e->getMessage());
+        }
+
+        return null;
+    }
+}

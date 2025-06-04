@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ExternalProduct extends Model
@@ -8,26 +10,43 @@ class ExternalProduct extends Model
     protected $fillable = [
         'external_id',
         'name',
-        'default_code',
-        'description',
-        'brand_id',
-        'brand_name',
-        'category_id',
-        'category_name',
+        'description_sale',
         'image_url',
-        'images',
-        'color',
-        'configurable',
-        'parent_id',
-        'color_options',
-        'product_template_attribute_value_ids',
+        'brand',
+        'default_codes',
+        'product_ids',
+        'image',
+        'product_prices',
+        'price'
+
     ];
 
-    // لو حابب تفسر الأعمدة JSON تلقائي:
-    protected $casts = [
-        'images' => 'array',
-        'color_options' => 'array',
-        'product_template_attribute_value_ids' => 'array',
-        'configurable' => 'boolean',
+    protected $attributes = [
+        'product_ids' => '[]' // تعيين القيمة الافتراضية داخل الـ Model
     ];
+
+    protected $casts = [
+        'default_codes' => 'array', // تحويل إلى Array تلقائيًا
+        'product_ids' => 'array',
+        'product_prices' => 'array', // ✅ Add this
+
+    ];
+
+    public function colors()
+    {
+        return $this->hasMany(ExternalProductColor::class, 'external_product_id');
+    }
+    public function getMinPrice(): ?float
+    {
+        if (empty($this->product_prices)) return null;
+
+        return min(array_values($this->product_prices));
+    }
+
+    public function getMaxPrice(): ?float
+    {
+        if (empty($this->product_prices)) return null;
+
+        return max(array_values($this->product_prices));
+    }
 }

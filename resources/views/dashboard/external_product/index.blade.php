@@ -70,6 +70,44 @@
             transform: translateX(46px);
         }
     </style>
+ <style>
+    .variant-item {
+        background-color: #fff;
+        margin-bottom: 8px !important;
+    }
+
+    .variant-checkbox {
+        cursor: pointer;
+    }
+
+    .variant-item:hover {
+        background-color: #f9f9f9;
+    }
+
+    #variant-list {
+        padding-left: 0;
+    }
+</style>
+
+<style>
+    #floating-btn-container {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        background-color: white;
+        padding: 10px 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    #group-import-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+
 @endsection
 @section('content')
     <div class="app-content content">
@@ -106,63 +144,21 @@
                                         @include('dashboard.inc.alerts')
 
 
-                                        @if (session('success'))
-                                            <div class="alert alert-success">{{ session('success') }}</div>
-                                        @endif
+                                        <form id="search-form" method="GET">
+                                            <div class="row mb-2">
+                                                <div class="col-md-4">
+                                                    <input type="text" name="q" id="search-input"
+                                                        class="form-control" placeholder="ابحث عن منتج...">
+                                                </div>
+                                            </div>
+                                        </form>
 
-                                        <table class="table table-bordered table-striped">
-                                            <thead class="table-dark">
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>الاسم</th>
-                                                    <th>كود المنتج</th>
-                                                    <th>الكمية المتاحة </th>
-                                                    <th>السعر</th>
-
-                                                    <th> الحالة</th>
-                                                    <th> مشاهدة</th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse ($products as $product)
-                                                    <tr>
-                                                        <td>{{ $product['id'] }}</td>
-                                                        <td>{{ $product['name'] }}</td>
-                                                        <td>{{ $product['default_code'] ?? '-' }}</td>
-                                                        <td>{{$product['net_available_qty']}}</td>
-                                                        <td>{{$product['price']}}</td>
-
-                                                        <td>
-                                                            <div class="status-toggle">
-                                                                <input type="checkbox" class="status-switch"
-                                                                    id="toggle-{{ $product['id'] }}"
-                                                                    data-id="{{ $product['id'] }}"
-                                                                    {{ $product['is_active'] ? 'checked' : '' }}>
-                                                                <label for="toggle-{{ $product['id'] }}"
-                                                                    class="status-label">
-
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <a class="btn btn-success"
-                                                                href="{{ route('external-products.show', $product['id']) }}"><i
-                                                                    class="ft-eye"></i> مشاهدة</a>
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="5" class="text-center">لا توجد منتجات.</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-
-                                        {{-- ✅ Pagination --}}
-                                        <div class="d-flex justify-content-center">
-                                            {{ $products->links('pagination::bootstrap-5') }}
+                                        <div id="products-table-ajax">
+                                            @include('dashboard.external_product.partials.table', [
+                                                'products' => $products,
+                                            ])
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -170,66 +166,110 @@
                     </div>
                 </section>
             </div>
-        @endsection
+        </div>
+    </div>
+@endsection
 
-        @section('script')
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const toggles = document.querySelectorAll('.status-switch');
+@section('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggles = document.querySelectorAll('.status-switch');
 
-                    toggles.forEach(toggle => {
-                        toggle.addEventListener('change', function() {
-                            const productId = this.dataset.id;
-                            const isActive = this.checked;
+            toggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const productId = this.dataset.id;
+                    const isActive = this.checked;
 
-                            // Get the route URL using Laravel's named route
-                            const url = "{{ route('external-products.toggle', ':id') }}".replace(':id',
-                                productId);
+                    // Get the route URL using Laravel's named route
+                    const url = "{{ route('external-products.toggle', ':id') }}".replace(':id',
+                        productId);
 
-                            fetch(url, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector(
-                                            'meta[name="csrf-token"]').content,
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: JSON.stringify({
-                                        is_active: isActive
-                                    })
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        // Revert if request fails
-                                        toggle.checked = !isActive;
-                                        throw new Error('Network response was not ok');
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    // Optional: Show toast notification
-                                    Toastify({
-                                        text: data.message || 'Status updated successfully',
-                                        duration: 3000,
-                                        close: true,
-                                        gravity: "top",
-                                        position: "right",
-                                        backgroundColor: "#4CAF50",
-                                    }).showToast();
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    Toastify({
-                                        text: 'Failed to update status',
-                                        duration: 3000,
-                                        close: true,
-                                        gravity: "top",
-                                        position: "right",
-                                        backgroundColor: "#F44336",
-                                    }).showToast();
-                                });
+                    fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').content,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({
+                                is_active: isActive
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                // Revert if request fails
+                                toggle.checked = !isActive;
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Optional: Show toast notification
+                            Toastify({
+                                text: data.message || 'Status updated successfully',
+                                duration: 3000,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "#4CAF50",
+                            }).showToast();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Toastify({
+                                text: 'Failed to update status',
+                                duration: 3000,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "#F44336",
+                            }).showToast();
                         });
-                    });
                 });
-            </script>
-        @endsection
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let searchInput = document.getElementById('search-input');
+
+            // عند الكتابة في خانة البحث
+            searchInput.addEventListener('keyup', function() {
+                let query = this.value;
+
+                fetch(`{{ route('external-products.index') }}?q=${query}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('products-table-ajax').innerHTML = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+            });
+
+            // أيضًا يدعم التنقل بين الصفحات في البحث
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.pagination a')) {
+                    e.preventDefault();
+                    let url = e.target.closest('a').getAttribute('href');
+
+                    fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById('products-table-ajax').innerHTML = data;
+                        });
+                }
+            });
+        });
+    </script>
+    
+@endsection
