@@ -43,17 +43,21 @@ class SaveApiToFileJob implements ShouldQueue
                 return;
             }
 
-            // تأكد من وجود مجلد api_dumps داخل storage/app
+            // المسار الجديد وفقًا لتكوين 'uploads'
             $directory = 'api_dumps';
+            $fullPath = "uploads/{$directory}";
+
+            // تأكد من وجود المجلد
             if (!Storage::disk('local')->exists($directory)) {
                 Storage::disk('local')->makeDirectory($directory);
+                Log::info("📁 تم إنشاء المجلد: {$fullPath}");
             }
 
-            $tempFilePath = $directory . '/' . $this->type . '_api_temp.json';
-            $finalFilePath = $directory . '/' . $this->type . '_api.json';
+            $tempFilePath = "{$directory}/{$this->type}_api_temp.json";
+            $finalFilePath = "{$directory}/{$this->type}_api.json";
 
             Storage::disk('local')->put($tempFilePath, $content);
-            Log::info("✅ تم حفظ الملف المؤقت لنوع {$this->type} في: $tempFilePath");
+            Log::info("✅ تم حفظ الملف المؤقت لنوع {$this->type} في: {$fullPath}/{$this->type}_api_temp.json");
 
             if (!$this->isBatch) {
                 $this->replaceFile($tempFilePath, $finalFilePath);
@@ -71,11 +75,11 @@ class SaveApiToFileJob implements ShouldQueue
     {
         if (Storage::disk('local')->exists($finalPath)) {
             Storage::disk('local')->delete($finalPath);
-            Log::info("🗑️ تم حذف الملف القديم: $finalPath");
+            Log::info("🗑️ تم حذف الملف القديم: uploads/{$finalPath}");
         }
 
         Storage::disk('local')->move($tempPath, $finalPath);
-        Log::info("🔄 تم تحويل الملف من $tempPath إلى $finalPath");
+        Log::info("🔄 تم تحويل الملف من uploads/{$tempPath} إلى uploads/{$finalPath}");
     }
 
     protected function checkAllTempFilesReady(): void
@@ -84,7 +88,7 @@ class SaveApiToFileJob implements ShouldQueue
         $allReady = true;
 
         foreach ($types as $type) {
-            $tempPath = 'api_dumps/' . $type . '_api_temp.json';
+            $tempPath = "api_dumps/{$type}_api_temp.json";
             if (!Storage::disk('local')->exists($tempPath)) {
                 $allReady = false;
                 break;
@@ -95,8 +99,8 @@ class SaveApiToFileJob implements ShouldQueue
             Log::info("🔍 جميع الملفات المؤقتة جاهزة، بدء عملية الاستبدال");
 
             foreach ($types as $type) {
-                $tempPath = 'api_dumps/' . $type . '_api_temp.json';
-                $finalPath = 'api_dumps/' . $type . '_api.json';
+                $tempPath = "api_dumps/{$type}_api_temp.json";
+                $finalPath = "api_dumps/{$type}_api.json";
                 $this->replaceFile($tempPath, $finalPath);
             }
 
