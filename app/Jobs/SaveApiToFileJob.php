@@ -3,7 +3,9 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -27,26 +29,30 @@ class SaveApiToFileJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            $response = file_get_contents($this->url);
+            $response = Http::get($this->url);
 
-            if (empty($response)) {
+            if (!$response->successful()) {
+                Log::error("❌ فشل في جلب البيانات من {$this->url} مع كود الحالة: " . $response->status());
+                return;
+            }
+
+            $content = $response->body();
+
+            if (empty($content)) {
                 Log::warning("⚠️ محتوى الـ API فارغ لنوع: {$this->type}!");
                 return;
             }
 
-            // تحديد المسارات المطلقة في مجلد root/api_dumps
-            $directory = base_path('api_dumps');
+            // تأكد من وجود مجلد api_dumps داخل storage/app
+            $directory = 'api_dumps';
+            if (!Storage::disk('local')->exists($directory)) {
+                Storage::disk('local')->makeDirectory($directory);
+            }
+
             $tempFilePath = $directory . '/' . $this->type . '_api_temp.json';
             $finalFilePath = $directory . '/' . $this->type . '_api.json';
 
-            // تأكد من وجود مجلد api_dumps
-            if (!is_dir($directory)) {
-                mkdir($directory, 0755, true);
-                Log::info("📁 تم إنشاء المجلد api_dumps في root");
-            }
-
-            // حفظ الملف المؤقت
-            file_put_contents($tempFilePath, $response);
+            Storage::disk('local')->put($tempFilePath, $content);
             Log::info("✅ تم حفظ الملف المؤقت لنوع {$this->type} في: $tempFilePath");
 
             if (!$this->isBatch) {
@@ -54,7 +60,7 @@ class SaveApiToFileJob implements ShouldQueue
                 return;
             }
 
-            $this->checkAllTempFilesReady($directory);
+            $this->checkAllTempFilesReady();
 
         } catch (\Exception $e) {
             Log::error("❌ خطأ أثناء جلب أو حفظ بيانات {$this->type}: " . $e->getMessage());
@@ -63,25 +69,23 @@ class SaveApiToFileJob implements ShouldQueue
 
     protected function replaceFile(string $tempPath, string $finalPath): void
     {
-        // حذف الملف النهائي إذا وُجد
-        if (file_exists($finalPath)) {
-            unlink($finalPath);
+        if (Storage::disk('local')->exists($finalPath)) {
+            Storage::disk('local')->delete($finalPath);
             Log::info("🗑️ تم حذف الملف القديم: $finalPath");
         }
 
-        // إعادة تسمية الملف المؤقت إلى النهائي
-        rename($tempPath, $finalPath);
+        Storage::disk('local')->move($tempPath, $finalPath);
         Log::info("🔄 تم تحويل الملف من $tempPath إلى $finalPath");
     }
 
-    protected function checkAllTempFilesReady(string $directory): void
+    protected function checkAllTempFilesReady(): void
     {
         $types = ['product', 'price', 'stock'];
         $allReady = true;
 
         foreach ($types as $type) {
-            $tempPath = $directory . '/' . $type . '_api_temp.json';
-            if (!file_exists($tempPath)) {
+            $tempPath = 'api_dumps/' . $type . '_api_temp.json';
+            if (!Storage::disk('local')->exists($tempPath)) {
                 $allReady = false;
                 break;
             }
@@ -91,8 +95,8 @@ class SaveApiToFileJob implements ShouldQueue
             Log::info("🔍 جميع الملفات المؤقتة جاهزة، بدء عملية الاستبدال");
 
             foreach ($types as $type) {
-                $tempPath = $directory . '/' . $type . '_api_temp.json';
-                $finalPath = $directory . '/' . $type . '_api.json';
+                $tempPath = 'api_dumps/' . $type . '_api_temp.json';
+                $finalPath = 'api_dumps/' . $type . '_api.json';
                 $this->replaceFile($tempPath, $finalPath);
             }
 
