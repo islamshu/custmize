@@ -29,10 +29,12 @@ class SaveApiToFileJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            $response = Http::get($this->url);
+            Log::info("بدء معالجة طلب API لنوع: {$this->type} من URL: {$this->url}");
+
+            $response = Http::timeout(30)->get($this->url);
 
             if (!$response->successful()) {
-                Log::error("❌ فشل في جلب البيانات من {$this->url} مع كود الحالة: " . $response->status());
+                Log::error("❌ فشل في جلب البيانات من {$this->url} مع كود الحالة: " . $response->status() . " | المحتوى: " . $response->body());
                 return;
             }
 
@@ -43,11 +45,14 @@ class SaveApiToFileJob implements ShouldQueue
                 return;
             }
 
-            // المسار الجديد وفقًا لتكوين 'uploads'
+            if (!$this->isValidJson($content)) {
+                Log::error("❌ محتوى JSON غير صالح لنوع: {$this->type}");
+                return;
+            }
+
             $directory = 'api_dumps';
             $fullPath = "uploads/{$directory}";
 
-            // تأكد من وجود المجلد
             if (!Storage::disk('local')->exists($directory)) {
                 Storage::disk('local')->makeDirectory($directory);
                 Log::info("📁 تم إنشاء المجلد: {$fullPath}");
@@ -67,19 +72,38 @@ class SaveApiToFileJob implements ShouldQueue
             $this->checkAllTempFilesReady();
 
         } catch (\Exception $e) {
-            Log::error("❌ خطأ أثناء جلب أو حفظ بيانات {$this->type}: " . $e->getMessage());
+            Log::error("❌ خطأ أثناء جلب أو حفظ بيانات {$this->type}: " . $e->getMessage() . " في ملف: " . $e->getFile() . " على السطر: " . $e->getLine());
         }
     }
 
     protected function replaceFile(string $tempPath, string $finalPath): void
     {
-        if (Storage::disk('local')->exists($finalPath)) {
-            Storage::disk('local')->delete($finalPath);
-            Log::info("🗑️ تم حذف الملف القديم: uploads/{$finalPath}");
-        }
+        try {
+            if (Storage::disk('local')->exists($finalPath)) {
+                Storage::disk('local')->delete($finalPath);
+                Log::info("🗑️ تم حذف الملف القديم: uploads/{$finalPath}");
+            }
 
-        Storage::disk('local')->move($tempPath, $finalPath);
-        Log::info("🔄 تم تحويل الملف من uploads/{$tempPath} إلى uploads/{$finalPath}");
+            if (!Storage::disk('local')->exists($tempPath)) {
+                Log::error("الملف المؤقت غير موجود: uploads/{$tempPath}");
+                return;
+            }
+
+            Storage::disk('local')->move($tempPath, $finalPath);
+            
+            if (Storage::disk('local')->exists($finalPath)) {
+                $this->setFilePermissions($finalPath);
+                Log::info("🔄 تم تحويل الملف بنجاح إلى: uploads/{$finalPath}");
+                
+                if (!$this->validateFileContent($finalPath)) {
+                    Log::error("الملف النهائي غير صالح: uploads/{$finalPath}");
+                }
+            } else {
+                Log::error("❌ فشل نقل الملف من uploads/{$tempPath} إلى uploads/{$finalPath}");
+            }
+        } catch (\Exception $e) {
+            Log::error("❌ استثناء أثناء استبدال الملف: " . $e->getMessage());
+        }
     }
 
     protected function checkAllTempFilesReady(): void
@@ -90,6 +114,7 @@ class SaveApiToFileJob implements ShouldQueue
         foreach ($types as $type) {
             $tempPath = "api_dumps/{$type}_api_temp.json";
             if (!Storage::disk('local')->exists($tempPath)) {
+                Log::warning("الملف المؤقت غير جاهز لنوع: {$type}");
                 $allReady = false;
                 break;
             }
@@ -105,6 +130,47 @@ class SaveApiToFileJob implements ShouldQueue
             }
 
             Log::info("🎉 تم استبدال جميع الملفات المؤقتة بنجاح");
+        } else {
+            Log::warning("⚠️ لم يتم استبدال الملفات، بعض الملفات المؤقتة غير جاهزة");
+        }
+    }
+
+    protected function validateFileContent(string $filePath): bool
+    {
+        if (!Storage::disk('local')->exists($filePath)) {
+            Log::error("الملف غير موجود للتحقق: uploads/{$filePath}");
+            return false;
+        }
+
+        $content = Storage::disk('local')->get($filePath);
+        
+        if (empty($content)) {
+            Log::error("الملف فارغ: uploads/{$filePath}");
+            return false;
+        }
+        
+        if (!$this->isValidJson($content)) {
+            Log::error("محتوى JSON غير صالح في: uploads/{$filePath}");
+            return false;
+        }
+        
+        return true;
+    }
+
+    protected function isValidJson(string $string): bool
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    protected function setFilePermissions(string $filePath): void
+    {
+        try {
+            $fullPath = Storage::disk('local')->path($filePath);
+            chmod($fullPath, 0644);
+            Log::info("تم تعيين صلاحيات الملف 644 لـ: uploads/{$filePath}");
+        } catch (\Exception $e) {
+            Log::error("❌ فشل في تعيين صلاحيات الملف: " . $e->getMessage());
         }
     }
 }
