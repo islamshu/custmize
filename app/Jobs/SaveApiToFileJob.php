@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Jobs;
 
 use App\Models\ExternalProduct;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,28 +30,33 @@ class SaveApiToFileJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            $response = file_get_contents($this->url);
-            
-            // تحديد مسار الملف المؤقت والنهائي
-            $tempFilePath = 'api_dumps/' . $this->type . '_api_temp.json';
-            $finalFilePath = 'api_dumps/' . $this->type . '_api.json';
+            $response = Http::timeout(30)->get($this->url);
 
-            if (empty($response)) {
+            if (!$response->successful()) {
+                Log::error("❌ فشل في الوصول إلى API لنوع {$this->type}: " . $response->status());
+                return;
+            }
+
+            $content = $response->body();
+
+            if (empty($content)) {
                 Log::warning("⚠️ محتوى الـ API فارغ لنوع: {$this->type}!");
                 return;
             }
 
+            // تحديد مسار الملف المؤقت والنهائي
+            $tempFilePath = 'api_dumps/' . $this->type . '_api_temp.json';
+            $finalFilePath = 'api_dumps/' . $this->type . '_api.json';
+
             // حفظ الملف المؤقت أولاً
-            Storage::disk('local')->put($tempFilePath, $response);
+            Storage::disk('local')->put($tempFilePath, $content);
             Log::info("✅ تم حفظ الملف المؤقت لنوع {$this->type} في: $tempFilePath");
 
-            // إذا كانت هذه عملية فردية (غير جماعية)
             if (!$this->isBatch) {
                 $this->replaceFile($tempFilePath, $finalFilePath);
                 return;
             }
 
-            // إذا كانت عملية جماعية، ننتظر اكتمال جميع الملفات المؤقتة
             $this->checkAllTempFilesReady();
 
         } catch (\Exception $e) {
@@ -59,13 +66,11 @@ class SaveApiToFileJob implements ShouldQueue
 
     protected function replaceFile(string $tempPath, string $finalPath): void
     {
-        // حذف الملف النهائي إن وُجد
         if (Storage::disk('local')->exists($finalPath)) {
             Storage::disk('local')->delete($finalPath);
             Log::info("🗑️ تم حذف الملف القديم: $finalPath");
         }
 
-        // تغيير اسم الملف المؤقت إلى النهائي
         Storage::disk('local')->move($tempPath, $finalPath);
         Log::info("🔄 تم تحويل الملف من $tempPath إلى $finalPath");
     }
@@ -75,7 +80,6 @@ class SaveApiToFileJob implements ShouldQueue
         $types = ['product', 'price', 'stock'];
         $allReady = true;
 
-        // التحقق من وجود جميع الملفات المؤقتة
         foreach ($types as $type) {
             $tempPath = 'api_dumps/' . $type . '_api_temp.json';
             if (!Storage::disk('local')->exists($tempPath)) {
@@ -84,7 +88,6 @@ class SaveApiToFileJob implements ShouldQueue
             }
         }
 
-        // إذا كانت جميع الملفات جاهزة
         if ($allReady) {
             Log::info("🔍 جميع الملفات المؤقتة جاهزة، بدء عملية الاستبدال");
 
