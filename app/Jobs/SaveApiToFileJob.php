@@ -2,10 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\ExternalProduct;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,26 +27,26 @@ class SaveApiToFileJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            $response = Http::timeout(30)->get($this->url);
+            $response = file_get_contents($this->url);
 
-            if (!$response->successful()) {
-                Log::error("❌ فشل في الوصول إلى API لنوع {$this->type}: " . $response->status());
-                return;
-            }
-
-            $content = $response->body();
-
-            if (empty($content)) {
+            if (empty($response)) {
                 Log::warning("⚠️ محتوى الـ API فارغ لنوع: {$this->type}!");
                 return;
             }
 
-            // تحديد مسار الملف المؤقت والنهائي
-            $tempFilePath = 'api_dumps/' . $this->type . '_api_temp.json';
-            $finalFilePath = 'api_dumps/' . $this->type . '_api.json';
+            // تحديد المسارات المطلقة في مجلد root/api_dumps
+            $directory = base_path('api_dumps');
+            $tempFilePath = $directory . '/' . $this->type . '_api_temp.json';
+            $finalFilePath = $directory . '/' . $this->type . '_api.json';
 
-            // حفظ الملف المؤقت أولاً
-            Storage::disk('local')->put($tempFilePath, $content);
+            // تأكد من وجود مجلد api_dumps
+            if (!is_dir($directory)) {
+                mkdir($directory, 0755, true);
+                Log::info("📁 تم إنشاء المجلد api_dumps في root");
+            }
+
+            // حفظ الملف المؤقت
+            file_put_contents($tempFilePath, $response);
             Log::info("✅ تم حفظ الملف المؤقت لنوع {$this->type} في: $tempFilePath");
 
             if (!$this->isBatch) {
@@ -57,7 +54,7 @@ class SaveApiToFileJob implements ShouldQueue
                 return;
             }
 
-            $this->checkAllTempFilesReady();
+            $this->checkAllTempFilesReady($directory);
 
         } catch (\Exception $e) {
             Log::error("❌ خطأ أثناء جلب أو حفظ بيانات {$this->type}: " . $e->getMessage());
@@ -66,23 +63,25 @@ class SaveApiToFileJob implements ShouldQueue
 
     protected function replaceFile(string $tempPath, string $finalPath): void
     {
-        if (Storage::disk('local')->exists($finalPath)) {
-            Storage::disk('local')->delete($finalPath);
+        // حذف الملف النهائي إذا وُجد
+        if (file_exists($finalPath)) {
+            unlink($finalPath);
             Log::info("🗑️ تم حذف الملف القديم: $finalPath");
         }
 
-        Storage::disk('local')->move($tempPath, $finalPath);
+        // إعادة تسمية الملف المؤقت إلى النهائي
+        rename($tempPath, $finalPath);
         Log::info("🔄 تم تحويل الملف من $tempPath إلى $finalPath");
     }
 
-    protected function checkAllTempFilesReady(): void
+    protected function checkAllTempFilesReady(string $directory): void
     {
         $types = ['product', 'price', 'stock'];
         $allReady = true;
 
         foreach ($types as $type) {
-            $tempPath = 'api_dumps/' . $type . '_api_temp.json';
-            if (!Storage::disk('local')->exists($tempPath)) {
+            $tempPath = $directory . '/' . $type . '_api_temp.json';
+            if (!file_exists($tempPath)) {
                 $allReady = false;
                 break;
             }
@@ -92,8 +91,8 @@ class SaveApiToFileJob implements ShouldQueue
             Log::info("🔍 جميع الملفات المؤقتة جاهزة، بدء عملية الاستبدال");
 
             foreach ($types as $type) {
-                $tempPath = 'api_dumps/' . $type . '_api_temp.json';
-                $finalPath = 'api_dumps/' . $type . '_api.json';
+                $tempPath = $directory . '/' . $type . '_api_temp.json';
+                $finalPath = $directory . '/' . $type . '_api.json';
                 $this->replaceFile($tempPath, $finalPath);
             }
 
