@@ -31,7 +31,7 @@ class SaveApiToFileJob implements ShouldQueue
         try {
             Log::info("بدء معالجة طلب API لنوع: {$this->type} من URL: {$this->url}");
 
-            $response = Http::timeout(30)->get($this->url);
+            $response = Http::timeout(60)->get($this->url);
 
             if (!$response->successful()) {
                 Log::error("❌ فشل في جلب البيانات من {$this->url} مع كود الحالة: " . $response->status() . " | المحتوى: " . $response->body());
