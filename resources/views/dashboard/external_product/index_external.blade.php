@@ -155,6 +155,7 @@
                                                                 <span class="text-muted">لا توجد صورة</span>
                                                             @endif
                                                         </td>
+                                                        <td>{{ $product->price ?? 'لا يوجد سعر' }}</td>
 
                                                         <td>{{ $product->colors->count() }}</td>
                                                         <td>
