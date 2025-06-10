@@ -52,6 +52,19 @@
         .custom-control-input:checked~.custom-control-label::after {
             transform: translateX(0.2rem);
         }
+
+        .badge-danger {
+            background-color: #ff5252;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .custom-switch.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
     </style>
 @endsection
 @section('content')
@@ -142,8 +155,21 @@
                                                                 <span class="text-muted">لا توجد صورة</span>
                                                             @endif
                                                         </td>
-                                                        <td>{{ $product->price ?? '_' }}</td>
-
+                                                        <td>
+                                                            @if ($product->price)
+                                                                <div class="custom-control custom-switch">
+                                                                    <input type="checkbox"
+                                                                        class="custom-control-input toggle-active"
+                                                                        id="switch-{{ $product->id }}"
+                                                                        data-id="{{ $product->id }}"
+                                                                        {{ $product->is_active ? 'checked' : '' }}>
+                                                                    <label class="custom-control-label"
+                                                                        for="switch-{{ $product->id }}"></label>
+                                                                </div>
+                                                            @else
+                                                                <span class="badge badge-danger">لا يوجد سعر</span>
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $product->colors->count() }}</td>
                                                         <td>
                                                             <div class="custom-control custom-switch">
@@ -189,7 +215,15 @@
         $(document).ready(function() {
             $('.toggle-active').change(function() {
                 var productId = $(this).data('id');
+                var hasPrice = $(this).closest('tr').find('td:eq(4)').text().trim() !== '_';
                 var token = '{{ csrf_token() }}';
+
+                // إذا كان المنتج لا يحتوي على سعر
+                if (!hasPrice && $(this).is(':checked')) {
+                    toastr.error('لا يمكن إظهار منتج بدون سعر في الواجهة الرئيسية');
+                    $(this).prop('checked', false);
+                    return false;
+                }
 
                 $.ajax({
                     url: '{{ route('external-products.toggle-active') }}',
@@ -202,11 +236,15 @@
                         if (response.status) {
                             toastr.success(response.message);
                         } else {
-                            toastr.error('حدث خطأ ما');
+                            toastr.error(response.message || 'حدث خطأ ما');
+                            // إعادة حالة التبديل إذا فشل الطلب
+                            $(this).prop('checked', !$(this).is(':checked'));
                         }
                     },
                     error: function() {
                         toastr.error('فشل الاتصال بالخادم');
+                        // إعادة حالة التبديل إذا فشل الطلب
+                        $(this).prop('checked', !$(this).is(':checked'));
                     }
                 });
             });
