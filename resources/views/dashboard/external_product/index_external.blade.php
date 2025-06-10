@@ -155,6 +155,8 @@
                                                                 <span class="text-muted">لا توجد صورة</span>
                                                             @endif
                                                         </td>
+
+                                                        <td>{{ $product->colors->count() }}</td>
                                                         <td>
                                                             @if ($product->price)
                                                                 <div class="custom-control custom-switch">
@@ -169,18 +171,6 @@
                                                             @else
                                                                 <span class="badge badge-danger">لا يوجد سعر</span>
                                                             @endif
-                                                        </td>
-                                                        <td>{{ $product->colors->count() }}</td>
-                                                        <td>
-                                                            <div class="custom-control custom-switch">
-                                                                <input type="checkbox"
-                                                                    class="custom-control-input toggle-active"
-                                                                    id="switch-{{ $product->id }}"
-                                                                    data-id="{{ $product->id }}"
-                                                                    {{ $product->is_active ? 'checked' : '' }}>
-                                                                <label class="custom-control-label"
-                                                                    for="switch-{{ $product->id }}"></label>
-                                                            </div>
                                                         </td>
                                                         <td>
                                                             <a href="{{ route('external-products.edit', $product->id) }}"
