@@ -25,7 +25,7 @@ public function single_product($id)
 {
     $product = ExternalProduct::find($id);
     if (!$product) {
-        return $this->sendError("Product not found", 404);
+        return $this->sendError("Product not found");
     }
     
     $product = new ExternalProductResource($product);
