@@ -5,50 +5,54 @@
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <style>
-.custom-switch {
-    position: relative;
-    display: inline-block;
-    width: 46px;
-    height: 24px;
-}
-.custom-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-.custom-control-label::before {
-    position: absolute;
-    top: 0;
-    left: -2.25rem;
-    display: block;
-    width: 2rem;
-    height: 1rem;
-    pointer-events: none;
-    content: "";
-    background-color: #adb5bd;
-    border-radius: .5rem;
-    transition: background-color .15s ease-in-out;
-}
-.custom-control-label::after {
-    position: absolute;
-    top: 0;
-    left: -2.25rem;
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    content: "";
-    background-color: #fff;
-    border-radius: 50%;
-    transition: transform .15s ease-in-out;
-}
-.custom-control-input:checked ~ .custom-control-label::before {
-    background-color: #28a745;
-}
-.custom-control-input:checked ~ .custom-control-label::after {
-    transform: translateX(0.2rem);
-}
-</style>
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
 
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .custom-control-label::before {
+            position: absolute;
+            top: 0;
+            left: -2.25rem;
+            display: block;
+            width: 2rem;
+            height: 1rem;
+            pointer-events: none;
+            content: "";
+            background-color: #adb5bd;
+            border-radius: .5rem;
+            transition: background-color .15s ease-in-out;
+        }
+
+        .custom-control-label::after {
+            position: absolute;
+            top: 0;
+            left: -2.25rem;
+            display: block;
+            width: 1rem;
+            height: 1rem;
+            content: "";
+            background-color: #fff;
+            border-radius: 50%;
+            transition: transform .15s ease-in-out;
+        }
+
+        .custom-control-input:checked~.custom-control-label::before {
+            background-color: #28a745;
+        }
+
+        .custom-control-input:checked~.custom-control-label::after {
+            transform: translateX(0.2rem);
+        }
+    </style>
 @endsection
 @section('content')
     <div class="app-content content">
@@ -118,6 +122,7 @@
                                                     <th>اسم المنتج</th>
                                                     <th>الماركة</th>
                                                     <th>الصورة</th>
+                                                    <th>السعر</th>
                                                     <th>عدد الألوان</th>
                                                     <th>يظهر بالموقع ؟</th>
                                                     <th>الإجراءات</th>
@@ -137,6 +142,8 @@
                                                                 <span class="text-muted">لا توجد صورة</span>
                                                             @endif
                                                         </td>
+                                                        <td>{{ $product->price ?? '_' }}</td>
+
                                                         <td>{{ $product->colors->count() }}</td>
                                                         <td>
                                                             <div class="custom-control custom-switch">
