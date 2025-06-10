@@ -41,7 +41,8 @@ Route::post('checkout_guest',[CheckoutController::class,'initiatePayment_guest']
 Route::post('v2/checkout_guest',[CheckoutController::class,'initiatePayment_guest_v2'])->name('checkout_v2');
 
 Route::get('track_order',[HomeController::class,'track_order']);
-Route::get('/external-products/visible', [ExternalProductController::class, 'visibleProducts']);
+Route::get('/external-products', [ExternalProductController::class, 'visibleProducts']);
+Route::get('/single-external-product/{id}', [ExternalProductController::class, 'single_product']);
 
 Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::get('myprofile',[UserController::class,'myprofile']);

@@ -21,5 +21,15 @@ public function visibleProducts(Request $request)
         $products = ExternalProductResource::collection($products);
         return $this->sendResponse($products, "SUCCESS");
 }
+public function single_product($id)
+{
+    $product = ExternalProduct::find($id);
+    if (!$product) {
+        return $this->sendError("Product not found", 404);
+    }
+    
+    $product = new ExternalProductResource($product);
+    return $this->sendResponse($product, "SUCCESS");
 
+}
 }
