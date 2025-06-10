@@ -17,7 +17,7 @@ class ExternalProductController extends BaseController
  
 public function visibleProducts(Request $request)
 {
-     $products = ExternalProduct::get();
+     $products = ExternalProduct::where('is_active',1)->get();
         $products = ExternalProductResource::collection($products);
         return $this->sendResponse($products, "SUCCESS");
 }
