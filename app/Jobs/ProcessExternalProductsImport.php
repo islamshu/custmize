@@ -195,57 +195,66 @@ class ProcessExternalProductsImport implements ShouldQueue
     }
 
     private function storeImage(?string $url): ?string
-    {
-        if (empty($url)) {
-            Log::info('Image URL is empty');
-            return null;
-        }
-
-        try {
-            // التحقق من أن الرابط صالح
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                Log::error('Invalid image URL: ' . $url);
-                return null;
-            }
-
-            $context = stream_context_create([
-                'http' => [
-                    'timeout' => 10, // زيادة وقت الانتظار
-                    'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-                ]
-            ]);
-
-            $image = file_get_contents($url, false, $context);
-
-            if ($image === false) {
-                Log::error('Failed to download image from URL: ' . $url);
-                return null;
-            }
-
-            // تحديد الامتداد من نوع الملف إذا لم يكن في الرابط
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mime = $finfo->buffer($image);
-            $extensions = [
-                'image/jpeg' => 'jpg',
-                'image/png' => 'png',
-                'image/gif' => 'gif',
-                'image/webp' => 'webp',
-            ];
-
-            $ext = $extensions[$mime] ?? 'jpg';
-            $path = 'external_images/' . Str::uuid() . '.' . $ext;
-
-            $stored = Storage::disk('public')->put($path, $image);
-
-            if (!$stored) {
-                Log::error('Failed to store image to disk');
-                return null;
-            }
-
-            return $path;
-        } catch (\Exception $e) {
-            Log::error('Image storage error: ' . $e->getMessage() . ' URL: ' . $url);
-            return null;
-        }
+{
+    if (empty($url)) {
+        Log::info('Image URL is empty');
+        return null;
     }
+
+    try {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            Log::error('Invalid image URL: ' . $url);
+            return null;
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // فقط للتطوير، أزلها في الإنتاج
+
+        $image = curl_exec($ch);
+        
+        if (curl_errno($ch)) {
+            Log::error('cURL error: ' . curl_error($ch) . ' URL: ' . $url);
+            curl_close($ch);
+            return null;
+        }
+        
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            Log::error('HTTP error: ' . $httpCode . ' URL: ' . $url);
+            return null;
+        }
+
+        // بقية الكود كما هو...
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->buffer($image);
+        $extensions = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp',
+        ];
+        
+        $ext = $extensions[$mime] ?? 'jpg';
+        $path = 'external_images/' . Str::uuid() . '.' . $ext;
+        
+        $stored = Storage::disk('public')->put($path, $image);
+        
+        if (!$stored) {
+            Log::error('Failed to store image to disk');
+            return null;
+        }
+
+        return $path;
+    } catch (\Exception $e) {
+        Log::error('Image storage error: ' . $e->getMessage() . ' URL: ' . $url);
+        return null;
+    }
+}
 }
