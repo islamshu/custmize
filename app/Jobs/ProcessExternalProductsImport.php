@@ -89,6 +89,12 @@ class ProcessExternalProductsImport implements ShouldQueue
 
         ]);
 
+        Log::info('Product created', [
+            'id' => $externalProduct->id,
+            'image_url' => $mainProduct['image_url'] ?? null,
+            'stored_image' => $externalProduct->image
+        ]);
+
         foreach ($colors as $colorName => $data) {
             $color = ExternalProductColor::create([
                 'external_product_id' => $externalProduct->id,
@@ -190,20 +196,56 @@ class ProcessExternalProductsImport implements ShouldQueue
 
     private function storeImage(?string $url): ?string
     {
-        if (empty($url)) return null;
-
-        try {
-            $image = file_get_contents($url);
-            if ($image !== false) {
-                $ext = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
-                $path = 'external_images/' . Str::uuid() . '.' . $ext;
-                Storage::disk('public')->put($path, $image);
-                return $path;
-            }
-        } catch (\Exception $e) {
-            Log::error('Failed to download image: ' . $e->getMessage());
+        if (empty($url)) {
+            Log::info('Image URL is empty');
+            return null;
         }
 
-        return null;
+        try {
+            // التحقق من أن الرابط صالح
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                Log::error('Invalid image URL: ' . $url);
+                return null;
+            }
+
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 10, // زيادة وقت الانتظار
+                    'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+                ]
+            ]);
+
+            $image = file_get_contents($url, false, $context);
+
+            if ($image === false) {
+                Log::error('Failed to download image from URL: ' . $url);
+                return null;
+            }
+
+            // تحديد الامتداد من نوع الملف إذا لم يكن في الرابط
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->buffer($image);
+            $extensions = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+                'image/gif' => 'gif',
+                'image/webp' => 'webp',
+            ];
+
+            $ext = $extensions[$mime] ?? 'jpg';
+            $path = 'external_images/' . Str::uuid() . '.' . $ext;
+
+            $stored = Storage::disk('public')->put($path, $image);
+
+            if (!$stored) {
+                Log::error('Failed to store image to disk');
+                return null;
+            }
+
+            return $path;
+        } catch (\Exception $e) {
+            Log::error('Image storage error: ' . $e->getMessage() . ' URL: ' . $url);
+            return null;
+        }
     }
 }
