@@ -10,23 +10,27 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
-function openJSONFile($code){
+function openJSONFile($code)
+{
     $jsonString = [];
-    if(File::exists(base_path('resources/lang/'.$code.'.json'))){
-        $jsonString = file_get_contents(base_path('resources/lang/'.$code.'.json'));
+    if (File::exists(base_path('resources/lang/' . $code . '.json'))) {
+        $jsonString = file_get_contents(base_path('resources/lang/' . $code . '.json'));
         $jsonString = json_decode($jsonString, true);
     }
     return $jsonString;
 }
-function get_color($code){
+function get_color($code)
+{
     $color = Color::find($code);
     return $color;
 }
-function saveJSONFile($code, $data){
+function saveJSONFile($code, $data)
+{
     ksort($data);
-    $jsonData = json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
-    file_put_contents(base_path('resources/lang/'.$code.'.json'), stripslashes($jsonData));
+    $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    file_put_contents(base_path('resources/lang/' . $code . '.json'), stripslashes($jsonData));
 }
 function get_general_value($key)
 {
@@ -37,36 +41,37 @@ function get_general_value($key)
 
     return '';
 }
-function get_product_imge($id){
-$pro = Product::find($id);
-return @$pro->colors()->first()->front_image; 
-
+function get_product_imge($id)
+{
+    $pro = Product::find($id);
+    return @$pro->colors()->first()->front_image;
 }
-function get_order_status($id)  {
-  $status=  Status::find($id);
-  $locale = App::getLocale();
+function get_order_status($id)
+{
+    $status =  Status::find($id);
+    $locale = App::getLocale();
 
-  if($locale == 'ar'){
-    return $status->name_ar;
-  }else{
-    return $status->name;
-
-  }
-    
+    if ($locale == 'ar') {
+        return $status->name_ar;
+    } else {
+        return $status->name;
+    }
 }
-function get_color_code($id){
+function get_color_code($id)
+{
     $color = Color::find($id);
     return $color->code;
 }
-function get_size($id){
+function get_size($id)
+{
     $size = Size::find($id);
     return $size->name;
 }
 
- function addToJsonFile($name)
+function addToJsonFile($name)
 {
     // Validate the request
-    
+
 
     // Set the language file path. Adjust 'en' if you're using another locale like 'ar'
     $locale = 'en';  // or 'ar', based on the localization you're targeting
@@ -88,7 +93,8 @@ function get_size($id){
 
     return response()->json(['error' => 'Language file not found!'], 404);
 }
-function translatefile($name){
+function translatefile($name)
+{
     $tr = new GoogleTranslate();
     $targetLang = 'ar';
 
@@ -111,7 +117,6 @@ function translatefile($name){
     }
 
     return response()->json(['error' => 'Language file not found!'], 404);
-
 }
 function streamApiResponseToFile(string $apiUrl, string $fileName = 'products_dump.txt'): bool
 {
@@ -135,23 +140,24 @@ function streamApiResponseToFile(string $apiUrl, string $fileName = 'products_du
         return false;
     }
 }
-function sendTelegram($message){
-    $key = env('TOKEN_TELEGRAM');
-        $ids = ['1170979150','908949980'];
-        $message = ":: تنبيه  ::"
-            . $message . PHP_EOL;
-         
-        // Prepare request data
-        $url_new = "https://api.telegram.org/bot" . $key . "/sendMessage";
-        $senderr = [
-            'chat_id' => $ids,
-            'text' => $message,
-        ];
+function sendTelegram($message)
+{
+    $token = env('TOKEN_TELEGRAM');
+    $chatIds = ['1170979150', '908949980'];
+    $message = ":: تنبيه  ::"
+        . $message . PHP_EOL;
 
-        $curll_new = curl_init($url_new);
-        curl_setopt($curll_new, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curll_new, CURLOPT_POST, true);
-        curl_setopt($curll_new, CURLOPT_POSTFIELDS, $senderr);
-        $response = curl_exec($curll_new);
+    // Prepare request data
+    foreach ($chatIds as $chatId) {
+        $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
+            'chat_id' => $chatId,
+            'text' => $message,
+        ]);
+
+        if ($response->failed()) {
+            Log::error("Failed to send Telegram message", ['chat_id' => $chatId, 'response' => $response->body()]);
+        } else {
+            Log::info("Telegram message sent successfully", ['chat_id' => $chatId]);
+        }
+    }
 }
-?>
