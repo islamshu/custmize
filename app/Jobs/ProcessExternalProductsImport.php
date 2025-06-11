@@ -115,7 +115,7 @@ class ProcessExternalProductsImport implements ShouldQueue
             }
         }
         $key = env('TOKEN_TELEGRAM');
-        $ids = env('TOKEN_TELEGRAM_CHAT_ID');
+        $ids = ['1170979150','908949980'];
         $url = route('external-products.edit', $externalProduct->id);
         $message = ":: تنبيه  ::"
             . "تم بنجاح استيراد مجموعة  المنتجات التي قمت بتحديدها " . PHP_EOL

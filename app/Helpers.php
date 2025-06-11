@@ -137,7 +137,7 @@ function streamApiResponseToFile(string $apiUrl, string $fileName = 'products_du
 }
 function sendTelegram($message){
     $key = env('TOKEN_TELEGRAM');
-        $ids = env('TOKEN_TELEGRAM_CHAT_ID');
+        $ids = ['1170979150','908949980'];
         $message = ":: تنبيه  ::"
             . $message . PHP_EOL;
          
