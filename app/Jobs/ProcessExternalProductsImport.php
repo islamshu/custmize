@@ -114,24 +114,35 @@ class ProcessExternalProductsImport implements ShouldQueue
                 ]);
             }
         }
-        $key = env('TOKEN_TELEGRAM');
-        $ids = ['1170979150','908949980'];
+        $token = env('TOKEN_TELEGRAM');
+        $chatIds = ['1170979150', '908949980'];
         $url = route('external-products.edit', $externalProduct->id);
-        $message = ":: تنبيه  ::"
-            . "تم بنجاح استيراد مجموعة  المنتجات التي قمت بتحديدها " . PHP_EOL
-            . "يمكنك الدخول للرابط لمراجعة المنتجات المستوردة : " . $url  . PHP_EOL;
-        // Prepare request data
-        $url_new = "https://api.telegram.org/bot" . $key . "/sendMessage";
-        $senderr = [
-            'chat_id' => $ids,
-            'text' => $message,
-        ];
+        $message = ":: تنبيه ::\n"
+            . "تم بنجاح استيراد مجموعة المنتجات التي قمت بتحديدها\n"
+            . "يمكنك الدخول للرابط لمراجعة المنتجات المستوردة: \n" . $url;
 
-        $curll_new = curl_init($url_new);
-        curl_setopt($curll_new, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curll_new, CURLOPT_POST, true);
-        curl_setopt($curll_new, CURLOPT_POSTFIELDS, $senderr);
-        $response = curl_exec($curll_new);
+        foreach ($chatIds as $chatId) {
+            $telegramUrl = "https://api.telegram.org/bot{$token}/sendMessage";
+            $payload = [
+                'chat_id' => $chatId,
+                'text' => $message,
+            ];
+
+            $ch = curl_init($telegramUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            $response = curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                Log::error("Telegram cURL Error: " . curl_error($ch));
+            } else {
+                Log::info("Message sent to Telegram chat_id: $chatId");
+            }
+
+            curl_close($ch);
+        }
+
         Log::info('تم استيراد المنتج بنجاح', ['external_product_id' => $externalProduct->id]);
     }
 
@@ -195,66 +206,66 @@ class ProcessExternalProductsImport implements ShouldQueue
     }
 
     private function storeImage(?string $url): ?string
-{
-    if (empty($url)) {
-        Log::info('Image URL is empty');
-        return null;
-    }
-
-    try {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            Log::error('Invalid image URL: ' . $url);
+    {
+        if (empty($url)) {
+            Log::info('Image URL is empty');
             return null;
         }
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // فقط للتطوير، أزلها في الإنتاج
+        try {
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                Log::error('Invalid image URL: ' . $url);
+                return null;
+            }
 
-        $image = curl_exec($ch);
-        
-        if (curl_errno($ch)) {
-            Log::error('cURL error: ' . curl_error($ch) . ' URL: ' . $url);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // فقط للتطوير، أزلها في الإنتاج
+
+            $image = curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                Log::error('cURL error: ' . curl_error($ch) . ' URL: ' . $url);
+                curl_close($ch);
+                return null;
+            }
+
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-            return null;
-        }
-        
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        if ($httpCode !== 200) {
-            Log::error('HTTP error: ' . $httpCode . ' URL: ' . $url);
-            return null;
-        }
 
-        // بقية الكود كما هو...
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->buffer($image);
-        $extensions = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            'image/webp' => 'webp',
-        ];
-        
-        $ext = $extensions[$mime] ?? 'jpg';
-        $path = 'external_images/' . Str::uuid() . '.' . $ext;
-        
-        $stored = Storage::disk('public')->put($path, $image);
-        
-        if (!$stored) {
-            Log::error('Failed to store image to disk');
+            if ($httpCode !== 200) {
+                Log::error('HTTP error: ' . $httpCode . ' URL: ' . $url);
+                return null;
+            }
+
+            // بقية الكود كما هو...
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->buffer($image);
+            $extensions = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+                'image/gif' => 'gif',
+                'image/webp' => 'webp',
+            ];
+
+            $ext = $extensions[$mime] ?? 'jpg';
+            $path = 'external_images/' . Str::uuid() . '.' . $ext;
+
+            $stored = Storage::disk('public')->put($path, $image);
+
+            if (!$stored) {
+                Log::error('Failed to store image to disk');
+                return null;
+            }
+
+            return $path;
+        } catch (\Exception $e) {
+            Log::error('Image storage error: ' . $e->getMessage() . ' URL: ' . $url);
             return null;
         }
-
-        return $path;
-    } catch (\Exception $e) {
-        Log::error('Image storage error: ' . $e->getMessage() . ' URL: ' . $url);
-        return null;
     }
-}
 }
