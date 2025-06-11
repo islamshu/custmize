@@ -135,4 +135,23 @@ function streamApiResponseToFile(string $apiUrl, string $fileName = 'products_du
         return false;
     }
 }
+function sendTelegram($message){
+    $key = env('TOKEN_TELEGRAM');
+        $ids = env('TOKEN_TELEGRAM_CHAT_ID');
+        $message = ":: تنبيه  ::"
+            . $message . PHP_EOL;
+         
+        // Prepare request data
+        $url_new = "https://api.telegram.org/bot" . $key . "/sendMessage";
+        $senderr = [
+            'chat_id' => $ids,
+            'text' => $message,
+        ];
+
+        $curll_new = curl_init($url_new);
+        curl_setopt($curll_new, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curll_new, CURLOPT_POST, true);
+        curl_setopt($curll_new, CURLOPT_POSTFIELDS, $senderr);
+        $response = curl_exec($curll_new);
+}
 ?>
