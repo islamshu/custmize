@@ -13,6 +13,7 @@ use App\Models\ExternalProductSize;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class ProcessExternalProductsImport implements ShouldQueue
 {
@@ -114,35 +115,25 @@ class ProcessExternalProductsImport implements ShouldQueue
                 ]);
             }
         }
-        $token = env('TOKEN_TELEGRAM');
-        $chatIds = ['1170979150', '908949980'];
-        $url = route('external-products.edit', $externalProduct->id);
-        $message = ":: تنبيه ::\n"
-            . "تم بنجاح استيراد مجموعة المنتجات التي قمت بتحديدها\n"
-            . "يمكنك الدخول للرابط لمراجعة المنتجات المستوردة: \n" . $url;
+       $token = env('TOKEN_TELEGRAM');
+$chatIds = ['1170979150', '908949980'];
+$url = route('external-products.edit', $externalProduct->id);
+$message = ":: تنبيه ::\n"
+    . "تم بنجاح استيراد مجموعة المنتجات التي قمت بتحديدها\n"
+    . "يمكنك الدخول للرابط لمراجعة المنتجات المستوردة: \n" . $url;
 
-        foreach ($chatIds as $chatId) {
-            $telegramUrl = "https://api.telegram.org/bot{$token}/sendMessage";
-            $payload = [
-                'chat_id' => $chatId,
-                'text' => $message,
-            ];
+foreach ($chatIds as $chatId) {
+    $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
+        'chat_id' => $chatId,
+        'text' => $message,
+    ]);
 
-            $ch = curl_init($telegramUrl);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            $response = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                Log::error("Telegram cURL Error: " . curl_error($ch));
-            } else {
-                Log::info("Message sent to Telegram chat_id: $chatId");
-            }
-
-            curl_close($ch);
-        }
-
+    if ($response->failed()) {
+        Log::error("Failed to send Telegram message", ['chat_id' => $chatId, 'response' => $response->body()]);
+    } else {
+        Log::info("Telegram message sent successfully", ['chat_id' => $chatId]);
+    }
+}
         Log::info('تم استيراد المنتج بنجاح', ['external_product_id' => $externalProduct->id]);
     }
 
