@@ -27,6 +27,7 @@ use App\Jobs\ImportExternalProductsJob;
 use App\Jobs\SaveApiToFileJob;
 use App\Models\Banner;
 use App\Services\UnsplashService;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,12 @@ Route::post('/login', [HomeController::class,'post_login'])->name('post_login');
 Route::get('/carts', [HomeController::class,'cart'])->name('cart');
 Route::get('/viwer/{id}', [HomeController::class,'viwer'])->name('viwer');
 Route::get('/queue-save-api', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    Artisan::call('config:clear');
+    Artisan::call('queue:flush'); // حذف جميع الوظائف الفاشلة
+    Artisan::call('queue:restart'); // إعادة تشغيل الـ Queue Worker
     // تعريف مصارد API الثلاثة
     $apiUrls = [
         'product' => 'http://www.giftsksa.com/products/all/7efedcf0d9bc4cd1b51d971f2cb4cd46',
