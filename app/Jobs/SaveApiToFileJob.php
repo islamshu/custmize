@@ -29,10 +29,18 @@ class SaveApiToFileJob implements ShouldQueue
     {
         $path = storage_path('app/uploads/api_dumps');
 
+        // إنشاء المجلد إذا لم يكن موجوداً
+        if (!file_exists($path)) {
+            if (!mkdir($path, 0755, true)) {
+                Log::error("فشل في إنشاء المجلد: {$path}");
+                return false;
+            }
+            Log::info("تم إنشاء المجلد: {$path}");
+        }
+
+        // التحقق من إمكانية الكتابة
         if (!is_writable($path)) {
-            $permissions = substr(sprintf('%o', fileperms($path)), -4);
             Log::error("المجلد غير قابل للكتابة: {$path}");
-            Log::error("صلاحيات المجلد: " . $permissions);
             return false;
         }
 
