@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,34 +24,16 @@ class SaveApiToFileJob implements ShouldQueue
         $this->url = $url;
         $this->isBatch = $isBatch;
     }
-    protected function checkPermissions(): bool
-    {
-        $path = storage_path('app/uploads/api_dumps');
 
-        // إنشاء المجلد إذا لم يكن موجوداً
-        if (!file_exists($path)) {
-            if (!mkdir($path, 0755, true)) {
-                Log::error("فشل في إنشاء المجلد: {$path}");
-                return false;
-            }
-            Log::info("تم إنشاء المجلد: {$path}");
-        }
-
-        // التحقق من إمكانية الكتابة
-        if (!is_writable($path)) {
-            Log::error("المجلد غير قابل للكتابة: {$path}");
-            return false;
-        }
-
-        return true;
-    }
     public function handle(): void
     {
-        if (!$this->checkPermissions()) {
-            return;
-        }
         try {
             Log::info("بدء معالجة طلب API لنوع: {$this->type} من URL: {$this->url}");
+
+            // التحقق من الصلاحيات أولاً
+            if (!$this->checkPermissions()) {
+                return;
+            }
 
             $response = Http::timeout(60)->get($this->url);
 
@@ -76,15 +57,15 @@ class SaveApiToFileJob implements ShouldQueue
             $directory = 'api_dumps';
             $fullPath = "uploads/{$directory}";
 
-            if (!Storage::disk('local')->exists($directory)) {
-                Storage::disk('local')->makeDirectory($directory);
+            if (!file_exists(base_path($fullPath))) {
+                mkdir(base_path($fullPath), 0755, true);
                 Log::info("📁 تم إنشاء المجلد: {$fullPath}");
             }
 
             $tempFilePath = "{$directory}/{$this->type}_api_temp.json";
             $finalFilePath = "{$directory}/{$this->type}_api.json";
 
-            Storage::disk('local')->put($tempFilePath, $content);
+            file_put_contents(base_path("uploads/{$tempFilePath}"), $content);
             Log::info("✅ تم حفظ الملف المؤقت لنوع {$this->type} في: {$fullPath}/{$this->type}_api_temp.json");
 
             if (!$this->isBatch) {
@@ -93,30 +74,56 @@ class SaveApiToFileJob implements ShouldQueue
             }
 
             $this->checkAllTempFilesReady();
+
         } catch (\Exception $e) {
             Log::error("❌ خطأ أثناء جلب أو حفظ بيانات {$this->type}: " . $e->getMessage() . " في ملف: " . $e->getFile() . " على السطر: " . $e->getLine());
         }
     }
 
+    protected function checkPermissions(): bool
+    {
+        $path = base_path('uploads/api_dumps');
+        
+        // إنشاء المجلد إذا لم يكن موجوداً
+        if (!file_exists($path)) {
+            if (!mkdir($path, 0755, true)) {
+                Log::error("فشل في إنشاء المجلد: {$path}");
+                return false;
+            }
+            Log::info("تم إنشاء المجلد: {$path}");
+        }
+        
+        // التحقق من إمكانية الكتابة
+        if (!is_writable($path)) {
+            Log::error("المجلد غير قابل للكتابة: {$path}");
+            return false;
+        }
+        
+        return true;
+    }
+
     protected function replaceFile(string $tempPath, string $finalPath): void
     {
         try {
-            if (Storage::disk('local')->exists($finalPath)) {
-                Storage::disk('local')->delete($finalPath);
+            $fullTempPath = base_path("uploads/{$tempPath}");
+            $fullFinalPath = base_path("uploads/{$finalPath}");
+
+            if (file_exists($fullFinalPath)) {
+                unlink($fullFinalPath);
                 Log::info("🗑️ تم حذف الملف القديم: uploads/{$finalPath}");
             }
 
-            if (!Storage::disk('local')->exists($tempPath)) {
+            if (!file_exists($fullTempPath)) {
                 Log::error("الملف المؤقت غير موجود: uploads/{$tempPath}");
                 return;
             }
 
-            Storage::disk('local')->move($tempPath, $finalPath);
-
-            if (Storage::disk('local')->exists($finalPath)) {
-                $this->setFilePermissions($finalPath);
+            rename($fullTempPath, $fullFinalPath);
+            
+            if (file_exists($fullFinalPath)) {
+                chmod($fullFinalPath, 0644);
                 Log::info("🔄 تم تحويل الملف بنجاح إلى: uploads/{$finalPath}");
-
+                
                 if (!$this->validateFileContent($finalPath)) {
                     Log::error("الملف النهائي غير صالح: uploads/{$finalPath}");
                 }
@@ -135,7 +142,9 @@ class SaveApiToFileJob implements ShouldQueue
 
         foreach ($types as $type) {
             $tempPath = "api_dumps/{$type}_api_temp.json";
-            if (!Storage::disk('local')->exists($tempPath)) {
+            $fullPath = base_path("uploads/{$tempPath}");
+            
+            if (!file_exists($fullPath)) {
                 Log::warning("الملف المؤقت غير جاهز لنوع: {$type}");
                 $allReady = false;
                 break;
@@ -150,33 +159,36 @@ class SaveApiToFileJob implements ShouldQueue
                 $finalPath = "api_dumps/{$type}_api.json";
                 $this->replaceFile($tempPath, $finalPath);
             }
-            sendTelegram("✅ تم استبدال جميع الملفات المؤقتة بنجاح");
+            
+            $this->sendTelegram("✅ تم استبدال جميع الملفات المؤقتة بنجاح");
             Log::info("🎉 تم استبدال جميع الملفات المؤقتة بنجاح");
         } else {
-            sendTelegram("⚠️ لم يتم استبدال الملفات، بعض الملفات المؤقتة غير جاهزة");
+            $this->sendTelegram("⚠️ لم يتم استبدال الملفات، بعض الملفات المؤقتة غير جاهزة");
             Log::warning("⚠️ لم يتم استبدال الملفات، بعض الملفات المؤقتة غير جاهزة");
         }
     }
 
     protected function validateFileContent(string $filePath): bool
     {
-        if (!Storage::disk('local')->exists($filePath)) {
+        $fullPath = base_path("uploads/{$filePath}");
+        
+        if (!file_exists($fullPath)) {
             Log::error("الملف غير موجود للتحقق: uploads/{$filePath}");
             return false;
         }
 
-        $content = Storage::disk('local')->get($filePath);
-
+        $content = file_get_contents($fullPath);
+        
         if (empty($content)) {
             Log::error("الملف فارغ: uploads/{$filePath}");
             return false;
         }
-
+        
         if (!$this->isValidJson($content)) {
             Log::error("محتوى JSON غير صالح في: uploads/{$filePath}");
             return false;
         }
-
+        
         return true;
     }
 
@@ -186,14 +198,9 @@ class SaveApiToFileJob implements ShouldQueue
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
-    protected function setFilePermissions(string $filePath): void
+    protected function sendTelegram(string $message): void
     {
-        try {
-            $fullPath = Storage::disk('local')->path($filePath);
-            chmod($fullPath, 0644);
-            Log::info("تم تعيين صلاحيات الملف 644 لـ: uploads/{$filePath}");
-        } catch (\Exception $e) {
-            Log::error("❌ فشل في تعيين صلاحيات الملف: " . $e->getMessage());
-        }
+        // يمكنك استبدال هذا بتنفيذك الخاص لإرسال الرسائل عبر التليجرام
+        Log::info("إرسال رسالة تليجرام: {$message}");
     }
 }
