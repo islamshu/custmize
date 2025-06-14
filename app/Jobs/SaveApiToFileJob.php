@@ -25,9 +25,24 @@ class SaveApiToFileJob implements ShouldQueue
         $this->url = $url;
         $this->isBatch = $isBatch;
     }
+    protected function checkPermissions(): bool
+    {
+        $path = storage_path('app/uploads/api_dumps');
 
+        if (!is_writable($path)) {
+            $permissions = substr(sprintf('%o', fileperms($path)), -4);
+            Log::error("المجلد غير قابل للكتابة: {$path}");
+            Log::error("صلاحيات المجلد: " . $permissions);
+            return false;
+        }
+
+        return true;
+    }
     public function handle(): void
     {
+        if (!$this->checkPermissions()) {
+            return;
+        }
         try {
             Log::info("بدء معالجة طلب API لنوع: {$this->type} من URL: {$this->url}");
 
@@ -70,7 +85,6 @@ class SaveApiToFileJob implements ShouldQueue
             }
 
             $this->checkAllTempFilesReady();
-
         } catch (\Exception $e) {
             Log::error("❌ خطأ أثناء جلب أو حفظ بيانات {$this->type}: " . $e->getMessage() . " في ملف: " . $e->getFile() . " على السطر: " . $e->getLine());
         }
@@ -90,11 +104,11 @@ class SaveApiToFileJob implements ShouldQueue
             }
 
             Storage::disk('local')->move($tempPath, $finalPath);
-            
+
             if (Storage::disk('local')->exists($finalPath)) {
                 $this->setFilePermissions($finalPath);
                 Log::info("🔄 تم تحويل الملف بنجاح إلى: uploads/{$finalPath}");
-                
+
                 if (!$this->validateFileContent($finalPath)) {
                     Log::error("الملف النهائي غير صالح: uploads/{$finalPath}");
                 }
@@ -144,17 +158,17 @@ class SaveApiToFileJob implements ShouldQueue
         }
 
         $content = Storage::disk('local')->get($filePath);
-        
+
         if (empty($content)) {
             Log::error("الملف فارغ: uploads/{$filePath}");
             return false;
         }
-        
+
         if (!$this->isValidJson($content)) {
             Log::error("محتوى JSON غير صالح في: uploads/{$filePath}");
             return false;
         }
-        
+
         return true;
     }
 

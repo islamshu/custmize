@@ -205,12 +205,6 @@ Route::get('tshirt_create',[ProductController::class,'tshirt_create'])->name('ts
 Route::get('pen_create',[ProductController::class,'pen_create'])->name('pen_create');
 Route::get('tshirt_index',[ProductController::class,'tshirt_index'])->name('tshirt_index');
 Route::get('pen_index',[ProductController::class,'pen_index'])->name('pen_index');
-
-
-
-
-
-
 });
 
 
