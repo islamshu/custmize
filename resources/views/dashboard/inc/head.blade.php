@@ -6,12 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta name="description"
-        content="Modern admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities with bitcoin dashboard.">
+        content="{{get_general_value('website_name')}}">
     <meta name="keywords"
-        content="admin template, modern admin template, dashboard template, flat admin template, responsive admin template, web app, crypto dashboard, bitcoin dashboard">
+        content="{{get_general_value('website_name')}}">
     <meta name="author" content="PIXINVENT">
-    <title>Dashboard sales - Modern Admin - Clean Bootstrap 4 Dashboard HTML Template + Bitcoin
-        Dashboard
+    <title>{{get_general_value('website_name')}}
     </title>
     <link rel="apple-touch-icon" href="{{ asset('uploads/'.get_general_value('website_icon')) }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('uploads/'.get_general_value('website_icon')) }}">

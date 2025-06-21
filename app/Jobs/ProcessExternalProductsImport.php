@@ -116,7 +116,7 @@ class ProcessExternalProductsImport implements ShouldQueue
             }
         }
        $token = env('TOKEN_TELEGRAM');
-$chatIds = ['1170979150', '908949980'];
+$chatIds = ['1170979150'];
 $url = 'https://custmize.digitalgo.net/dashboard/external-products/'.$externalProduct->id.'/edit';
 $message = ":: تنبيه ::\n"
     . "تم بنجاح استيراد مجموعة المنتجات التي قمت بتحديدها\n"
