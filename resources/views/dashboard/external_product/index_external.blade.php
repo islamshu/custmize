@@ -202,7 +202,7 @@
                         'is_active': status,
                         'id': userId
                     },
-                    success: function(data) {
+                    success: function(response) {
                         if (response.success) {
                             toastr.success(response.message);
                         }
