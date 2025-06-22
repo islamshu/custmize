@@ -193,7 +193,7 @@
                 let status = $(this).prop('checked') === true ? 1 : 0;
                 let userId = $(this).data('id');
                 $.ajax({
-                    type: "GET",
+                    type: "post",
                     dataType: "json",
                     url: '{{ route('external-products.toggle-active') }}',
                     data: {
