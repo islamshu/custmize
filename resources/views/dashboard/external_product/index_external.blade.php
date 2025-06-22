@@ -6,65 +6,54 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <style>
         .custom-switch {
-            position: relative;
-            display: inline-block;
-            width: 46px;
-            height: 24px;
-        }
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
 
-        .custom-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+.custom-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
-        .custom-control-label::before {
-            position: absolute;
-            top: 0;
-            left: -2.25rem;
-            display: block;
-            width: 2rem;
-            height: 1rem;
-            pointer-events: none;
-            content: "";
-            background-color: #adb5bd;
-            border-radius: .5rem;
-            transition: background-color .15s ease-in-out;
-        }
+.custom-control-label::before {
+    position: absolute;
+    top: 0;
+    left: -2.25rem;
+    display: block;
+    width: 2.5rem;
+    height: 1.4rem;
+    content: "";
+    background-color: #adb5bd;
+    border-radius: 1rem;
+    transition: background-color 0.3s ease-in-out;
+}
 
-        .custom-control-label::after {
-            position: absolute;
-            top: 0;
-            left: -2.25rem;
-            display: block;
-            width: 1rem;
-            height: 1rem;
-            content: "";
-            background-color: #fff;
-            border-radius: 50%;
-            transition: transform .15s ease-in-out;
-        }
+.custom-control-label::after {
+    position: absolute;
+    top: 0.1rem;
+    left: -2.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    background-color: #fff;
+    content: "";
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
 
-        .custom-control-input:checked~.custom-control-label::before {
-            background-color: #28a745;
-        }
+/* لما يكون مفعل - الزر الأخضر والرأس تتحرك لليمين */
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #28a745;
+    right: -18px !important;
+}
 
-        .custom-control-input:checked~.custom-control-label::after {
-            transform: translateX(0.2rem);
-        }
+.custom-control-input:checked ~ .custom-control-label::after {
+    transform: translateX(1.2rem);
+}
 
-        .badge-danger {
-            background-color: #ff5252;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .custom-switch.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
     </style>
 @endsection
 @section('content')
@@ -173,6 +162,7 @@
                                                                 <span class="badge badge-danger">لا يوجد سعر</span>
                                                             @endif
                                                         </td>
+
                                                         <td>
                                                             <a href="{{ route('external-products.edit', $product->id) }}"
                                                                 class="btn btn-sm btn-primary">تعديل</a>
@@ -205,16 +195,10 @@
     <script>
         $(document).ready(function() {
             $('.toggle-active').change(function() {
-                var productId = $(this).data('id');
-                var hasPrice = $(this).closest('tr').find('td:eq(4)').text().trim() !== '_';
+                var checkbox = $(this);
+                var productId = checkbox.data('id');
+                var isActive = checkbox.is(':checked') ? 1 : 0;
                 var token = '{{ csrf_token() }}';
-
-                // إذا كان المنتج لا يحتوي على سعر
-                if (!hasPrice && $(this).is(':checked')) {
-                    toastr.error('لا يمكن إظهار منتج بدون سعر في الواجهة الرئيسية');
-                    $(this).prop('checked', false);
-                    return false;
-                }
 
                 $.ajax({
                     url: '{{ route('external-products.toggle-active') }}',
@@ -222,20 +206,19 @@
                     data: {
                         _token: token,
                         id: productId,
+                        is_active: isActive
                     },
                     success: function(response) {
                         if (response.status) {
                             toastr.success(response.message);
                         } else {
                             toastr.error(response.message || 'حدث خطأ ما');
-                            // إعادة حالة التبديل إذا فشل الطلب
-                            $(this).prop('checked', !$(this).is(':checked'));
+                            checkbox.prop('checked', !isActive); // إعادة الحالة
                         }
                     },
                     error: function() {
                         toastr.error('فشل الاتصال بالخادم');
-                        // إعادة حالة التبديل إذا فشل الطلب
-                        $(this).prop('checked', !$(this).is(':checked'));
+                        checkbox.prop('checked', !isActive); // إعادة الحالة
                     }
                 });
             });

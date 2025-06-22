@@ -422,30 +422,29 @@ class ApiProductsController extends Controller
         return redirect()->route('index_external')->with('success', 'تم حذف المنتج بنجاح');
     }
     public function toggleActive(Request $request)
-{
-    $product = ExternalProduct::find($request->id);
-    
-    if (!$product) {
+    {
+        $product = ExternalProduct::find($request->id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المنتج غير موجود'
+            ]);
+        }
+
+        if ($request->is_active && !$product->price) {
+            return response()->json([
+                'status' => false,
+                'message' => 'لا يمكن تفعيل منتج بدون سعر'
+            ]);
+        }
+
+        $product->is_active = $request->is_active ? 1 : 0;
+        $product->save();
+
         return response()->json([
-            'status' => false,
-            'message' => 'المنتج غير موجود'
+            'status' => true,
+            'message' => 'تم تحديث حالة المنتج بنجاح'
         ]);
     }
-    
-    // التحقق من وجود سعر للمنتج
-    if ($request->is_active && !$product->price) {
-        return response()->json([
-            'status' => false,
-            'message' => 'لا يمكن تفعيل منتج بدون سعر'
-        ]);
-    }
-    
-    $product->is_active = $request->is_active;
-    $product->save();
-    
-    return response()->json([
-        'status' => true,
-        'message' => 'تم تحديث حالة المنتج بنجاح'
-    ]);
-}
 }
