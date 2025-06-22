@@ -51,7 +51,8 @@
 
 <!-- END PAGE VENDOR JS-->
 <script src="{{ asset('backend/app-assets/js/scripts/forms/wizard-steps.js') }}" type="text/javascript"></script>
-<script src="{{ asset('backend/app-assets/vendors/js/editors/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
+<script src="{{ asset('backend/app-assets/vendors/js/editors/ckeditor/ckeditor.js') }}" type="text/javascript">
+</script>
 <script src="{{ asset('backend/app-assets/js/scripts/editors/editor-ckeditor.js') }}" type="text/javascript"></script>
 <script src="{{ asset('backend/app-assets/vendors/js/forms/tags/tagging.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('backend/app-assets/js/scripts/forms/tags/tagging.js') }}" type="text/javascript"></script>
@@ -75,17 +76,17 @@
     });
     $(".imagee").change(function() {
 
-if (this.files && this.files[0]) {
-    var reader = new FileReader();
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
 
-    reader.onload = function(e) {
-        $('.image-previeww').attr('src', e.target.result);
-    }
+            reader.onload = function(e) {
+                $('.image-previeww').attr('src', e.target.result);
+            }
 
-    reader.readAsDataURL(this.files[0]);
-}
+            reader.readAsDataURL(this.files[0]);
+        }
 
-});
+    });
     $('.delete-confirm').click(function(event) {
         var form = $(this).closest("form");
         var name = $(this).data("name");
@@ -105,12 +106,13 @@ if (this.files && this.files[0]) {
 </script>
 
 <script>
-    
-   
-    
-    
+    let elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
 
-    
+    elems.forEach(function(html) {
+        let switchery = new Switchery(html, {
+            size: 'small'
+        });
+    });
 </script>
 
 @yield('script')

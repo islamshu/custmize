@@ -6,54 +6,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <style>
         .custom-switch {
-    position: relative;
-    display: inline-block;
-    width: 46px;
-    height: 24px;
-}
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
 
-.custom-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-.custom-control-label::before {
-    position: absolute;
-    top: 0;
-    left: -2.25rem;
-    display: block;
-    width: 2.5rem;
-    height: 1.4rem;
-    content: "";
-    background-color: #adb5bd;
-    border-radius: 1rem;
-    transition: background-color 0.3s ease-in-out;
-}
+        .custom-control-label::before {
+            position: absolute;
+            top: 0;
+            left: -2.25rem;
+            display: block;
+            width: 2.5rem;
+            height: 1.4rem;
+            content: "";
+            background-color: #adb5bd;
+            border-radius: 1rem;
+            transition: background-color 0.3s ease-in-out;
+        }
 
-.custom-control-label::after {
-    position: absolute;
-    top: 0.1rem;
-    left: -2.2rem;
-    width: 1.2rem;
-    height: 1.2rem;
-    background-color: #fff;
-    content: "";
-    border-radius: 50%;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
+        .custom-control-label::after {
+            position: absolute;
+            top: 0.1rem;
+            left: -2.2rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            background-color: #fff;
+            content: "";
+            border-radius: 50%;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
 
-/* لما يكون مفعل - الزر الأخضر والرأس تتحرك لليمين */
-.custom-control-input:checked ~ .custom-control-label::before {
-    background-color: #28a745;
-    right: -18px !important;
-}
+        /* لما يكون مفعل - الزر الأخضر والرأس تتحرك لليمين */
+        .custom-control-input:checked~.custom-control-label::before {
+            background-color: #28a745;
+            right: -18px !important;
+        }
 
-.custom-control-input:checked ~ .custom-control-label::after {
-    transform: translateX(1.2rem);
-}
-
+        .custom-control-input:checked~.custom-control-label::after {
+            transform: translateX(1.2rem);
+        }
     </style>
 @endsection
 @section('content')
@@ -117,7 +116,7 @@
                                         @include('dashboard.inc.alerts')
 
 
-                                        <table class="table table-striped table-bordered file-export">
+                                        <table class="table table-striped table-bordered file-export" id="storestable">
                                             <thead class="thead-dark">
                                                 <tr>
                                                     <th>#</th>
@@ -150,16 +149,11 @@
                                                         <td>
                                                             @if ($product->price)
                                                                 <div class="custom-control custom-switch">
-                                                                    <input type="checkbox"
-                                                                        class="custom-control-input toggle-active"
-                                                                        id="switch-{{ $product->id }}"
-                                                                        data-id="{{ $product->id }}"
-                                                                        {{ $product->is_active ? 'checked' : '' }}>
-                                                                    <label class="custom-control-label"
-                                                                        for="switch-{{ $product->id }}"></label>
-                                                                </div>
-                                                            @else
-                                                                <span class="badge badge-danger">لا يوجد سعر</span>
+                                                                    <input type="checkbox" data-id="{{ $product->id }}"
+                                                                        name="is_active" class="js-switch"
+                                                                        {{ $product->is_active == 1 ? 'checked' : '' }}>
+                                                                @else
+                                                                    <span class="badge badge-danger">لا يوجد سعر</span>
                                                             @endif
                                                         </td>
 
@@ -194,31 +188,24 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $('body').on('change', '.toggle-active', function() {
-                var checkbox = $(this);
-                var productId = checkbox.data('id');
-                var isActive = checkbox.is(':checked') ? 1 : 0;
-                
+
+            $("#storestable").on("change", ".js-switch", function() {
+                let status = $(this).prop('checked') === true ? 1 : 0;
+                let userId = $(this).data('id');
                 $.ajax({
-                    url: '{{ route("external-products.toggle-active") }}',
-                    type: 'POST',
+                    type: "GET",
+                    dataType: "json",
+                    url: '{{ route('external-products.toggle-active') }}',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        id: productId,
-                        is_active: isActive
+
+                        'is_active': status,
+                        'id': userId
                     },
-                    dataType: 'json',
-                    success: function(response) {
+                    success: function(data) {
                         if (response.success) {
                             toastr.success(response.message);
-                        } else {
-                            toastr.error(response.message);
-                            checkbox.prop('checked', !isActive);
                         }
-                    },
-                    error: function(xhr) {
-                        toastr.error('خطأ في الاتصال: ' + xhr.statusText);
-                        checkbox.prop('checked', !isActive);
                     }
                 });
             });
