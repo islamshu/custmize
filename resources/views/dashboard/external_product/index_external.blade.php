@@ -194,31 +194,31 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $('.toggle-active').change(function() {
+            $('body').on('change', '.toggle-active', function() {
                 var checkbox = $(this);
                 var productId = checkbox.data('id');
                 var isActive = checkbox.is(':checked') ? 1 : 0;
-                var token = '{{ csrf_token() }}';
-
+                
                 $.ajax({
-                    url: '{{ route('external-products.toggle-active') }}',
+                    url: '{{ route("external-products.toggle-active") }}',
                     type: 'POST',
                     data: {
-                        _token: token,
+                        _token: '{{ csrf_token() }}',
                         id: productId,
                         is_active: isActive
                     },
+                    dataType: 'json',
                     success: function(response) {
-                        if (response.status) {
+                        if (response.success) {
                             toastr.success(response.message);
                         } else {
-                            toastr.error(response.message || 'حدث خطأ ما');
-                            checkbox.prop('checked', !isActive); // إعادة الحالة
+                            toastr.error(response.message);
+                            checkbox.prop('checked', !isActive);
                         }
                     },
-                    error: function() {
-                        toastr.error('فشل الاتصال بالخادم');
-                        checkbox.prop('checked', !isActive); // إعادة الحالة
+                    error: function(xhr) {
+                        toastr.error('خطأ في الاتصال: ' + xhr.statusText);
+                        checkbox.prop('checked', !isActive);
                     }
                 });
             });
