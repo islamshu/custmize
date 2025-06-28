@@ -15,7 +15,11 @@ class ExternalColorResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
-            "sizes" => ExternalSizeResource::collection($this->sizes),
+            'sizes' => $this->when(
+                $this->sizes && $this->sizes->isNotEmpty(),
+                ExternalSizeResource::collection($this->sizes),
+                null
+            ),
             'front_image' => $this->front_image ? asset('storage/' . $this->front_image) : null,
             'back_image' => $this->back_image ? asset('storage/' . $this->back_image) : null,
             'right_side_image' => $this->right_side_image ? asset('storage/' . $this->right_side_image) : null,

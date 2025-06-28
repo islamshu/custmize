@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerRessours;
 use App\Http\Resources\DiscountCodeResourse;
+use App\Http\Resources\ExternalProductResource;
 use App\Http\Resources\OrderResourse;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProductShortDataResourse;
 use App\Http\Resources\ProductResourse;
 use App\Models\Banner;
 use App\Models\DiscountCode;
+use App\Models\ExternalProduct;
 use App\Models\Order;
 use App\Models\Product;
 use App\Services\UnsplashService;
@@ -66,10 +68,13 @@ class HomeController extends BaseController
     {
         $banners = BannerRessours::collection(Banner::get());
         $products = ProductShortDataResourse::collection(Product::get());
+        $external = ExternalProduct::where('in_home',1)->get();
+        $whereHouse = ExternalProductResource::collection($external);
 
         $data = [
             'banners' => $banners,
             'products' => $products,
+            'Werehouse'=>$whereHouse
         ];
 
         return $this->sendResponse($data, "SUCCESS");

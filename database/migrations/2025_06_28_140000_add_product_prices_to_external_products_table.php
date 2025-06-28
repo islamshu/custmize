@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('external_products', function (Blueprint $table) {
-            $table->boolean('is_active')->default(false)->after('image_url');
+            $table->boolean('in_home')->default(false)->after('is_active');
         });
     }
 

@@ -163,6 +163,7 @@ Route::post('/external-products/group-import', [ApiProductsController::class, 'i
 Route::get('external-products/{externalProduct}/edit', [ApiProductsController::class, 'edit'])->name('external-products.edit');
 Route::put('external-products/{externalProduct}', [ApiProductsController::class, 'update'])->name('external-products.update');
 Route::post('/external-products/toggle-active', [ApiProductsController::class, 'toggleActive'])->name('external-products.toggle-active');
+Route::post('/external-products/toggle-home', [ApiProductsController::class, 'toggleHome'])->name('external-products.toggle-home');
 
 Route::get('external-products', [ApiProductsController::class, 'index_external'])->name('index_external');
 Route::delete('/external-products/{id}', [ApiProductsController::class, 'destroy'])->name('external-products.destroy');

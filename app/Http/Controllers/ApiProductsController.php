@@ -7,6 +7,7 @@ use App\Models\ExternalProduct;
 use App\Models\ExternalProductColor;
 use App\Models\ExternalProductSize;
 use App\Models\ProductShow;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -171,6 +172,7 @@ class ApiProductsController extends Controller
         $externalProduct->brand = $request->input('brand');
         $externalProduct->default_codes = explode(',', $request->input('default_codes'));
         $externalProduct->price = $request->input('price');
+        $externalProduct->subcategory_id = $request->category_id; 
 
 
         // ✅ 2. تحديث صورة المنتج الرئيسية
@@ -398,8 +400,8 @@ class ApiProductsController extends Controller
     public function edit($id)
     {
         $externalProduct = ExternalProduct::with(['colors.sizes'])->findOrFail($id);
-
-        return view('dashboard.external_product.edit', compact('externalProduct'));
+        $categories = SubCategory::get(); // Assuming you have a categories table
+        return view('dashboard.external_product.edit', compact('externalProduct','categories'));
     }
     public function destroy($id)
     {
@@ -447,4 +449,31 @@ class ApiProductsController extends Controller
             'message' => 'تم تحديث حالة المنتج بنجاح'
         ]);
     }
+ public function toggleHome(Request $request)
+    {
+        $product = ExternalProduct::find($request->id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المنتج غير موجود'
+            ]);
+        }
+
+        if ($request->in_home && !$product->price) {
+            return response()->json([
+                'status' => false,
+                'message' => 'لا يمكن عرض المنتج بدون سعر'
+            ]);
+        }
+
+        $product->in_home = $request->in_home ? 1 : 0;
+        $product->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تحديث حالة المنتج بنجاح'
+        ]);
+    }
+    
 }

@@ -124,8 +124,10 @@
                                                     <th>الماركة</th>
                                                     <th>الصورة</th>
                                                     <th>السعر</th>
+                                                    <th>التصنيف</th>
                                                     <th>عدد الألوان</th>
-                                                    <th>يظهر بالموقع ؟</th>
+                                                    <th>فعال ؟</th>
+                                                    <th>يظهر بالرئيسية ؟</th>
                                                     <th>الإجراءات</th>
                                                 </tr>
                                             </thead>
@@ -144,14 +146,32 @@
                                                             @endif
                                                         </td>
                                                         <td>{{ $product->price ?? 'لا يوجد سعر' }}</td>
+                                                        <td>
+                                                            @if ($product->subcategory)
+                                                                <span
+                                                                    class="badge badge-info">{{ $product->subcategory->name }}</span>
+                                                            @else
+                                                                <span class="badge badge-secondary">غير مصنف</span>
+                                                            @endif
+                                                        </td>
 
                                                         <td>{{ $product->colors->count() }}</td>
                                                         <td>
                                                             @if ($product->price)
                                                                 <div class="custom-control custom-switch">
                                                                     <input type="checkbox" data-id="{{ $product->id }}"
-                                                                        name="is_active" class="js-switch"
+                                                                        name="is_active" class="js-switch in_active_class"
                                                                         {{ $product->is_active == 1 ? 'checked' : '' }}>
+                                                                @else
+                                                                    <span class="badge badge-danger">لا يوجد سعر</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($product->price)
+                                                                <div class="custom-control custom-switch">
+                                                                    <input type="checkbox" data-id="{{ $product->id }}"
+                                                                        name="in_home" class="js-switch in_home_class"
+                                                                        {{ $product->in_home == 1 ? 'checked' : '' }}>
                                                                 @else
                                                                     <span class="badge badge-danger">لا يوجد سعر</span>
                                                             @endif
@@ -189,7 +209,7 @@
     <script>
         $(document).ready(function() {
 
-            $("#storestable").on("change", ".js-switch", function() {
+            $("#storestable").on("change", ".in_active_class", function() {
                 let status = $(this).prop('checked') === true ? 1 : 0;
                 let userId = $(this).data('id');
                 $.ajax({
@@ -200,6 +220,26 @@
                         _token: '{{ csrf_token() }}',
 
                         'is_active': status,
+                        'id': userId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                        }
+                    }
+                });
+            });
+            $("#storestable").on("change", ".in_home_class", function() {
+                let status = $(this).prop('checked') === true ? 1 : 0;
+                let userId = $(this).data('id');
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: '{{ route('external-products.toggle-home') }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+
+                        'in_home': status,
                         'id': userId
                     },
                     success: function(response) {

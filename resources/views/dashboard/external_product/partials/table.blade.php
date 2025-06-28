@@ -5,7 +5,6 @@
             <th style="width: 50px;">#</th>
             <th style="width: 110px;">الصورة</th>
             <th style="width: 250px;">الاسم</th>
-
             <th style="width: 100px;">السعر</th>
             {{-- <th style="width: 90px;">الحالة</th> --}}
         </tr>

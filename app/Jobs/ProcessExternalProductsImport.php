@@ -51,7 +51,6 @@ class ProcessExternalProductsImport implements ShouldQueue
             }
 
             $priceData = $this->findPriceByCode($prices, $defaultCode);
-
             // ✅ Save the price for each product ID
             if (isset($product['id'])) {
                 $productPrices[$product['id']] = $priceData['price'] ?? null;
@@ -78,6 +77,8 @@ class ProcessExternalProductsImport implements ShouldQueue
                 }
             }
         }
+        Log::info(' الكاتجوري ' . ($product['public_categ_ids'][0]['name'] ?? null) . '  وبس  ');
+        return 'islam';
         $externalProduct = ExternalProduct::create([
             'external_id' => $mainProduct['id'],
             'name' => $mainProduct['name'],
@@ -87,7 +88,6 @@ class ProcessExternalProductsImport implements ShouldQueue
             'default_codes' => array_unique($defaultCodes),
             'product_ids' => $ids,
             'product_prices' => $productPrices, // Assuming the column exists
-
         ]);
 
         Log::info('Product created', [
@@ -115,25 +115,25 @@ class ProcessExternalProductsImport implements ShouldQueue
                 ]);
             }
         }
-       $token = env('TOKEN_TELEGRAM');
-$chatIds = ['1170979150'];
-$url = 'https://custmize.digitalgo.net/dashboard/external-products/'.$externalProduct->id.'/edit';
-$message = ":: تنبيه ::\n"
-    . "تم بنجاح استيراد مجموعة المنتجات التي قمت بتحديدها\n"
-    . "يمكنك الدخول للرابط لمراجعة المنتجات المستوردة: \n" . $url;
+        $token = env('TOKEN_TELEGRAM');
+        $chatIds = ['1170979150'];
+        $url = 'https://custmize.digitalgo.net/dashboard/external-products/' . $externalProduct->id . '/edit';
+        $message = ":: تنبيه ::\n"
+            . "تم بنجاح استيراد مجموعة المنتجات التي قمت بتحديدها\n"
+            . "يمكنك الدخول للرابط لمراجعة المنتجات المستوردة: \n" . $url;
 
-foreach ($chatIds as $chatId) {
-    $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
-        'chat_id' => $chatId,
-        'text' => $message,
-    ]);
+        foreach ($chatIds as $chatId) {
+            $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
+                'chat_id' => $chatId,
+                'text' => $message,
+            ]);
 
-    if ($response->failed()) {
-        Log::error("Failed to send Telegram message", ['chat_id' => $chatId, 'response' => $response->body()]);
-    } else {
-        Log::info("Telegram message sent successfully", ['chat_id' => $chatId]);
-    }
-}
+            if ($response->failed()) {
+                Log::error("Failed to send Telegram message", ['chat_id' => $chatId, 'response' => $response->body()]);
+            } else {
+                Log::info("Telegram message sent successfully", ['chat_id' => $chatId]);
+            }
+        }
         Log::info('تم استيراد المنتج بنجاح', ['external_product_id' => $externalProduct->id]);
     }
 

@@ -17,7 +17,8 @@ class ExternalProduct extends Model
         'product_ids',
         'image',
         'product_prices',
-        'price'
+        'price',
+        'subcategory_id'
 
     ];
 
@@ -49,4 +50,8 @@ class ExternalProduct extends Model
 
         return max(array_values($this->product_prices));
     }
+    public function subcategory()
+    {
+        return $this->belongsTo(SubCategory::class, 'subcategory_id');
+    }   
 }

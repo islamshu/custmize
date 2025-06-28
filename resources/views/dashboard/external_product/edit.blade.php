@@ -65,6 +65,17 @@
                                                         <input type="text" name="brand" class="form-control"
                                                             value="{{ old('brand', $externalProduct->brand) }}">
                                                     </div>
+                                                     <div class="form-group mt-2">
+                                                        <label>التصنيف</label>
+                                                        <select name="category_id" class="form-control">
+                                                            <option value="" >دون تصنيف</option>
+                                                            @foreach ($categories as $item)
+                                                            <option value="{{$item->id}}" @if($item->id == $externalProduct->subcategory_id) selected @endif>{{$item->name}} </option>
+    
+                                                            @endforeach
+                                                        </select>
+                                                       
+                                                    </div>
                                                     <div class="alert alert-info">
 
                                                         السعر يتراوح بين
