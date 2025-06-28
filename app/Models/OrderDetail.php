@@ -52,4 +52,8 @@ class OrderDetail extends Model
     {
         return $this->hasOne(ProductImage::class, 'order_detail_id');
     }
+     public function externalProduct()
+    {
+        return $this->belongsTo(ExternalProduct::class);
+    }
 }

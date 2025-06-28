@@ -862,7 +862,7 @@ class CheckoutController extends BaseController
 
                 $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
-                    'product_name' => Product::find($orderData['product_id'])->name,
+                    'product_name' => $orderData['product_name'] ?? Product::find($orderData['product_id'])->name,
                     'product_id' => $orderData['product_id'],
                     'external_product_id' => $orderData['external_product_id'] ?? null, // الحقل الجديد
                     'default_code' => $orderData['default_code'] ?? null,              // الحقل الجديد
@@ -1024,7 +1024,7 @@ class CheckoutController extends BaseController
                 $savedLogos = $this->saveImagesFromUrls($logos);
                 $detiels =   OrderDetail::create([
                     'order_id' => $order->id,
-                    'product_name' => Product::find($orderData['product_id'])->name,
+                    'product_name' => $orderData['product_name'] ?? Product::find($orderData['product_id'])->name,
                     'product_id' => $orderData['product_id'],
                     'external_product_id' => $orderData['external_product_id'] ?? null, // الحقل الجديد
                     'default_code' => $orderData['default_code'] ?? null,              // الحقل الجديد
@@ -1087,7 +1087,7 @@ class CheckoutController extends BaseController
             // Log the error for debugging
             $error = new ErrorPayment();
             $error->code =  date('Ymd-His') . rand(10, 99);
-            $error->descripton = "thie error is islam: ".$e->getMessage();
+            $error->descripton = "thie error is islam: " . $e->getMessage();
             Log::info($e);
             $error->full_request = json_encode($request->all());
             $error->save();
