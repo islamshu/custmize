@@ -23,7 +23,7 @@ class ExternalProductResource extends JsonResource
         'default_codes' => $defaultCodes,
         'count' => $count,
         'price'=>$this->price,
-        'default_code' => $count  == 1 ? $defaultCodes[0] : false,
+        'default_code' => $count  == 1 ?$this->default_codes : false,
         'external_id' => $count  == 1 ? $this->external_id : false,
         'have_color' => $this->colors->isNotEmpty(),
         'category'=>$this->subcategory->name ?? null,

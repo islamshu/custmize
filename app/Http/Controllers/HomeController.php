@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\File;
+
 class HomeController extends Controller
 {
     /**
@@ -38,6 +39,16 @@ class HomeController extends Controller
         $order->status = 'completed';
         $order->status_id = 1;
         $order->save();
+        $order_external = Order::with(['orderDetails' => function ($query) {
+            $query->whereNotNull('external_product_id');
+        }])->findOrFail($orderId);
+        $externalProducts = $order->orderDetails->map(function ($detail) {
+            return [
+                'product_id' => (int)$detail->external_product_id,
+                'quantity' => (int)$detail->quantity
+            ];
+        })->toArray();
+        dd($order_external);
         Mail::to($order->email)->send(new OrderSuccessMail($order));
         return view('payment.success', ['order' => $order]);
     }
@@ -48,14 +59,15 @@ class HomeController extends Controller
         $order->status = 'failed';
         $order->save();
         return view('payment.error');
-    }  
-      public function verfty_email($id){
+    }
+    public function verfty_email($id)
+    {
         $encid = Crypt::decrypt($id);
         $user = Client::find($encid);
         $user->email_verified_at = now();
         $user->save();
         Mail::to($user->email)->send(new Confirm_email());
-     }
+    }
     public function welcom(Request $request)
     {
         $products = Product::with(['favorites' => function ($query) {
@@ -63,13 +75,16 @@ class HomeController extends Controller
         }])->get();
         return view('front.index')->with('products', $products);
     }
-    public function setting_my_fatoorah(){
+    public function setting_my_fatoorah()
+    {
         return view('dashboard.setting_myfatoorah');
     }
-    public function factor(){
+    public function factor()
+    {
         return view('dashboard.factor');
     }
-    public function factor2(){
+    public function factor2()
+    {
         return view('dashboard.factor2');
     }
     public function update_my_fatoorah(Request $request)
@@ -137,9 +152,10 @@ class HomeController extends Controller
         return view('front.cart', compact('carts', 'subtotal', 'shipping', 'tax', 'total'));
         // Return the view with cart items
     }
-    public function viwer($id){
+    public function viwer($id)
+    {
         $product = Product::find($id);
-        return view('viwer')->with('product',$product);
+        return view('viwer')->with('product', $product);
     }
 
     public function home()
@@ -778,7 +794,7 @@ class HomeController extends Controller
                     continue;
                 }
                 GeneralInfo::setValue($name, $value);
-                if($name  == 'website_name'){
+                if ($name  == 'website_name') {
                     $envPath = base_path('.env');
 
                     // Check if the .env file exists
@@ -786,15 +802,14 @@ class HomeController extends Controller
                         // Get the current content of the .env file
                         $cleanedAppName = preg_replace('/[^A-Za-z0-9\-]/', '', $value);
                         $env = File::get($envPath);
-            
+
                         // Replace the value of APP_NAME in the .env file
                         $env = preg_replace('/^APP_NAME=[^\r\n]*/m', 'APP_NAME=' . $cleanedAppName, $env);
-            
+
                         // Write the new content back to the .env file
                         File::put($envPath, $env);
-            
+                    }
                 }
-            }
             }
         }
 
