@@ -1098,41 +1098,7 @@ class CheckoutController extends BaseController
     protected function sendToExternalSystem(array $externalProducts, Order $order, Request $request)
     {
         return true;
-        $pdfPath = 'path/to/your/file.pdf'; // يمكنك تعديل هذا حسب احتياجك
-        $encodedString = base64_encode(file_get_contents($pdfPath));
-
-        $data = [
-            "customer_reference" => "PO" . $order->id,
-            "contact_number" => $request->phone,
-            "products" => $externalProducts,
-            "order_type" => "delivery",
-            "shipping_method" => "Door Deliver in Dubai / Sharjah / Ajman",
-            "delivery_address" => [
-                "name" => $request->receiver_name ?? $request->name,
-                "street" => $request->address ?? 'N/A',
-                "street2" => '',
-                "city" => $request->city ?? 'N/A',
-                "state" => $request->city ?? 'N/A',
-                "country" => $request->country ?? 'AE',
-                "zip" => $request->postal_code ?? '00000',
-                "phone" => $request->receiver_phone ?? $request->phone
-            ],
-            "delivery_instruction" => "Order from website",
-            "delivery_note" => $encodedString
-        ];
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => '19b9d3ac90a64cdfb1073b28b4b70853' // يجب تخزين هذا بشكل آمن
-        ])->post('https://www.jasani.ae/orders/place_order', $data);
-
-        // يمكنك تسجيل الرد إذا لزم الأمر
-        if ($response->failed()) {
-            Log::error('Failed to send order to external system', [
-                'order_id' => $order->id,
-                'response' => $response->json()
-            ]);
-        }
+       
 
         return $response->successful();
     }
