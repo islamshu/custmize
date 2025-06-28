@@ -26,8 +26,9 @@ class OrderDetail extends Model
         'back_image',
         'right_side_image',
         'left_side_image',
-
         'logos',
+        'external_product_id', // الحقل الجديد
+        'default_code',        // الحقل الجديد
     ];
 
     // Relationship with Order

@@ -39,6 +39,7 @@ Route::get('size_calculate_new_factor',[HomeController::class,'size_calculate_ne
 Route::get('libraray', [HomeController::class,'images'])->name('images');
 Route::post('checkout_guest',[CheckoutController::class,'initiatePayment_guest'])->name('checkout');
 Route::post('v2/checkout_guest',[CheckoutController::class,'initiatePayment_guest_v2'])->name('checkout_v2');
+Route::post('v3/checkout_guest',[CheckoutController::class,'initiatePayment_guest_v3'])->name('checkout_v3');
 
 Route::get('track_order',[HomeController::class,'track_order']);
 Route::get('/external-products', [ExternalProductController::class, 'visibleProducts']);
@@ -49,6 +50,7 @@ Route::middleware(['auth:api', 'is_login'])->group(function () {
     Route::post('update_profile',[UserController::class,'update_profile'])->name('update_profile');
     Route::post('checkout',[CheckoutController::class,'initiatePayment'])->name('checkout');
     Route::post('/v2/checkout',[CheckoutController::class,'initiatePayment_v2'])->name('checkout_v2');
+    Route::post('/v3/checkout',[CheckoutController::class,'initiatePayment_v3'])->name('checkout_v3');
 
     Route::post('check_promocode',[UserController::class,'check_promocode'])->name('check_promocode');
     Route::get('all_promocods',[HomeController::class,'all_promocods']);
