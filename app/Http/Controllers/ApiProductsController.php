@@ -170,7 +170,7 @@ class ApiProductsController extends Controller
         $externalProduct->name = $request->input('name');
         $externalProduct->description_sale = $request->input('description_sale');
         $externalProduct->brand = $request->input('brand');
-        $externalProduct->default_codes = explode(',', $request->input('default_codes'));
+        // $externalProduct->default_codes = explode(',', $request->input('default_codes'));
         $externalProduct->price = $request->input('price');
         $externalProduct->subcategory_id = $request->category_id; 
 
