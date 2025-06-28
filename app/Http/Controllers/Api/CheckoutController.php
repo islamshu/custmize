@@ -17,7 +17,7 @@ use Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends BaseController
 {
@@ -1088,6 +1088,7 @@ class CheckoutController extends BaseController
             $error = new ErrorPayment();
             $error->code =  date('Ymd-His') . rand(10, 99);
             $error->descripton = $e->getMessage();
+            Log::info($e);
             $error->full_request = json_encode($request->all());
             $error->save();
             // \Log::error('Order placement failed: ' . $e->getMessage());
