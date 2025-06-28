@@ -26,6 +26,7 @@ class ExternalProductResource extends JsonResource
         'default_code' => $count  == 1 ? $defaultCodes[0] : false,
         'external_id' => $count  == 1 ? $this->external_id : false,
         'have_color' => $this->colors->isNotEmpty(),
+        'category'=>$this->subcategory->name ?? null,
         'colors' => ExternalColorResource::collection($this->colors),
     ];
 }
