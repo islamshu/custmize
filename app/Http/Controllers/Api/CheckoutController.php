@@ -1087,7 +1087,7 @@ class CheckoutController extends BaseController
             // Log the error for debugging
             $error = new ErrorPayment();
             $error->code =  date('Ymd-His') . rand(10, 99);
-            $error->descripton = "thie error is islam:"$e->getMessage();
+            $error->descripton = "thie error is islam: ".$e->getMessage();
             Log::info($e);
             $error->full_request = json_encode($request->all());
             $error->save();
