@@ -77,8 +77,7 @@ class ProcessExternalProductsImport implements ShouldQueue
                 }
             }
         }
-        Log::info(' الكاتجوري ' . ($product['public_categ_ids'][0]['name'] ?? null) . '  وبس  ');
-        return 'islam';
+       
         $externalProduct = ExternalProduct::create([
             'external_id' => $mainProduct['id'],
             'name' => $mainProduct['name'],
